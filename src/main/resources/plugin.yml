@@ -1,0 +1,7 @@
+version: 1.0
+name: RemakeHypixelSkyblock
+main: com.itech4kids.skyblock.Main
+commands:
+  sbmenu:
+  spawncm:
+  setPlayerStat:
