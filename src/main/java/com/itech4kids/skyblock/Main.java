@@ -9,6 +9,7 @@ import com.itech4kids.skyblock.CustomMobs.Dragon.SkyblockDragon;
 import com.itech4kids.skyblock.CustomMobs.Enderman.SkyblockEnderman;
 import com.itech4kids.skyblock.CustomMobs.Zombie.SkyblockZombie;
 import com.itech4kids.skyblock.Listeners.Eventlistener;
+import com.itech4kids.skyblock.Listeners.SkyblockMenuListener;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
 import com.itech4kids.skyblock.Objects.SkyblockStats;
 import com.itech4kids.skyblock.Util.Config;
@@ -51,6 +52,7 @@ public class Main extends JavaPlugin {
         players = new HashMap<String, SkyblockPlayer>();
         damage_indicator = new ArrayList<ArmorStand>();
         Bukkit.getPluginManager().registerEvents(new Eventlistener(), this);
+        Bukkit.getPluginManager().registerEvents(new SkyblockMenuListener(this), this);
         getCommand("sbmenu").setExecutor(new SkyblockMenuCommand());
         getCommand("setPlayerStat").setExecutor(new PlayerStatCommand());
         getCommand("spawncm").setExecutor(new SpawnCustomMobCommand());

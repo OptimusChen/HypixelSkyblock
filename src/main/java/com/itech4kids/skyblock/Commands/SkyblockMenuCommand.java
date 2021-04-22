@@ -101,6 +101,8 @@ public class SkyblockMenuCommand implements CommandExecutor {
             SkyblockGuiItem profiles = new SkyblockGuiItem(ChatColor.GREEN + "Profile Management", "You can have multiple Skyblock Profiles at the same time", profilesLore, Material.NAME_TAG);
 
             SkyblockGuiItem closeItem = new SkyblockGuiItem(ChatColor.RED + "Close", null, null, Material.BARRIER);
+            closeItem.lore.clear();
+            closeItem.itemMeta.setLore(closeItem.lore);
             SkyblockGuiItem settingsItem = new SkyblockGuiItem(ChatColor.GREEN + "Settings", "View and edit your Skyblock settings.", null, Material.REDSTONE_TORCH_ON);
 
             menu.setItem(13, skull);

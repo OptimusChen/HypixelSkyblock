@@ -2,6 +2,7 @@ package com.itech4kids.skyblock.Util;
 
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.Items.SkyblockGuiItem;
+import com.itech4kids.skyblock.Objects.Items.SkyblockStatItem;
 import de.tr7zw.nbtapi.NBTEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,6 +31,38 @@ public class ItemUtil {
         }
         if (tmp.length() > 0) {
             item.lore.add(ChatColor.GRAY + tmp);
+        }
+    }
+
+    public static void addLoreMessage(String string, SkyblockStatItem item){
+        String[] strings = string.split(" ");
+        String tmp = "";
+        for (String s : strings){
+            if ((s.length() + 1 + tmp.length()) <= 32){
+                tmp = tmp + s + " ";
+            } else {
+                item.lore.add(ChatColor.GRAY + tmp);
+                tmp = s + " ";
+            }
+        }
+        if (tmp.length() > 0) {
+            item.lore.add(ChatColor.GRAY + tmp);
+        }
+    }
+
+    public static void addItalicLore(String string, SkyblockStatItem item){
+        String[] strings = string.split(" ");
+        String tmp = "";
+        for (String s : strings){
+            if ((s.length() + 1 + tmp.length()) <= 32){
+                tmp = tmp + s + " ";
+            } else {
+                item.lore.add(ChatColor.DARK_GRAY + " " + ChatColor.ITALIC + tmp);
+                tmp = s + " ";
+            }
+        }
+        if (tmp.length() > 0) {
+            item.lore.add(ChatColor.DARK_GRAY + " " + ChatColor.ITALIC + tmp);
         }
     }
 
