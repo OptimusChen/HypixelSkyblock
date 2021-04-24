@@ -1,8 +1,9 @@
 package com.itech4kids.skyblock.Util;
 
 import com.itech4kids.skyblock.Main;
-import com.itech4kids.skyblock.Objects.Items.SkyblockGuiItem;
-import com.itech4kids.skyblock.Objects.Items.SkyblockStatItem;
+import com.itech4kids.skyblock.Objects.Items.GuiItems.SkyblockGuiItem;
+import com.itech4kids.skyblock.Objects.Items.GuiItems.SkyblockSkillGuiItem;
+import com.itech4kids.skyblock.Objects.Items.GuiItems.SkyblockStatItem;
 import de.tr7zw.nbtapi.NBTEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,10 +12,6 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemUtil {
 
@@ -35,6 +32,22 @@ public class ItemUtil {
     }
 
     public static void addLoreMessage(String string, SkyblockStatItem item){
+        String[] strings = string.split(" ");
+        String tmp = "";
+        for (String s : strings){
+            if ((s.length() + 1 + tmp.length()) <= 32){
+                tmp = tmp + s + " ";
+            } else {
+                item.lore.add(ChatColor.GRAY + tmp);
+                tmp = s + " ";
+            }
+        }
+        if (tmp.length() > 0) {
+            item.lore.add(ChatColor.GRAY + tmp);
+        }
+    }
+
+    public static void addLoreMessage(String string, SkyblockSkillGuiItem item){
         String[] strings = string.split(" ");
         String tmp = "";
         for (String s : strings){

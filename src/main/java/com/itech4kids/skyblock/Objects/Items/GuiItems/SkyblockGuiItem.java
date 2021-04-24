@@ -1,9 +1,10 @@
-package com.itech4kids.skyblock.Objects.Items;
+package com.itech4kids.skyblock.Objects.Items.GuiItems;
 
 import com.itech4kids.skyblock.Util.ItemUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -31,6 +32,13 @@ public class SkyblockGuiItem extends ItemStack {
         }
         lore.add(" ");
         lore.add(ChatColor.YELLOW + "Click to view!");
+
+        itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        itemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        itemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+        itemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+
         itemMeta.setLore(lore);
         this.setItemMeta(itemMeta);
     }

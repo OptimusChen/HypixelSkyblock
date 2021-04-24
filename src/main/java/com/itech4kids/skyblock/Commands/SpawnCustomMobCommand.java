@@ -13,6 +13,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class SpawnCustomMobCommand implements CommandExecutor {
@@ -36,37 +37,19 @@ public class SpawnCustomMobCommand implements CommandExecutor {
             }else{
                 switch (args[0].toLowerCase()){
                     case "zombie":
-                        for (SkyblockZombieType zt : SkyblockZombieType.values()){
-                            if (zt.name().equalsIgnoreCase(args[1])){
-                                SkyblockZombie skyblockZombie = new SkyblockZombie(zt, world);
-                                skyblockZombie.enderTeleportTo(x, y, z);
-                                player.sendMessage(ChatColor.GREEN + "Successfully spawned: " + args[1]);
-                            }else {
-                                player.sendMessage("test1");
-                            }
-                        }
+                        SkyblockZombie skyblockZombie = new SkyblockZombie(SkyblockZombieType.valueOf(args[1].toUpperCase()), world);
+                        skyblockZombie.enderTeleportTo(x, y, z);
+                        world.addEntity(skyblockZombie);
                         break;
                     case "dragon":
-                        for (SkyblockDragonType dt : SkyblockDragonType.values()){
-                            if (dt.name().equalsIgnoreCase(args[1])){
-                                SkyblockDragon skyblockDragon = new SkyblockDragon(dt, world);
-                                skyblockDragon.enderTeleportTo(x, y, z);
-                                player.sendMessage(ChatColor.GREEN + "Successfully spawned: " + args[1]);
-                            }else {
-                                player.sendMessage("test1");
-                            }
-                        }
+                        SkyblockDragon skyblockDragon = new SkyblockDragon(SkyblockDragonType.valueOf(args[1].toUpperCase()), world);
+                        skyblockDragon.enderTeleportTo(x, y, z);
+                        world.addEntity(skyblockDragon);
                         break;
                     case "enderman":
-                        for (SkyblockEndermanType et : SkyblockEndermanType.values()){
-                            if (et.name().equalsIgnoreCase(args[1])){
-                                SkyblockEnderman skyblockEnderman = new SkyblockEnderman(et, world);
-                                skyblockEnderman.enderTeleportTo(x, y, z);
-                                player.sendMessage(ChatColor.GREEN + "Successfully spawned: " + args[1]);
-                            }else {
-                                player.sendMessage("test1");
-                            }
-                        }
+                        SkyblockEnderman skyblockEnderman = new SkyblockEnderman(SkyblockEndermanType.valueOf(args[1].toUpperCase()), world);
+                        skyblockEnderman.enderTeleportTo(x, y, z);
+                        world.addEntity(skyblockEnderman);
                         break;
                 }
             }

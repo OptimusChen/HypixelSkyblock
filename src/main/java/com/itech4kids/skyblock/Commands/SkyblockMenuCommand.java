@@ -1,20 +1,17 @@
 package com.itech4kids.skyblock.Commands;
 
 import com.itech4kids.skyblock.Main;
-import com.itech4kids.skyblock.Objects.Items.SkyblockGuiItem;
-import com.itech4kids.skyblock.Objects.SkyblockLocation;
+import com.itech4kids.skyblock.Objects.Items.GuiItems.SkyblockGuiItem;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
 import com.itech4kids.skyblock.Objects.SkyblockStats;
-import com.itech4kids.skyblock.Util.ItemUtil;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -31,7 +28,9 @@ public class SkyblockMenuCommand implements CommandExecutor {
             skyblockPlayer.setInventory("Skyblock Menu", Bukkit.createInventory(null, 54, "Skyblock Menu"));
             Inventory menu = skyblockPlayer.getInventory("Skyblock Menu");
             ItemStack space1 = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.BLACK.getData());
-
+            ItemMeta itemMeta = space1.getItemMeta();
+            itemMeta.setDisplayName(" ");
+            space1.setItemMeta(itemMeta);
 
             for (int i = 0; i < 54; ++i){
                 menu.setItem(i, space1);
@@ -59,6 +58,8 @@ public class SkyblockMenuCommand implements CommandExecutor {
             lore.add(ChatColor.RED + "✹ Ability Damage " + ChatColor.WHITE + skyblockPlayer.getStat(SkyblockStats.ABILITY_DAMAGE) + "%");
             lore.add(ChatColor.GOLD + "☘ Mining Fortune " + ChatColor.WHITE + skyblockPlayer.getStat(SkyblockStats.MINING_FORTUNE));
             lore.add(ChatColor.GOLD + "⸕ Mining Speed " + ChatColor.WHITE + skyblockPlayer.getStat(SkyblockStats.MINING_SPEED));
+            lore.add(" ");
+            lore.add(ChatColor.YELLOW + "Click to view!");
             skullMeta.setLore(lore);
             skull.setItemMeta(skullMeta);
 
@@ -100,9 +101,11 @@ public class SkyblockMenuCommand implements CommandExecutor {
             petsLore.add(ChatColor.GRAY + "Each profile has its own island, inventory, quest log...");
             SkyblockGuiItem profiles = new SkyblockGuiItem(ChatColor.GREEN + "Profile Management", "You can have multiple Skyblock Profiles at the same time", profilesLore, Material.NAME_TAG);
 
-            SkyblockGuiItem closeItem = new SkyblockGuiItem(ChatColor.RED + "Close", null, null, Material.BARRIER);
-            closeItem.lore.clear();
-            closeItem.itemMeta.setLore(closeItem.lore);
+            ItemStack close = new ItemStack(Material.BARRIER);
+            ItemMeta closeMeta = close.getItemMeta();
+            closeMeta.setDisplayName(ChatColor.RED + "Close");
+            close.setItemMeta(closeMeta);
+
             SkyblockGuiItem settingsItem = new SkyblockGuiItem(ChatColor.GREEN + "Settings", "View and edit your Skyblock settings.", null, Material.REDSTONE_TORCH_ON);
 
             menu.setItem(13, skull);
@@ -119,7 +122,7 @@ public class SkyblockMenuCommand implements CommandExecutor {
             menu.setItem(32, wardrobeItem);
             menu.setItem(47, fastTravel);
             menu.setItem(48, profiles);
-            menu.setItem(49, closeItem);
+            menu.setItem(49, close);
             menu.setItem(50, settingsItem);
 
             player.openInventory(skyblockPlayer.getInventory("Skyblock Menu"));

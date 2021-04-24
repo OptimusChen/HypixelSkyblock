@@ -6,6 +6,7 @@ import com.itech4kids.skyblock.Objects.SkyblockStats;
 import com.itech4kids.skyblock.Util.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,6 +30,8 @@ public class PlayerStatCommand implements CommandExecutor {
         }else{
             Player target = Bukkit.getPlayer(args[0]);
             SkyblockPlayer skyblockPlayer = Main.getMain().getPlayer(target.getName());
+            skyblockPlayer.getBukkitPlayer().playSound(skyblockPlayer.getBukkitPlayer().getLocation(), Sound.NOTE_PLING, 10, 1);
+            skyblockPlayer.getBukkitPlayer().sendMessage(ChatColor.GREEN + "Success!");
             if (args[1].equalsIgnoreCase("coins")){
                 try {
                     Config.setPurseCoins(target, Integer.parseInt(args[2]));
