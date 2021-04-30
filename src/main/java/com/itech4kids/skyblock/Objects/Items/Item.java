@@ -63,20 +63,14 @@ public class Item {
             lore.add(ChatColor.GRAY + "Defense: " + ChatColor.GREEN + "+" + defense);
         }
         lore.add("");
-        List<String> descTest = new ArrayList<>();
-        descTest.add("");
-        List<String> emptyDesc = new ArrayList<>();
 
-        if(description != descTest && description != emptyDesc && description != Collections.singletonList("")){
-            for(String temp : description){
-                lore.add(temp);
+        if (description != null){
+            for (String s : description){
+                lore.add(s);
             }
-            lore.add("");
-        }
-        if(description == descTest || description == emptyDesc || description == Collections.singletonList("")){
-            lore.remove(lore.size() - 1);
         }
         if(hasAbility){
+            //lore.add(" ");
             lore.add(ChatColor.GOLD + "Item Ability: " + abilityName + " " + ChatColor.YELLOW + ChatColor.BOLD  + abilityType);
             for(String temp : abilityDesc){
                 lore.add(temp);
@@ -114,6 +108,7 @@ public class Item {
             meta.addEnchant(Enchantment.LUCK, 1, false);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
+        meta.spigot().setUnbreakable(true);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
         item.setItemMeta(meta);

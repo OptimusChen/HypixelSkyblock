@@ -26,6 +26,15 @@ public class SkyblockSkillLevelUpEvent extends Event implements Cancellable {
         oldlvl = Config.getStatLvl(skyblockPlayer.getBukkitPlayer(), skillType.name().toLowerCase());
         newlvl = Config.getStatLvl(skyblockPlayer.getBukkitPlayer(), skillType.name().toLowerCase()) + 1;
         Config.setStatLvl(skyblockPlayer.getBukkitPlayer(), skillType.name().toLowerCase(), newlvl);
+
+    }
+
+    private String generateMessage(SkillType type){
+        String s = "";
+
+
+
+        return s;
     }
 
     public int getNewlvl(){return newlvl;}

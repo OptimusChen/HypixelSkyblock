@@ -110,9 +110,7 @@ public class SkyblockZombie extends EntityZombie implements Listener {
             this.maxHealth = 1500;
             this.xp = 200;
             this.helmet = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
-            SkullMeta skullMeta = (SkullMeta) helmet.getItemMeta();
-            skullMeta.setOwner("alligatorpro");
-            helmet.setItemMeta(skullMeta);
+            this.helmet = Main.getMain().IDtoSkull(this.helmet, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzJlN2ZhMmY5YjhkNmQxZTczNGVkYTVlM2NlMDI2Njg4MTM0MjkyZmNhZmMzMjViMWVhZDQzZDg5Y2MxZTEifX19");
             this.chestplate = new ItemStack(Material.LEATHER_CHESTPLATE, 1, DyeColor.BLUE.getData());
             LeatherArmorMeta chestplateMeta = (LeatherArmorMeta) chestplate.getItemMeta();
             chestplateMeta.setColor(Color.BLUE);
@@ -207,8 +205,10 @@ public class SkyblockZombie extends EntityZombie implements Listener {
                 if (e.getDamager() instanceof Player) {
                     SkyblockPlayer skyblockPlayer = Main.getMain().getPlayer(e.getDamager().getName());
                     if (!zombieType.equals(SkyblockZombieType.SEA_WALKER)) {
+                        zombie.remove();
                         Bukkit.getPluginManager().callEvent(new SkyblockSkillExpGainEvent(skyblockPlayer, SkillType.COMBAT, xp));
                     } else {
+                        zombie.remove();
                         Bukkit.getPluginManager().callEvent(new SkyblockSkillExpGainEvent(skyblockPlayer, SkillType.FISHING, xp));
                     }
                 }

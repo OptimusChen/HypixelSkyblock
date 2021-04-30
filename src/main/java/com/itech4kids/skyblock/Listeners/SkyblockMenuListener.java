@@ -5,10 +5,18 @@ import com.itech4kids.skyblock.Objects.Inventories.SkillLevelsInventory;
 import com.itech4kids.skyblock.Objects.Items.GuiItems.SkyblockGuiItem;
 import com.itech4kids.skyblock.Objects.Items.GuiItems.SkyblockSkillGuiItem;
 import com.itech4kids.skyblock.Objects.Items.GuiItems.SkyblockStatItem;
+import com.itech4kids.skyblock.Objects.Items.Item;
+import com.itech4kids.skyblock.Objects.Pets.SkyblockPet;
+import com.itech4kids.skyblock.Objects.Pets.SkyblockPetGuiItem;
+import com.itech4kids.skyblock.Objects.Pets.SkyblockPetsItem;
 import com.itech4kids.skyblock.Objects.SkillType;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
 import com.itech4kids.skyblock.Objects.SkyblockStats;
+import com.itech4kids.skyblock.Util.Config;
+import com.itech4kids.skyblock.Util.ItemUtil;
+import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +57,7 @@ public class SkyblockMenuListener implements Listener {
     }
 
     @EventHandler
-    public void onSkyblockMenuClick(InventoryClickEvent e){
+    public void onSkyblockMenuClick(InventoryClickEvent e) throws IOException {
         Player player = (Player) e.getWhoClicked();
         SkyblockPlayer skyblockPlayer = main.getPlayer(player.getName());
         Inventory menu;
@@ -208,6 +217,71 @@ public class SkyblockMenuListener implements Listener {
                     break;
                 case "pets":
                     skyblockPlayer.setInventory("Pets", Bukkit.createInventory(null, 54, "Pets"));
+                    menu = skyblockPlayer.getInventory("Pets");
+
+                    menu.setItem(17, space1);
+                    menu.setItem(18, space1);
+                    menu.setItem(26, space1);
+                    menu.setItem(27, space1);
+                    menu.setItem(35, space1);
+                    menu.setItem(36, space1);
+                    menu.setItem(44, space1);
+                    for (int i = 45; i < 54; ++i){ menu.setItem(i, space1); }
+                    for (int i = 0; i < 10; ++i){ menu.setItem(i, space1); }
+
+                    menu.setItem(48, goback);
+                    menu.setItem(49, close);
+
+                    ItemStack convertPet = new ItemStack(Material.INK_SACK, 1);
+                    convertPet.setDurability((short) 10);
+                    ItemMeta convertPetMeta = convertPet.getItemMeta();
+                    convertPetMeta.setDisplayName(ChatColor.GREEN + "Convert Pet to an Item");
+                    List<String> conevertPetLore = new ArrayList<>();
+                    ItemUtil.addLoreMessage("Enable this setting and click a pet to convert it to an item.", conevertPetLore);
+                    convertPetMeta.setLore(conevertPetLore);
+                    convertPet.setItemMeta(convertPetMeta);
+
+                    ItemStack hidePets = new ItemStack(Material.STONE_BUTTON);
+                    ItemMeta hidePetsMeta = hidePets.getItemMeta();
+                    hidePetsMeta.setDisplayName(ChatColor.GREEN + "Hide Pets");
+                    List<String> hidePetsLore = new ArrayList<>();
+                    ItemUtil.addLoreMessage("Hide all pets which are little heads from being visible in the world.", hidePetsLore);
+                    hidePetsMeta.setLore(hidePetsLore);
+                    hidePets.setItemMeta(hidePetsMeta);
+
+                    menu.setItem(50, convertPet);
+                    menu.setItem(51, hidePets);
+
+                    for (ItemStack pets : Config.getPets(player)){
+                        if (skyblockPlayer.activePet != null) {
+                            if (skyblockPlayer.activePet.getHelmet().getItemMeta().getDisplayName().equals(pets.getItemMeta().getDisplayName())){
+                                ItemMeta petsMeta = pets.getItemMeta();
+                                List<String> petLore = pets.getItemMeta().getLore();
+                                for (int i = 0; i < petLore.size(); i++){
+                                    String string = petLore.get(i);
+                                    if (ChatColor.stripColor(string).startsWith("LEGENDARY") || ChatColor.stripColor(string).startsWith("EPIC") || ChatColor.stripColor(string).startsWith("RARE") || ChatColor.stripColor(string).startsWith("UNCOMMON") || ChatColor.stripColor(string).startsWith("COMMON")){
+                                        petLore.set(i, ChatColor.RED + "Click to despawn!");
+                                        petLore.add(" ");
+                                        petLore.add(string);
+
+                                        petsMeta.setLore(petLore);
+                                        pets.setItemMeta(petsMeta);
+                                        SkyblockPetGuiItem guiItem = new SkyblockPetGuiItem(pets);
+                                        menu.addItem(guiItem);
+                                        break;
+                                    }
+                                }
+                            }else{
+                                SkyblockPetGuiItem guiItem = new SkyblockPetGuiItem(pets);
+                                menu.addItem(guiItem);
+                            }
+                        }else{
+                            SkyblockPetGuiItem guiItem = new SkyblockPetGuiItem(pets);
+                            menu.addItem(guiItem);
+                        }
+                    }
+
+                    player.openInventory(menu);
                     break;
                 case "crafting table":
                     player.performCommand("workbench");
@@ -281,6 +355,59 @@ public class SkyblockMenuListener implements Listener {
                     inventory = new SkillLevelsInventory(SkillType.CATACOMBS, skyblockPlayer);
                     player.openInventory(inventory);
                     break;
+            }
+        }else if (e.getView().getTitle().equalsIgnoreCase("Pets")){
+            if (e.getCurrentItem().getType().equals(Material.SKULL_ITEM)){
+                if (!skyblockPlayer.convertPetToItem) {
+                    ItemMeta itemMeta = e.getCurrentItem().getItemMeta();
+                    List<String> lore = itemMeta.getLore();
+
+                    for (int i = 0; i < lore.size(); ++i) {
+                        String string = lore.get(i);
+                        if (string.startsWith(ChatColor.RED + "Click to despawn!")) {
+                            skyblockPlayer.activePet.remove();
+                            skyblockPlayer.activePet = null;
+                            Config.setActivePet(player, null);
+                            player.closeInventory();
+                            player.sendMessage(ChatColor.GREEN + "You despawned your " + e.getCurrentItem().getItemMeta().getDisplayName());
+                            break;
+                        }
+                        if (ChatColor.stripColor(string).startsWith("LEGENDARY") || ChatColor.stripColor(string).startsWith("EPIC") || ChatColor.stripColor(string).startsWith("RARE") || ChatColor.stripColor(string).startsWith("UNCOMMON") || ChatColor.stripColor(string).startsWith("COMMON")) {
+                            Config.setActivePet(player, e.getCurrentItem());
+                            player.closeInventory();
+                            player.sendMessage(ChatColor.GREEN + "You summoned your " + e.getCurrentItem().getItemMeta().getDisplayName());
+                            if (skyblockPlayer.activePet != null) {
+                                skyblockPlayer.activePet.remove();
+                            }
+                            skyblockPlayer.activePet = SkyblockPet.spawnArmorStand(player, e.getCurrentItem());
+                            break;
+                        }
+                    }
+
+                    itemMeta.setLore(lore);
+                    e.getCurrentItem().setItemMeta(itemMeta);
+                }else{
+                    for (ItemStack itemStack : Config.getPets(player)){
+                        if (itemStack.getItemMeta().getDisplayName().equals(e.getCurrentItem().getItemMeta().getDisplayName())){
+                            player.getInventory().addItem(itemStack);
+                            Config.removePet(player, e.getCurrentItem());
+                            break;
+                        }
+                    }
+                    e.getClickedInventory().setItem(e.getSlot(), null);
+                }
+            }else if (e.getCurrentItem().getType().equals(Material.INK_SACK)){
+                if (skyblockPlayer.convertPetToItem){
+                    skyblockPlayer.convertPetToItem = false;
+                    ItemMeta itemMeta = e.getCurrentItem().getItemMeta();
+                    itemMeta.setDisplayName(ChatColor.GREEN + "Convert Pet to an Item!");
+                    e.getCurrentItem().setItemMeta(itemMeta);
+                }else{
+                    skyblockPlayer.convertPetToItem = true;
+                    ItemMeta itemMeta = e.getCurrentItem().getItemMeta();
+                    itemMeta.setDisplayName(ChatColor.GREEN + "Currently Coverting!");
+                    e.getCurrentItem().setItemMeta(itemMeta);
+                }
             }
         }
     }

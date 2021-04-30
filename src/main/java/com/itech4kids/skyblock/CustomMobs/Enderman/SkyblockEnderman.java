@@ -116,6 +116,7 @@ public class SkyblockEnderman extends EntityEnderman implements Listener {
             if (health <= 0){
                 enderman.setHealth(0);
                 if (e.getDamager() instanceof Player){
+                    enderman.remove();
                     SkyblockPlayer skyblockPlayer = Main.getMain().getPlayer(e.getDamager().getName());
                     Bukkit.getPluginManager().callEvent(new SkyblockSkillExpGainEvent(skyblockPlayer, SkillType.COMBAT, xp));
                 }

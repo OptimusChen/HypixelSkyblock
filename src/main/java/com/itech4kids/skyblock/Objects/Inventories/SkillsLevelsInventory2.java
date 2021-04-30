@@ -139,13 +139,14 @@ public class SkillsLevelsInventory2 extends CraftInventoryCustom implements List
         for (index = 1; index < 26; ++index){
             String s1 = ChatColor.YELLOW + " " + s + " " + (Integer.valueOf(index) + 25);
             if (index >= 1 && index < 4) {
-                if (i >= 26 && index < i) {
+                if (i >= 26 && index + 25 < i) {
                     lvlItem.setDurability((short) 5);
                     meta.setDisplayName(ChatColor.GREEN + StringUtils.capitalize(skillType.name().toLowerCase()) + " " + (Integer.valueOf(index) + 25));
                     lore.add(ChatColor.GRAY + "Rewards:");
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(1 + 8 + (9 * (index - 1)), lvlItem);
                     lore.clear();
                 } else {
@@ -155,17 +156,19 @@ public class SkillsLevelsInventory2 extends CraftInventoryCustom implements List
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(1 + 8 + (9 * (index - 1)), lvlItem);
                     lore.clear();
                 }
             }else if (index == 4){
-                if (i >= 26 && index < i) {
+                if (i >= 26 && index + 25 < i) {
                     lvlItem.setDurability((short) 5);
                     meta.setDisplayName(ChatColor.GREEN + StringUtils.capitalize(skillType.name().toLowerCase()) + " " + (Integer.valueOf(index) + 25));
                     lore.add(ChatColor.GRAY + "Rewards:");
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(28, lvlItem);
                     lore.clear();
                 } else {
@@ -175,17 +178,19 @@ public class SkillsLevelsInventory2 extends CraftInventoryCustom implements List
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(28, lvlItem);
                     lore.clear();
                 }
             }else if (index >= 5 && index < 9){
-                if (i >= 26 && index < i) {
+                if (i >= 26 && index + 25 < i) {
                     lvlItem.setDurability((short) 5);
                     meta.setDisplayName(ChatColor.GREEN + StringUtils.capitalize(skillType.name().toLowerCase()) + " " + (Integer.valueOf(index) + 25));
                     lore.add(ChatColor.GRAY + "Rewards:");
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(5 + 24 - ((index - 5) * 9), lvlItem);
                     lore.clear();
                 } else {
@@ -195,17 +200,19 @@ public class SkillsLevelsInventory2 extends CraftInventoryCustom implements List
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(5 + 24 - ((index - 5) * 9), lvlItem);
                     lore.clear();
                 }
             }else if (index == 9){
-                if (i >= 26 && index < i) {
+                if (i >= 26 && index + 25 < i) {
                     lvlItem.setDurability((short) 5);
                     meta.setDisplayName(ChatColor.GREEN + StringUtils.capitalize(skillType.name().toLowerCase()) + " " + (Integer.valueOf(index) + 25));
                     lore.add(ChatColor.GRAY + "Rewards:");
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(3, lvlItem);
                     lore.clear();
                 } else {
@@ -215,17 +222,19 @@ public class SkillsLevelsInventory2 extends CraftInventoryCustom implements List
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(3, lvlItem);
                     lore.clear();
                 }
             }else if (index >= 10 && index < 14){
-                if (i >= 26 && index < i) {
+                if (i >= 26 && index + 25 < i) {
                     lvlItem.setDurability((short) 5);
                     meta.setDisplayName(ChatColor.GREEN + StringUtils.capitalize(skillType.name().toLowerCase()) + " " + (Integer.valueOf(index) + 25));
                     lore.add(ChatColor.GRAY + "Rewards:");
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(10 - 6 + ((index - 10) * 9), lvlItem);
                     lore.clear();
                 } else {
@@ -235,17 +244,19 @@ public class SkillsLevelsInventory2 extends CraftInventoryCustom implements List
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(10 - 6 + ((index - 10) * 9), lvlItem);
                     lore.clear();
                 }
             }else if (index == 14){
-                if (i >= 26 && index < i) {
+                if (i >= 26 && index + 25 < i) {
                     lvlItem.setDurability((short) 5);
                     meta.setDisplayName(ChatColor.GREEN + StringUtils.capitalize(skillType.name().toLowerCase()) + " " + (Integer.valueOf(index) + 25));
                     lore.add(ChatColor.GRAY + "Rewards:");
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(32, lvlItem);
                     lore.clear();
                 } else {
@@ -255,17 +266,19 @@ public class SkillsLevelsInventory2 extends CraftInventoryCustom implements List
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(32, lvlItem);
                     lore.clear();
                 }
             }else if (index >= 15 && index < 19){
-                if (i >= 26 && index < i) {
+                if (i >= 26 && index + 25 < i) {
                     lvlItem.setDurability((short) 5);
                     meta.setDisplayName(ChatColor.GREEN + StringUtils.capitalize(skillType.name().toLowerCase()) + " " + (Integer.valueOf(index) + 25));
                     lore.add(ChatColor.GRAY + "Rewards:");
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(15 + 18 - ((index - 15) * 9), lvlItem);
                     lore.clear();
                 } else {
@@ -275,17 +288,19 @@ public class SkillsLevelsInventory2 extends CraftInventoryCustom implements List
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(15 + 18 - ((index - 15) * 9), lvlItem);
                     lore.clear();
                 }
             }else if (index == 19){
-                if (i >= 26 && index < i) {
+                if (i >= 26 && index + 25 < i) {
                     lvlItem.setDurability((short) 5);
                     meta.setDisplayName(ChatColor.GREEN + StringUtils.capitalize(skillType.name().toLowerCase()) + " " + (Integer.valueOf(index) + 25));
                     lore.add(ChatColor.GRAY + "Rewards:");
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(7, lvlItem);
                     lore.clear();
                 } else {
@@ -295,17 +310,19 @@ public class SkillsLevelsInventory2 extends CraftInventoryCustom implements List
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(7, lvlItem);
                     lore.clear();
                 }
             }else if (index >= 20 && index < 26){
-                if (i >= 26 && index < i) {
+                if (i >= 26 && index + 25 < i) {
                     lvlItem.setDurability((short) 5);
                     meta.setDisplayName(ChatColor.GREEN + StringUtils.capitalize(skillType.name().toLowerCase()) + " " + (Integer.valueOf(index) + 25));
                     lore.add(ChatColor.GRAY + "Rewards:");
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(20 - 12 + ((index - 20) * 9), lvlItem);
                     lore.clear();
                 } else {
@@ -315,6 +332,7 @@ public class SkillsLevelsInventory2 extends CraftInventoryCustom implements List
                     lore.add(s1);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index + 25);
                     this.setItem(20 - 12 + ((index - 20) * 9), lvlItem);
                     lore.clear();
                 }

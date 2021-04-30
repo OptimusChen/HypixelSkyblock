@@ -76,6 +76,20 @@
             <scope>system</scope>
             <systemPath>c:/Users/derek/Downloads/ActionBarAPI-1.5.4.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.google.code</groupId>
+            <artifactId>citizens</artifactId>
+            <version>2.0</version>
+            <scope>system</scope>
+            <systemPath>c:/Users/derek/Downloads/1.8.9test/plugins/Citizens-2.0.26-b1995.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code</groupId>
+            <artifactId>armorequip</artifactId>
+            <version>2.1</version>
+            <scope>system</scope>
+            <systemPath>c:/Users/derek/Downloads/ArmorEventPlugin.jar</systemPath>
+        </dependency>
     </dependencies>
 
 </project>

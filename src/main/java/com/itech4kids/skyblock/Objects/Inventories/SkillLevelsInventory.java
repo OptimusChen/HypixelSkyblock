@@ -149,6 +149,8 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
+                    lvlItem.setAmount(index);
                     this.setItem(1 + 8 + (9 * (index - 1)), lvlItem);
                     lore.clear();
                 } else {
@@ -158,6 +160,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(1 + 8 + (9 * (index - 1)), lvlItem);
                     lore.clear();
                 }
@@ -169,6 +172,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(28, lvlItem);
                     lore.clear();
                 } else {
@@ -178,6 +182,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(28, lvlItem);
                     lore.clear();
                 }
@@ -189,6 +194,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(5 + 24 - ((index - 5) * 9), lvlItem);
                     lore.clear();
                 } else {
@@ -198,6 +204,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(5 + 24 - ((index - 5) * 9), lvlItem);
                     lore.clear();
                 }
@@ -209,6 +216,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(3, lvlItem);
                     lore.clear();
                 } else {
@@ -218,6 +226,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(3, lvlItem);
                     lore.clear();
                 }
@@ -229,6 +238,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(10 - 6 + ((index - 10) * 9), lvlItem);
                     lore.clear();
                 } else {
@@ -238,6 +248,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(10 - 6 + ((index - 10) * 9), lvlItem);
                     lore.clear();
                 }
@@ -249,6 +260,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(32, lvlItem);
                     lore.clear();
                 } else {
@@ -258,6 +270,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(32, lvlItem);
                     lore.clear();
                 }
@@ -269,6 +282,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(15 + 18 - ((index - 15) * 9), lvlItem);
                     lore.clear();
                 } else {
@@ -278,6 +292,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(15 + 18 - ((index - 15) * 9), lvlItem);
                     lore.clear();
                 }
@@ -289,6 +304,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(7, lvlItem);
                     lore.clear();
                 } else {
@@ -298,6 +314,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(7, lvlItem);
                     lore.clear();
                 }
@@ -309,6 +326,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(20 - 12 + ((index - 20) * 9), lvlItem);
                     lore.clear();
                 } else {
@@ -318,6 +336,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     lore.add(ChatColor.YELLOW + " " + s + " " + index);
                     meta.setLore(lore);
                     lvlItem.setItemMeta(meta);
+                    lvlItem.setAmount(index);
                     this.setItem(20 - 12 + ((index - 20) * 9), lvlItem);
                     lore.clear();
                 }

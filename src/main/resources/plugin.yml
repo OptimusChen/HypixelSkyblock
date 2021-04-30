@@ -21,3 +21,23 @@ commands:
   todolist:
     description: Opens the todo list menu.
     aliases: [todo]
+  trade:
+    description: TRADE TRADE TRADE TRADE
+  skill:
+    description: Set your skill to an integer
+  sreforge:
+    description: Adds a reforge to an item
+    aliases: [sref]
+  pets:
+    description: TEST PETS
+  recombobulate:
+    description: RECOMBOBULATER
+    aliases: [recomb]
+  rarity:
+  warp:
+  collections:
+  item:
+  helmetcategory:
+  chestplatecategory:
+  leggingscategory:
+  bootscategory:

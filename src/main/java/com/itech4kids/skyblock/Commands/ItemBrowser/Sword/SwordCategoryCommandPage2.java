@@ -1,7 +1,7 @@
 package com.itech4kids.skyblock.Commands.ItemBrowser.Sword;
 
 import com.itech4kids.skyblock.Main;
-import com.itech4kids.skyblock.Objects.Items.Item;
+import com.itech4kids.skyblock.Objects.Items.ItemHandler;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,11 +19,11 @@ import java.util.List;
 
 public class SwordCategoryCommandPage2 implements CommandExecutor {
 
-    private Item item;
+    private ItemHandler itemHandler;
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-        this.item = item;
+        this.itemHandler = itemHandler;
         if(!(sender instanceof Player)){
             sender.sendMessage(ChatColor.RED + "[Skyblock] Only players can use this command!");
             return true;
@@ -33,26 +33,15 @@ public class SwordCategoryCommandPage2 implements CommandExecutor {
         skyblockPlayer.setInventory("Swords - Page 2", Bukkit.createInventory(null, 54, "Swords - Page 2"));
         Inventory menu = skyblockPlayer.getInventory("Swords - Page 2");
 
-        ItemStack emptySpace = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.BLACK.getData());
+        ItemStack emptySpace = itemHandler.createEmptySpace();
 
         for (int index = 0; index < 54; index++) {
             menu.setItem(index, emptySpace);
         }
-        List<String> emptyDesc = new ArrayList<>();
 
-        // Descriptions for Swords and Sword Abilities
-
-
-
-        // Initialize items
         ItemStack test = new ItemStack(Material.NETHER_STAR, 1);
 
-
-
-        // Add items to menu
         menu.setItem(10, test);
-
-
 
         player.openInventory(skyblockPlayer.getInventory("Swords - Page 2"));
         return false;
