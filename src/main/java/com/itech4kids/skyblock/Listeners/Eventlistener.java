@@ -3,6 +3,7 @@ package com.itech4kids.skyblock.Listeners;
 import com.itech4kids.skyblock.CustomMobs.PlayerEntities.CustomAI;
 import com.itech4kids.skyblock.Events.SkyblockSkillExpGainEvent;
 import com.itech4kids.skyblock.Main;
+import com.itech4kids.skyblock.Objects.Island.IslandManager;
 import com.itech4kids.skyblock.Objects.Items.GuiItems.ClickGuiItem;
 import com.itech4kids.skyblock.Objects.Items.Item;
 import com.itech4kids.skyblock.Objects.Pets.SkyblockPet;
@@ -12,6 +13,7 @@ import com.itech4kids.skyblock.Objects.SkyblockPlayer;
 import com.itech4kids.skyblock.Objects.SkyblockStats;
 import com.itech4kids.skyblock.Util.Config;
 import com.itech4kids.skyblock.Util.ItemUtil;
+import com.itech4kids.skyblock.Util.LaunchPadConfig;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
@@ -19,29 +21,40 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.*;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.npc.ai.speech.Chat;
-import net.minecraft.server.v1_8_R3.EntityPlayer;
-import net.minecraft.server.v1_8_R3.IChatBaseComponent;
-import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.*;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.Criterias;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
 import javax.swing.text.NumberFormatter;
@@ -49,24 +62,27 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
-import static org.bukkit.Material.EGG;
+import static org.bukkit.Material.*;
 
 public class Eventlistener implements Listener {
 
     public Main main;
+    private HashMap<Player, ArmorStand> isJumping;
 
     public Eventlistener(){
         main = Main.getMain();
+        isJumping = new HashMap<>();
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e){
         final Player player = e.getPlayer();
+        if(Config.getBanned(player)){
+            player.kickPlayer(ChatColor.RED + "You are permanently banned from this server!\n\n" + ChatColor.GRAY + "Reason: " + ChatColor.WHITE + Config.getBanReason(player) + "\n" + ChatColor.GRAY + "Find out more: " + ChatColor.AQUA + "" + ChatColor.UNDERLINE + "https://www.hypixel.net/appeal/n/n" + ChatColor.GRAY + "Ban ID: " + ChatColor.WHITE + "#1379254\n" + ChatColor.GRAY + "Sharing your ban ID may affect the process of your appeal!");
+            return;
+        }
         if (!player.hasMetadata("NPC")) {
 
             try {
@@ -92,6 +108,8 @@ public class Eventlistener implements Listener {
                 public void run() {
                     main.onJoin(player);
                     main.updateBoard(player);
+                    main.updateMana(player);
+                    main.updateItemInHand(player);
                     IChatBaseComponent header = IChatBaseComponent.ChatSerializer.a("{\"text\":\"" + "\n" +
                             "§bYou are playing on: " + "§e§lHYPIXEL.NET" + "\n" + " " + "\"}");
                     IChatBaseComponent footer = IChatBaseComponent.ChatSerializer.a("{\"text\":\"" + "\n" + "§aDiscord:" + "\n" + "§7Discord not set up yet!" + "\n " + "\n" + "§aRanks, Booster & More!" + "§l§c STORE.HYPIXEL.NET" + "\"}");
@@ -110,7 +128,21 @@ public class Eventlistener implements Listener {
                     player.getWorld().setGameRuleValue("naturalRegeneration", "false");
                     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(info);
 
-                    skyblockPlayer.activePet = SkyblockPet.spawnArmorStand(player, Config.getActivePet(player));;
+                    IslandManager.createIsland(player);
+
+                    skyblockPlayer.activePet = SkyblockPet.spawnArmorStand(player, Config.getActivePet(player));
+
+                    if (player.getWorld().equals(IslandManager.getIsland(player))){
+                        player.performCommand("warp home");
+                    }else{
+                        player.performCommand("warp hub");
+                    }
+
+                    if (player.getName().equalsIgnoreCase("eb80")){
+                        player.sendTitle(ChatColor.GOLD + "BAD LMAO", "ROY THE BOY");
+                    }else if (player.getName().equalsIgnoreCase("a1omic")){
+                        player.sendTitle(ChatColor.GOLD + "nurd", "nurd");
+                    }
                 }
             }.runTaskLater(main, 1);
             new BukkitRunnable() {
@@ -118,6 +150,25 @@ public class Eventlistener implements Listener {
                 public void run() {
                     Main.getMain().updateMaxHealth(skyblockPlayer);
                     player.setHealth(player.getMaxHealth());
+
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (!player.isOnline()) {
+                                cancel(); // this cancels it when they leave
+                            }else if (player.isOnline()){
+                                for (String string : LaunchPadConfig.getLaunchPadStrings()) {
+                                    if (LaunchPadConfig.getLaunchPadLocations(string).get("to").distance(player.getLocation()) < 4) {
+                                        if (skyblockPlayer.padName.toLowerCase().equalsIgnoreCase(string)) {
+                                            e.getPlayer().teleport(LaunchPadConfig.getLaunchPadLocations(string).get("teleport"));
+                                            e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.HORSE_ARMOR, 10, 2);
+                                            skyblockPlayer.padName = "";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }.runTaskTimer(Main.getMain(), 5L, 10);
                 }
             }.runTaskLater(main, 5);
 
@@ -163,7 +214,12 @@ public class Eventlistener implements Listener {
         if (e.getItem().getItemStack().getItemMeta().getLore() == null){
             List<String> lore = new ArrayList<>();
             ItemMeta itemMeta = e.getItem().getItemStack().getItemMeta();
+            itemMeta.setDisplayName(e.getItem().getItemStack().getItemMeta().getDisplayName());
             lore.add(ChatColor.WHITE + "" + ChatColor.BOLD + "COMMON");
+            if (CraftItemStack.asNMSCopy(e.getItem().getItemStack()).getItem() instanceof ItemTool || CraftItemStack.asNMSCopy(e.getItem().getItemStack()).getItem() instanceof ItemSword){
+                itemMeta.spigot().setUnbreakable(true);
+                itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+            }
             itemMeta.setLore(lore);
             e.getItem().getItemStack().setItemMeta(itemMeta);
         }
@@ -175,7 +231,12 @@ public class Eventlistener implements Listener {
             List<String> lore = new ArrayList<>();
             ItemMeta itemMeta = e.getCurrentItem().getItemMeta();
             if (e.getClickedInventory().equals(e.getWhoClicked().getInventory())) {
+                itemMeta.setDisplayName(e.getCurrentItem().getItemMeta().getDisplayName());
                 lore.add(ChatColor.WHITE + "" + ChatColor.BOLD + "COMMON");
+                if (CraftItemStack.asNMSCopy(e.getCurrentItem()).getItem() instanceof ItemTool || CraftItemStack.asNMSCopy(e.getCurrentItem()).getItem() instanceof ItemSword){
+                    itemMeta.spigot().setUnbreakable(true);
+                    itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                }
                 itemMeta.setLore(lore);
                 e.getCurrentItem().setItemMeta(itemMeta);
             }
@@ -187,7 +248,12 @@ public class Eventlistener implements Listener {
         if (e.getCurrentItem().getItemMeta().getLore() == null){
             List<String> lore = new ArrayList<>();
             ItemMeta itemMeta = e.getCurrentItem().getItemMeta();
+            itemMeta.setDisplayName(e.getCurrentItem().getItemMeta().getDisplayName());
             lore.add(ChatColor.WHITE + "" + ChatColor.BOLD + "COMMON");
+            if (CraftItemStack.asNMSCopy(e.getCurrentItem()).getItem() instanceof ItemTool || CraftItemStack.asNMSCopy(e.getCurrentItem()).getItem() instanceof ItemSword){
+                itemMeta.spigot().setUnbreakable(true);
+                itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+            }
             itemMeta.setLore(lore);
             e.getCurrentItem().setItemMeta(itemMeta);
         }
@@ -217,7 +283,24 @@ public class Eventlistener implements Listener {
 
     @EventHandler
     public void onPlace(BlockPlaceEvent e){
-        e.setCancelled(true);
+        if (e.getPlayer().getWorld().equals(IslandManager.getIsland(e.getPlayer()))){
+
+        }else{
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onUpdate(BlockPhysicsEvent e){
+        if (e.getChangedType().equals(AIR)){
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onWorld(PlayerChangedWorldEvent e){
+        Player player = e.getPlayer();
+        SkyblockPlayer skyblockPlayer = main.getPlayer(player.getName());
     }
 
     @EventHandler
@@ -245,9 +328,47 @@ public class Eventlistener implements Listener {
             }else{
                 player.sendMessage(ChatColor.RED + "You died and lost " + formatter.format(Config.getPurseCoins(player)) + " coins!");
             }
+            e.setKeepInventory(true);
 
             player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 1);
         }
+    }
+
+    @EventHandler
+    public void onRespawn(PlayerRespawnEvent e){
+        Player player = e.getPlayer();
+
+        if (player.getWorld().getName().equals("island_" + player.getName())){
+            e.setRespawnLocation(new Location(player.getWorld(), 0, 100, 0));
+        }
+    }
+
+    @EventHandler
+    public void onNpcDamage(NPCDamageEvent e){
+        LivingEntity livingEntity = (LivingEntity) e.getNPC().getEntity();
+
+        NPC npc = e.getNPC();
+
+        if (e.getNPC().getName().contains(ChatColor.RED + "Yeti")){
+            if (e.getDamage() > livingEntity.getHealth()*2000000){
+                livingEntity.setHealth(0);
+                livingEntity.remove();
+                npc.destroy();
+            }else {
+                livingEntity.setHealth(livingEntity.getHealth() - e.getDamage() / 2000000);
+            }
+        }else if (e.getNPC().getName().contains(ChatColor.RED + "Frozen Steve")){
+            if (e.getDamage() > livingEntity.getHealth()*700){
+                livingEntity.setHealth(0);
+                livingEntity.remove();
+                npc.destroy();
+            }else {
+                livingEntity.setHealth(livingEntity.getHealth() - e.getDamage() / 700);
+            }
+        }
+        e.setDamage(0);
+        ((LivingEntity) e.getNPC().getEntity()).setHealth(livingEntity.getHealth());
+        ((LivingEntity) e.getNPC().getEntity()).setMaxHealth(livingEntity.getMaxHealth());
     }
 
     @EventHandler
@@ -436,12 +557,22 @@ public class Eventlistener implements Listener {
                     menu.setItem(33, new ClickGuiItem("Personal Vault", "Click to view!", 130, 0));
                     menu.setItem(16, new ClickGuiItem("Trade Request", "Send a trade request", 388, 0));
                     menu.setItem(25, new ClickGuiItem("Co-op Request", "Send a co-op request!", 264, 0));
+
                     menu.setItem(22, skull);
                     menu.setItem(49, close);
 
                     player.openInventory(menu);
             }else if (!e.getRightClicked().hasMetadata("NPC") && player.isSneaking()){
                 player.performCommand("trade " + e.getRightClicked().getName());
+            }
+        }
+    }
+
+    @EventHandler
+    public void onUnload(ChunkUnloadEvent e){
+        for (Entity entity : e.getChunk().getEntities()){
+            if (entity instanceof LivingEntity){
+                entity.remove();
             }
         }
     }
@@ -491,6 +622,38 @@ public class Eventlistener implements Listener {
                 }
             }
 
+        }else if (e.getDamager() instanceof Projectile){
+            Projectile projectile = (Projectile) e.getDamager();
+            if (projectile.getShooter() instanceof Player){
+                SkyblockPlayer skyblockPlayer = main.getPlayer(e.getDamager().getName());
+                int i = new Random().nextInt(100);
+                int r = new Random().nextInt(100);
+                DecimalFormat formatter = new DecimalFormat("#,###");
+                formatter.setGroupingUsed(true);
+                double damage = 5 + skyblockPlayer.getStat((SkyblockStats.DAMAGE)) + (skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 5) * (1 + skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 100);
+                if (!e.getEntity().getType().equals(EntityType.ARMOR_STAND)) {
+                    if (i <= skyblockPlayer.getStat(SkyblockStats.CRIT_CHANCE)) {
+                        e.setDamage(damage * ((100 + skyblockPlayer.getStat(SkyblockStats.CRIT_DAMAGE))) / 100);
+                        ItemUtil.setDamageIndicator(e.getEntity().getLocation(), ItemUtil.addCritTexture(String.valueOf(formatter.format(Math.round(e.getDamage())))));
+                    } else {
+                        e.setDamage(damage);
+                        ItemUtil.setDamageIndicator(e.getEntity().getLocation(), org.bukkit.ChatColor.GRAY + "" + formatter.format(Math.round(e.getDamage())));
+                    }
+                    if (r <= skyblockPlayer.getStat(SkyblockStats.FEROCITY)) {
+                        if (!skyblockPlayer.ferocityCooldown) {
+                            skyblockPlayer.getBukkitPlayer().playSound(skyblockPlayer.getBukkitPlayer().getLocation(), Sound.FIRE_IGNITE, 100, 0);
+                            skyblockPlayer.ferocityCooldown = true;
+                            Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(skyblockPlayer.getBukkitPlayer(), e.getEntity(), EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage));
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    skyblockPlayer.ferocityCooldown = false;
+                                }
+                            }.runTaskLater(main, 5);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -508,6 +671,112 @@ public class Eventlistener implements Listener {
         if (player.getLocation().getY() <= -11){
             player.setHealth(0);
         }
+
+        Location l = new Location(player.getLocation().getWorld(), player.getLocation().getX(), player.getLocation().getY() - 1, player.getLocation().getZ());
+
+        if (l.getBlock().getType().equals(ENDER_PORTAL)){
+            if (skyblockPlayer.activePet != null) {
+                skyblockPlayer.activePet.remove();
+                skyblockPlayer.activePet = null;
+
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        skyblockPlayer.activePet = SkyblockPet.spawnArmorStand(player, Config.getActivePet(player));
+                    }
+                }.runTaskLater(Main.getMain(), 5);
+                player.performCommand("warp home");
+            }else{
+                player.performCommand("warp home");
+            }
+        }else if (player.getLocation().getBlock().getType().equals(PORTAL)){
+            if (skyblockPlayer.activePet != null) {
+                skyblockPlayer.activePet.remove();
+                skyblockPlayer.activePet = null;
+
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        skyblockPlayer.activePet = SkyblockPet.spawnArmorStand(player, Config.getActivePet(player));
+                    }
+                }.runTaskLater(Main.getMain(), 5);
+                player.performCommand("warp hub");
+            }else{
+                player.performCommand("warp hub");
+            }
+        }
+    }
+
+    @EventHandler
+    public void onSlime(final PlayerMoveEvent e) {
+        Location from = e.getFrom();
+        Location to = e.getTo();
+        if (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY() || from.getBlockZ() != to.getBlockZ()) {
+            final int x = to.getBlockX();
+            final int z = to.getBlockZ();
+            for (String string : LaunchPadConfig.getLaunchPadStrings()) {
+                if (e.getTo().distance(LaunchPadConfig.getLaunchPadLocations(string).get("from")) < 2) {
+                    if (!isJumping.containsKey(e.getPlayer())) {
+                        e.getPlayer().teleport(LaunchPadConfig.getLaunchPadLocations(string).get("infront"));
+                        this.launch(e.getPlayer(), string);
+                        Main.getMain().getPlayer(e.getPlayer().getName()).padName = string;
+                    }
+                }
+            }
+        }
+    }
+
+    private void launch(final Player p, final String padName) {
+        final ArmorStand am = (ArmorStand)p.getWorld().spawnEntity(p.getLocation(), EntityType.ARMOR_STAND);
+        am.setVisible(false);
+        am.setPassenger((Entity)p);
+        this.isJumping.put(p, am);
+        spawnExplosion(p);
+        new BukkitRunnable() {
+            double x1 = 0.0;
+            double x3 = LaunchPadConfig.getLaunchPadLocations(padName).get("to").distance(p.getLocation()) - this.x1;
+            double x2 = this.x3 / 3.0;
+            double y1 = 0.0;
+            double y3 = Math.abs(LaunchPadConfig.getLaunchPadLocations(padName).get("to").getBlockY() - p.getLocation().getBlockY()) % 10;
+            double y2 = this.x2;
+            double A3 = -((-this.x2 + this.x3) / (-this.x1 + this.x2)) * (-(this.x1 * this.x1) + this.x2 * this.x2) - this.x2 * this.x2 + this.x3 * this.x3;
+            double D3 = -((-this.x2 + this.x3) / (-this.x1 + this.x2)) * (-this.y1 + this.y2) - this.y2 + this.y3;
+            double a = this.D3 / this.A3;
+            double b = (-this.y1 + this.y2 - (-(this.x1 * this.x1) + this.x2 * this.x2) * this.a) / (-this.x1 + this.x2);
+            double c = this.y1 - this.a * this.x1 * this.x1 - this.b * this.x1;
+            double xC = 0.0;
+
+            public void run() {
+                if (LaunchPadConfig.getLaunchPadLocations(padName).get("to").distance(am.getLocation()) < 2.0 || this.xC > 200.0 || !isJumping.containsKey(p)) {
+                    this.cancel();
+                    am.remove();
+                    isJumping.remove(p);
+                }
+                moveToward((Entity)am, 0.8, yCalculate(this.a, this.b, this.c, this.xC), padName);
+                this.xC += 0.84;
+            }
+        }.runTaskTimerAsynchronously(Main.getMain(), 1L, 1L);
+    }
+
+    private void spawnExplosion(final Player player) {
+        final PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(EnumParticle.EXPLOSION_HUGE, true, (float)player.getLocation().getBlockX(), (float)player.getLocation().getBlockY(), (float)player.getLocation().getBlockZ(), 0.0f, 0.0f, 0.0f, 0.0f, 2, new int[0]);
+        for (final Player p : player.getLocation().getWorld().getPlayers()) {
+            ((CraftPlayer)p).getHandle().playerConnection.sendPacket(packet);
+            p.playSound(player.getLocation(), Sound.EXPLODE, 10, 2);
+        }
+    }
+
+    private void moveToward(final Entity player, final double speed, final double yC, final String padName) {
+        final Location loc = player.getLocation();
+        final double x = loc.getX() - LaunchPadConfig.getLaunchPadLocations(padName).get("to").getX();
+        final double y = loc.getY() - LaunchPadConfig.getLaunchPadLocations(padName).get("to").getY() - ((yC > 0.0) ? yC : 0.0);
+        final double z = loc.getZ() - LaunchPadConfig.getLaunchPadLocations(padName).get("to").getZ();
+        final Vector velocity = new Vector(x, y, z).normalize().multiply(-speed);
+        player.setVelocity(velocity);
+    }
+
+    private double yCalculate(final double a, final double b, final double c, final double x) {
+        return a * x * x + x * b + c;
     }
 
     @EventHandler
@@ -521,11 +790,11 @@ public class Eventlistener implements Listener {
         if (e.getPlayer().getItemInHand() != null) {
             if (e.getPlayer().getInventory().getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GREEN + "Skyblock Menu (Right Click)")) {
                 player.performCommand("sbmenu");
-            }else if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().startsWith(ChatColor.GRAY + "[Lvl ")){
+            } else if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().startsWith(ChatColor.GRAY + "[Lvl ")) {
                 if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                     if (player.getItemInHand().getItemMeta().getDisplayName().split(" ").length == 3) {
                         player.sendMessage(ChatColor.GREEN + "Successfully added " + ChatColor.getLastColors(player.getItemInHand().getItemMeta().getDisplayName()) + player.getItemInHand().getItemMeta().getDisplayName().split(" ")[2] + ChatColor.GREEN + " to your pets menu!");
-                    }else{
+                    } else {
                         player.sendMessage(ChatColor.GREEN + "Successfully added " + ChatColor.getLastColors(player.getItemInHand().getItemMeta().getDisplayName()) + player.getItemInHand().getItemMeta().getDisplayName().split(" ")[2] + ChatColor.getLastColors(player.getItemInHand().getItemMeta().getDisplayName()) + " " + player.getItemInHand().getItemMeta().getDisplayName().split(" ")[3] + ChatColor.GREEN + " to your pets menu!");
                     }
                     Config.addPet(player, player.getItemInHand());
@@ -535,12 +804,4 @@ public class Eventlistener implements Listener {
             }
         }
     }
-
-    @EventHandler
-    public void onChat(AsyncPlayerChatEvent e){
-        if (e.getMessage().equals("[item]")){
-            e.setMessage("LOOK AT MY INSANE " + e.getPlayer().getItemInHand().getItemMeta().getDisplayName());
-        }
-    }
-
 }

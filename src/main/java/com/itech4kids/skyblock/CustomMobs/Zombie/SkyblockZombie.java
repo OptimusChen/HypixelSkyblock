@@ -1,5 +1,6 @@
 package com.itech4kids.skyblock.CustomMobs.Zombie;
 
+import com.avaje.ebean.validation.NotNull;
 import com.itech4kids.skyblock.Events.SkyblockSkillExpGainEvent;
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.SkillType;
@@ -41,7 +42,6 @@ public class SkyblockZombie extends EntityZombie implements Listener {
     private ItemStack boots;
     private ItemStack weapon;
     private String mobName;
-    private ArmorStand healthDisplay;
     public Zombie bukkitZombie;
     public double xp;
 
@@ -49,7 +49,6 @@ public class SkyblockZombie extends EntityZombie implements Listener {
         super(world);
         this.zombieType = zombieType;
         Bukkit.getPluginManager().registerEvents(this, Main.getMain());
-        healthDisplay = this.getBukkitEntity().getWorld().spawn(new Location(this.getBukkitEntity().getLocation().getWorld(), this.getBukkitEntity().getLocation().getX(), this.getBukkitEntity().getLocation().getY() + 0.10, this.getBukkitEntity().getLocation().getZ()), ArmorStand.class);
         zombie = (Damageable) this.getBukkitEntity();
         zombie.setHealth(1);
         zombie.setMaxHealth(1);
@@ -173,21 +172,19 @@ public class SkyblockZombie extends EntityZombie implements Listener {
         bukkitZombie.getEquipment().setChestplate(chestplate);
         bukkitZombie.getEquipment().setLeggings(leggings);
         bukkitZombie.getEquipment().setBoots(boots);
-        this.setCustomNameVisible(false);
-        this.healthDisplay.setCustomNameVisible(true);
-        this.healthDisplay.setGravity(false);
-        this.healthDisplay.setVisible(false);
-        this.healthDisplay.setSmall(true);
-        this.healthDisplay.setCustomName(mobName);
-        updateHealth(this.getBukkitEntity(), healthDisplay);
+        this.dropEquipment(false, 0);
+        this.setCustomNameVisible(true);
+        this.setCustomName(mobName);
+        updateHealth(this.getBukkitEntity());
     }
 
     @EventHandler
     public void onDamage(EntityDamageEvent e){
         if (e.getEntity().equals(this.getBukkitEntity())){
             if (!e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
-                health = (int) (health - e.getFinalDamage());
                 e.setDamage(0);
+                health = (int) (health - e.getFinalDamage());
+                this.setCustomName(ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + "Lv" + level + ChatColor.DARK_GRAY + "] " + ChatColor.RED + name + " " + ChatColor.GREEN + health + ChatColor.DARK_GRAY + "/" + ChatColor.GREEN + maxHealth);
                 if (health <= 0) {
                     zombie.setHealth(0);
                 }
@@ -198,17 +195,16 @@ public class SkyblockZombie extends EntityZombie implements Listener {
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent e) throws IOException {
         if (e.getEntity().equals(this.getBukkitEntity())) {
-            health = (int) (health - e.getFinalDamage());
             e.setDamage(0);
+            health = (int) (health - e.getFinalDamage());
+            this.setCustomName(ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + "Lv" + level + ChatColor.DARK_GRAY + "] " + ChatColor.RED + name + " " + ChatColor.GREEN + health + ChatColor.DARK_GRAY + "/" + ChatColor.GREEN + maxHealth);
             if (health <= 0) {
                 zombie.setHealth(0);
                 if (e.getDamager() instanceof Player) {
                     SkyblockPlayer skyblockPlayer = Main.getMain().getPlayer(e.getDamager().getName());
                     if (!zombieType.equals(SkyblockZombieType.SEA_WALKER)) {
-                        zombie.remove();
                         Bukkit.getPluginManager().callEvent(new SkyblockSkillExpGainEvent(skyblockPlayer, SkillType.COMBAT, xp));
                     } else {
-                        zombie.remove();
                         Bukkit.getPluginManager().callEvent(new SkyblockSkillExpGainEvent(skyblockPlayer, SkillType.FISHING, xp));
                     }
                 }
@@ -216,16 +212,15 @@ public class SkyblockZombie extends EntityZombie implements Listener {
         }
     }
 
-    public void updateHealth(CraftEntity entity, ArmorStand armorStand) {
+    public void updateHealth(CraftEntity armorStand) {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (entity.isDead()){
+                if (armorStand.isDead()){
                     cancel();
                     armorStand.remove();
                 }else{
-                    ((CraftArmorStand) armorStand).getHandle().setLocation(entity.getLocation().getX(), entity.getLocation().getY() + 1.25, entity.getLocation().getZ(), 0F, 0F);
-                    //armorStand.teleport(new Location(entity.getLocation().getWorld(), entity.getLocation().getX(), entity.getLocation().getY() + 1.25, entity.getLocation().getZ()));
+                    armorStand.setCustomNameVisible(true);
                     armorStand.setCustomName(ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + "Lv" + level + ChatColor.DARK_GRAY + "] " + ChatColor.RED + name + " " + ChatColor.GREEN + health + ChatColor.DARK_GRAY + "/" + ChatColor.GREEN + maxHealth);
                 }
             }

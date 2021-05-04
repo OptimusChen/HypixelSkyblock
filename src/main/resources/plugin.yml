@@ -31,13 +31,32 @@ commands:
   pets:
     description: TEST PETS
   recombobulate:
-    description: RECOMBOBULATER
+    description: Increases the rarity of an item by 1
     aliases: [recomb]
   rarity:
+    description: Change the rarity of an item
   warp:
+    description: Teleports you to your desired destination
   collections:
+    description: WIP
   item:
+    description: WIP
   helmetcategory:
+    description: WIP
   chestplatecategory:
+    description: WIP
   leggingscategory:
+    description: WIP
   bootscategory:
+    description: WIP
+  visit:
+    description: Visit other players islands
+  launchpad:
+    description: WIP
+  wipe:
+    description: Wipe a player for cheating
+  mobspawn:
+    aliases: [ms]
+    description: Setup mob spawn locations
+  ban:
+  kick:

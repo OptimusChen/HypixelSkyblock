@@ -11,30 +11,42 @@ import com.itech4kids.skyblock.Commands.ItemBrowser.Sword.SwordCategoryCommand;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Sword.SwordCategoryCommandPage2;
 import com.itech4kids.skyblock.Commands.Items.*;
 import com.itech4kids.skyblock.Commands.*;
+import com.itech4kids.skyblock.Commands.Setup.LaunchPadSetUpCommand;
+import com.itech4kids.skyblock.Commands.Setup.MobSpawnSetUpCommand;
 import com.itech4kids.skyblock.CustomMobs.Dragon.SkyblockDragon;
 import com.itech4kids.skyblock.CustomMobs.Enderman.SkyblockEnderman;
+import com.itech4kids.skyblock.CustomMobs.Enderman.SkyblockEndermanType;
+import com.itech4kids.skyblock.CustomMobs.PlayerEntities.JERRY;
 import com.itech4kids.skyblock.CustomMobs.Zombie.SkyblockZombie;
+import com.itech4kids.skyblock.CustomMobs.Zombie.SkyblockZombieType;
 import com.itech4kids.skyblock.Listeners.*;
+import com.itech4kids.skyblock.Objects.Island.IslandManager;
 import com.itech4kids.skyblock.Objects.Items.ItemHandler;
 import com.itech4kids.skyblock.Objects.Items.SkyblockUsableItem;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
 import com.itech4kids.skyblock.Objects.SkyblockStats;
 import com.itech4kids.skyblock.Util.Config;
+import com.itech4kids.skyblock.Util.CustomMobSpawning;
+import com.itech4kids.skyblock.Util.ItemUtil;
+import com.itech4kids.skyblock.Util.LaunchPadConfig;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_8_R3.EntityInsentient;
 import net.minecraft.server.v1_8_R3.EntityTypes;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
-import org.bukkit.Bukkit;
+import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -57,7 +69,60 @@ public class Main extends JavaPlugin {
         registerCustomMobs();
         registerCommands();
         new Config(this);
+        new IslandManager();
         ItemHandler.init();
+        try { new LaunchPadConfig(this); } catch (IOException e) { e.printStackTrace(); }
+        try {
+            new CustomMobSpawning(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        spawnCustomMobs();
+    }
+
+    private void registerMobSpawnLocations(){
+        Random rand = new Random();
+        for (SkyblockZombieType type : SkyblockZombieType.values()){
+            if (CustomMobSpawning.getMobSpawnLocations(type.name().toLowerCase()) != null){
+                for (Location location : CustomMobSpawning.getMobSpawnLocations(type.name().toLowerCase())){
+                    if (location.getChunk().isLoaded()) {
+                        int i = rand.nextInt(2);
+                        if (i == 0) {
+                            SkyblockZombie skyblockZombie = new SkyblockZombie(type, ((CraftWorld) location.getWorld()).getHandle());
+                            if (skyblockZombie.getBukkitEntity().getNearbyEntities(2, 2, 2).size() == 0) {
+                                ((CraftWorld) location.getWorld()).getHandle().addEntity(skyblockZombie);
+                                skyblockZombie.getBukkitEntity().teleport(location);
+                                for (Player player : Bukkit.getOnlinePlayers()) {
+                                    player.playEffect(location, Effect.CLOUD, 10);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (SkyblockEndermanType type : SkyblockEndermanType.values()){
+            if (CustomMobSpawning.getMobSpawnLocations(type.name().toLowerCase()) != null){
+                for (Location location : CustomMobSpawning.getMobSpawnLocations(type.name().toLowerCase())){
+                    if (location.getChunk().isLoaded()) {
+                        int i = rand.nextInt(2);
+                        if (!type.equals(SkyblockEndermanType.ZEALOT)) {
+                            if (i == 0) {
+                                SkyblockEnderman skyblockEnderman = new SkyblockEnderman(type, ((CraftWorld) location.getWorld()).getHandle());
+                                if (skyblockEnderman.getBukkitEntity().getNearbyEntities(2, 2, 2).size() == 0) {
+                                    ((CraftWorld) location.getWorld()).getHandle().addEntity(skyblockEnderman);
+                                    skyblockEnderman.getBukkitEntity().teleport(location);
+                                    for (Player player : Bukkit.getOnlinePlayers()) {
+                                        player.playEffect(location, Effect.CLOUD, 10);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void registerListeners(){
@@ -90,12 +155,19 @@ public class Main extends JavaPlugin {
         getCommand("chestplatecategory").setExecutor(new ChestplateCategoryCommand());
         getCommand("leggingscategory").setExecutor(new LeggingsCategoryCommand());
         getCommand("bootscategory").setExecutor(new BootsCategoryCommand());
+        getCommand("visit").setExecutor(new VisitCommand());
+        getCommand("launchpad").setExecutor(new LaunchPadSetUpCommand());
+        getCommand("wipe").setExecutor(new WipeCommand());
+        getCommand("mobspawn").setExecutor(new MobSpawnSetUpCommand());
+        getCommand("kick").setExecutor(new KickCommand());
+        getCommand("ban").setExecutor(new BanCommand());
     }
 
     private void registerCustomMobs(){
         registerEntity("Enderman", 58, SkyblockEnderman.class);
         registerEntity("Dragon", 63, SkyblockDragon.class);
         registerEntity("Zombie", 54, SkyblockZombie.class);
+        registerEntity("Jerry", 120, JERRY.class);
 
     }
 
@@ -222,14 +294,25 @@ public class Main extends JavaPlugin {
         return d;
     }
 
+    private int displayHealthBoard(int scoreNum, Objective objective, Player player){
+        SkyblockPlayer skyblockPlayer = getPlayer(player.getName());
+
+        Score score = objective.getScore(getPlayer(player.getName()).getStat(SkyblockStats.HEALTH) + "" + ChatColor.RED + "❤");
+        score.setScore(scoreNum--);
+
+        return scoreNum;
+    }
+
     private int displayScoreBoard(int scoreNum, Objective objective, Player player) {
         int hours=java.util.Calendar.getInstance().getTime().getHours();
         int minutes=java.util.Calendar.getInstance().getTime().getMinutes();
-        SkyblockPlayer activePlayer = getPlayer(player.getName());
         LocalDate l_date = LocalDate.now();
         String dateString = l_date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
+
         DecimalFormat formatter = new DecimalFormat("#,###");
         formatter.setGroupingUsed(true);
+
+        SkyblockPlayer activePlayer = getPlayer(player.getName());
 
         Score score = objective.getScore(org.bukkit.ChatColor.GRAY + "" + dateString + " " + "Skyblock");
         score.setScore(scoreNum--);
@@ -251,6 +334,7 @@ public class Main extends JavaPlugin {
         score.setScore(scoreNum--);
         score = objective.getScore(org.bukkit.ChatColor.YELLOW + "www.hypixel.net");
         score.setScore(scoreNum--);
+
         return scoreNum;
     }
 
@@ -280,18 +364,20 @@ public class Main extends JavaPlugin {
         }
     }
 
-    public void updateScoreBoard() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            ScoreboardManager manager = Bukkit.getScoreboardManager();
-            Scoreboard board = manager.getNewScoreboard();
-            Objective objective = board.registerNewObjective("Skyblock", "Display ");
-            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-            objective.setDisplayName(org.bukkit.ChatColor.YELLOW + "" + ChatColor.BOLD + "SKYBLOCK");
-            int scoreNum = 10;
+    public Scoreboard updateScoreBoard(Player p) {
+        ScoreboardManager manager = Bukkit.getScoreboardManager();
+        Scoreboard board = manager.getNewScoreboard();
 
-            scoreNum = displayScoreBoard(scoreNum, objective, p);
-            p.setScoreboard(board);
-        }
+        Objective objective = board.registerNewObjective("Skyblock", "Display ");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        objective.setDisplayName(org.bukkit.ChatColor.YELLOW + "" + ChatColor.BOLD + "SKYBLOCK");
+
+        int scoreNum = 10;
+
+        scoreNum = displayScoreBoard(scoreNum, objective, p);
+
+        p.setScoreboard(board);
+        return board;
     }
 
     private static final NavigableMap<Long, String> suffixes = new TreeMap<> ();
@@ -317,6 +403,15 @@ public class Main extends JavaPlugin {
         long truncated = value / (divideBy / 10); //the number part of the output times 10
         boolean hasDecimal = truncated < 100 && (truncated / 10d) != (truncated / 10);
         return hasDecimal ? (truncated / 10d) + suffix : (truncated / 10) + suffix;
+    }
+
+    private void spawnCustomMobs(){
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                registerMobSpawnLocations();
+            }
+        }.runTaskTimer(this, 5L, 20*15);
     }
 
     public void onJoin(final Player player) {
@@ -351,6 +446,7 @@ public class Main extends JavaPlugin {
                     //((CraftPlayer) player).getHandle().playerConnection.sendPacket(packetPlayOutChat);
 
                     ActionBarAPI.sendActionBar(player, icbc.getText());
+                    updateScoreBoard(player);
 
                     updateMaxHealth(skyblockPlayer);
                     //player.setWalkSpeed(skyblockPlayer.getStat(SkyblockStats.SPEED)/1000);
@@ -382,6 +478,26 @@ public class Main extends JavaPlugin {
         ActionBarAPI.sendActionBar(skyblockPlayer.getBukkitPlayer(), icbc.getText());
     }
 
+    public void updateMana(final Player player) {
+        SkyblockPlayer skyblockPlayer = getPlayer(player.getName());
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!player.isOnline()) {
+                    cancel(); // this cancels it when they leave
+                }else if (player.isOnline()){
+
+                    if (skyblockPlayer.getStat(SkyblockStats.MANA) <= skyblockPlayer.getStat(SkyblockStats.MAX_MANA) - ((skyblockPlayer.getStat(SkyblockStats.MAX_MANA) + 100)/50)) {
+                        skyblockPlayer.setStat(SkyblockStats.MANA, skyblockPlayer.getStat(SkyblockStats.MANA) + ((skyblockPlayer.getStat(SkyblockStats.MAX_MANA) + 100)/50));
+                    }else{
+                        skyblockPlayer.setStat(SkyblockStats.MANA, skyblockPlayer.getStat(SkyblockStats.MAX_MANA));
+                    }
+
+                }
+            }
+        }.runTaskTimer(this, 5L, 20);
+    }
+
     public void updateBoard(final Player player) {
         SkyblockPlayer skyblockPlayer = getPlayer(player.getName());
         new BukkitRunnable() {
@@ -390,12 +506,6 @@ public class Main extends JavaPlugin {
                 if (!player.isOnline()) {
                     cancel(); // this cancels it when they leave
                 }else if (player.isOnline()){
-                    updateScoreBoard();
-                    if (skyblockPlayer.getStat(SkyblockStats.MANA) <= skyblockPlayer.getStat(SkyblockStats.MAX_MANA) - 6) {
-                        skyblockPlayer.setStat(SkyblockStats.MANA, skyblockPlayer.getStat(SkyblockStats.MANA) + 6);
-                    }else{
-                        skyblockPlayer.setStat(SkyblockStats.MANA, skyblockPlayer.getStat(SkyblockStats.MAX_MANA));
-                    }
 
                     if (skyblockPlayer.getStat(SkyblockStats.HEALTH) <= skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH) - (int) (1.5 + skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH)/100)) {
                         updateHealth(skyblockPlayer, (int) (1.5 + skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH)/100));
@@ -407,6 +517,94 @@ public class Main extends JavaPlugin {
             }
         }.runTaskTimer(this, 5L, 60);
     }
+
+    public void updateItemInHand(final Player player) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!player.isOnline()) {
+                    cancel(); // this cancels it when they leave
+                }else if (player.isOnline()){
+                    SkyblockPlayer skyblockPlayer = getPlayer(player.getName());
+                    updateMaxHealth(skyblockPlayer);
+
+                    if (skyblockPlayer.getStat(SkyblockStats.SPEED) > 900){
+                        skyblockPlayer.setStat(SkyblockStats.SPEED, 900);
+                    }
+                    player.setWalkSpeed(skyblockPlayer.getStat(SkyblockStats.SPEED)/1000F + 0.1F);
+                    if (player.getLocation().getY() <= -11){
+                        player.setHealth(0);
+                    }
+
+                    if (!skyblockPlayer.itemInHand.equals(player.getItemInHand())) {
+
+                        //player.sendMessage(skyblockPlayer.itemInHand + " siin");
+                        //player.sendMessage(skyblockPlayer.getBukkitPlayer().getItemInHand() + " iin");
+
+                        ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (byte) SkullType.PLAYER.ordinal());
+                        ItemMeta itemMeta = item.getItemMeta();
+                        List<String> lore = new ArrayList<>();
+                        itemMeta.setDisplayName(org.bukkit.ChatColor.DARK_GRAY + "[Lvl 0] None");
+                        lore.add("T3ST");
+                        itemMeta.setLore(lore);
+                        item.setItemMeta(itemMeta);
+
+                        ItemStack itemStack = player.getItemInHand();
+
+                        if (itemStack.getType().equals(Material.AIR)){
+                            //player.sendMessage("iin = null, siin != null");
+                            itemStack = item;
+                            updateStats(skyblockPlayer, itemStack, skyblockPlayer.itemInHand);
+                            updateActionbar(skyblockPlayer);
+                        }else{
+                            //player.sendMessage("iin != null, siin != null");
+                            updateStats(skyblockPlayer, itemStack, skyblockPlayer.itemInHand);
+                            updateActionbar(skyblockPlayer);
+                        }
+
+
+                        skyblockPlayer.itemInHand = itemStack;
+                    }
+
+
+//                    if (!skyblockPlayer.itemInHand.getItemMeta().equals(player.getItemInHand().getItemMeta())){
+//                        //player.sendMessage("TEST");
+//
+//                        ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (byte) SkullType.PLAYER.ordinal());
+//                        ItemMeta itemMeta = item.getItemMeta();
+//                        itemMeta.setDisplayName(org.bukkit.ChatColor.DARK_GRAY + "[Lvl 0] None");
+//                        item.setItemMeta(itemMeta);
+//
+//                        //player.sendMessage(skyblockPlayer.itemInHand + "siih");
+//                        //player.sendMessage(skyblockPlayer.oldItemInHand + "oiih");
+//
+////                        if (skyblockPlayer.oldItemInHand != null) {
+////                            updateStats(skyblockPlayer, player.getItemInHand(), skyblockPlayer.oldItemInHand);
+////                        }else {
+////                            updateStats(skyblockPlayer, player.getItemInHand(), null);
+////                        }
+//
+//                        updateStats(skyblockPlayer, player.getItemInHand(), skyblockPlayer.oldItemInHand);
+//                        updateActionbar(skyblockPlayer);
+//
+//                        if (skyblockPlayer.itemInHand != null) {
+//                            skyblockPlayer.oldItemInHand = skyblockPlayer.itemInHand;
+//                        }else{
+//                            skyblockPlayer.oldItemInHand = item;
+//                        }
+//
+//                        if (player.getItemInHand() == null){
+//                            skyblockPlayer.itemInHand = item;
+//                        }else{
+//                            skyblockPlayer.itemInHand = player.getItemInHand();
+//                        }
+//                    }
+                }
+            }
+        }.runTaskTimer(this, 5L, 5L);
+    }
+
+
 //
 //    public void loadNpc(){
 //        FileConfiguration file = getConfig();

@@ -4,6 +4,7 @@ import com.itech4kids.skyblock.Objects.SkillType;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
 import com.itech4kids.skyblock.Util.Config;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -26,15 +27,8 @@ public class SkyblockSkillLevelUpEvent extends Event implements Cancellable {
         oldlvl = Config.getStatLvl(skyblockPlayer.getBukkitPlayer(), skillType.name().toLowerCase());
         newlvl = Config.getStatLvl(skyblockPlayer.getBukkitPlayer(), skillType.name().toLowerCase()) + 1;
         Config.setStatLvl(skyblockPlayer.getBukkitPlayer(), skillType.name().toLowerCase(), newlvl);
+        Player player = skyblockPlayer.getBukkitPlayer();
 
-    }
-
-    private String generateMessage(SkillType type){
-        String s = "";
-
-
-
-        return s;
     }
 
     public int getNewlvl(){return newlvl;}

@@ -3,6 +3,7 @@ package com.itech4kids.skyblock.Commands;
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.Inventories.TradeInventory;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -38,6 +39,7 @@ public class TradeCommand implements CommandExecutor {
                         player.playSound(player.getLocation(), Sound.VILLAGER_YES, 10, 1);
                         target.playSound(target.getLocation(), Sound.VILLAGER_YES, 10, 1);
                         skyblockPlayer.tradedPlayers.add(target);
+
                         new BukkitRunnable() {
                             @Override
                             public void run() {

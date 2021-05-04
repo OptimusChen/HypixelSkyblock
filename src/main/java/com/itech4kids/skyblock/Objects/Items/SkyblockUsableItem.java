@@ -16,7 +16,9 @@ public class SkyblockUsableItem {
     public SkyblockUsableItem(ItemStack itemStack){
         this.properties = new HashMap<>();
 
-        generateStats(itemStack.getItemMeta().getLore());
+        if (itemStack.getItemMeta().getLore() != null) {
+            generateStats(itemStack.getItemMeta().getLore());
+        }
     }
 
     public void setProperty(SkyblockStats string, Integer i){

@@ -1,8 +1,12 @@
 package com.itech4kids.skyblock.Events;
 
+import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
 import com.itech4kids.skyblock.Objects.SkyblockStats;
+import com.itech4kids.skyblock.Util.Config;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -24,8 +28,10 @@ public class SkyblockAbilityUseEvent extends PlayerEvent implements Cancellable 
 
         SkyblockPlayer skyblockPlayer = Main.getMain().getPlayer(player.getName());
         skyblockPlayer.setStat(SkyblockStats.MANA, skyblockPlayer.getStat(SkyblockStats.MANA) - mana);
-        player.sendMessage(ChatColor.GREEN + "Used" + ChatColor.GOLD + " " + abilityName + ChatColor.GREEN + "! " + ChatColor.AQUA + "-" + mana + " Mana");
-        Main.getMain().updateActionbar(skyblockPlayer);
+        IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a(
+                "{\"text\":\"" + "§c" + skyblockPlayer.getStat(SkyblockStats.HEALTH) + "/" + skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH) + "❤   §b-" + mana + " Mana (§6" + abilityName + "§b) §b" + skyblockPlayer.getStat(SkyblockStats.MANA) + "/" +
+                        skyblockPlayer.getStat(SkyblockStats.MAX_MANA) + "✎ Mana" + "\"}");
+        ActionBarAPI.sendActionBar(skyblockPlayer.getBukkitPlayer(), icbc.getText());
     }
 
     public String getAbilityName(){return abilityName;}

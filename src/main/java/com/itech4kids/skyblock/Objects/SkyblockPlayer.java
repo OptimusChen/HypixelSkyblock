@@ -7,13 +7,17 @@ import net.minecraft.server.v1_8_R3.EntityArmorStand;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.SkullType;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftArmorStand;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -21,6 +25,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class SkyblockPlayer {
 
@@ -34,9 +39,12 @@ public class SkyblockPlayer {
     public boolean convertPetToItem;
     public boolean ferocityCooldown;
     public boolean aoteSpeed;
+    public Block brokenBlock;
+    public String padName;
 
     public ItemStack itemInHand;
     public ItemStack lastPickedUp;
+    public ItemStack oldItemInHand;
 
     public HashMap<String, Integer> cooldowns;
 
@@ -52,7 +60,22 @@ public class SkyblockPlayer {
         convertPetToItem = false;
         this.lastPickedUp = null;
         cooldowns = new HashMap<>();
-        itemInHand = null;
+
+        padName = "";
+        brokenBlock = null;
+
+        ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (byte) SkullType.PLAYER.ordinal());
+        ItemMeta itemMeta = item.getItemMeta();
+        List<String> lore = new ArrayList<>();
+        itemMeta.setDisplayName(ChatColor.DARK_GRAY + "[Lvl 0] None");
+        lore.add("T3ST");
+        itemMeta.setLore(lore);
+        item.setItemMeta(itemMeta);
+
+        itemInHand = item;
+
+        oldItemInHand = item;
+
         stats = new HashMap<SkyblockStats, Integer>();
         inventories = new HashMap<String, Inventory>();
         loadDefaultStats();
@@ -63,6 +86,8 @@ public class SkyblockPlayer {
 
     private void loadCooldowns(){
         setCooldown("ember_rod", 0);
+        setCooldown("iron_punch", 0);
+        setCooldown("grappling_hook", 0);
     }
 
     private void loadDefaultStats(){

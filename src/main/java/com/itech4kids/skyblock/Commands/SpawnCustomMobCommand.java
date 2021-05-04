@@ -5,6 +5,7 @@ import com.itech4kids.skyblock.CustomMobs.Dragon.SkyblockDragonType;
 import com.itech4kids.skyblock.CustomMobs.Enderman.SkyblockEnderman;
 import com.itech4kids.skyblock.CustomMobs.Enderman.SkyblockEndermanType;
 import com.itech4kids.skyblock.CustomMobs.PlayerEntities.CustomAI;
+import com.itech4kids.skyblock.CustomMobs.PlayerEntities.JERRY;
 import com.itech4kids.skyblock.CustomMobs.Zombie.SkyblockZombie;
 import com.itech4kids.skyblock.CustomMobs.Zombie.SkyblockZombieType;
 import com.itech4kids.skyblock.Main;
@@ -104,6 +105,13 @@ public class SpawnCustomMobCommand implements CommandExecutor {
                             npc.setProtected(false);
                             CustomAI.frozenSteveAI(npc, healthDisplay);
                         }
+                        break;
+                    case "jerry":
+                        JERRY jerry = new JERRY(world);
+                        jerry.enderTeleportTo(2, 100, 26);
+                        world.addEntity(jerry);
+                        jerry.enderTeleportTo(2, 100, 26);
+                        jerry.getBukkitEntity().teleport(new Location(world.getWorld(), 2, 100, 26));
                         break;
                     }
                 }

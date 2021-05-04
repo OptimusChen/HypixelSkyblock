@@ -2,6 +2,7 @@ package com.itech4kids.skyblock.Listeners;
 
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.Inventories.SkillLevelsInventory;
+import com.itech4kids.skyblock.Objects.Island.IslandManager;
 import com.itech4kids.skyblock.Objects.Items.GuiItems.SkyblockGuiItem;
 import com.itech4kids.skyblock.Objects.Items.GuiItems.SkyblockSkillGuiItem;
 import com.itech4kids.skyblock.Objects.Items.GuiItems.SkyblockStatItem;
@@ -408,6 +409,22 @@ public class SkyblockMenuListener implements Listener {
                     itemMeta.setDisplayName(ChatColor.GREEN + "Currently Coverting!");
                     e.getCurrentItem().setItemMeta(itemMeta);
                 }
+            }
+        }else if (e.getView().getTitle().startsWith("Visit")){
+            if (e.getCurrentItem().getType().equals(Material.SKULL_ITEM)){
+                OfflinePlayer target = Bukkit.getOfflinePlayer(e.getView().getTitle().split(" ")[1]);
+                player.teleport(new Location(IslandManager.getIsland(target.getPlayer()), 0, 100, 0));
+                if (target.isOnline()){
+
+                    target.getPlayer().sendMessage(ChatColor.AQUA + "[SKYBLOCK] " + ChatColor.GRAY + player.getName() + ChatColor.YELLOW + " is visiting your island!");
+                }
+            }
+        }else if (e.getView().getTitle().endsWith("'s Profile")){
+            Player target = Bukkit.getPlayer(e.getView().getTitle().split("'s Profile")[0]);
+            if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName().toLowerCase()).startsWith("visit island")) {
+                player.performCommand("visit " + target.getName());
+            }else if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName().toLowerCase()).startsWith("trade request")){
+                player.performCommand("trade " + target.getName());
             }
         }
     }

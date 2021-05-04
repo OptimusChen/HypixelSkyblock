@@ -22,9 +22,9 @@ public class SkyblockPetGuiItem extends ItemStack {
 
         for (int i = 0; i < lore.size(); ++i){
             if (lore.get(i).startsWith(ChatColor.YELLOW + "Right-click to add")){
-                lore.set(i, ChatColor.GRAY + "Progress to Level " + (Integer.parseInt(itemMeta.getDisplayName().split("Lvl ")[1].split("]")[0]) + 1) + ": " + ChatColor.RED + "N/A");
+                lore.set(i, ChatColor.GRAY + "Progress to Level " + (Integer.parseInt(itemMeta.getDisplayName().split("Lvl ")[1].split("]")[0]) + 1) + ": " + ChatColor.YELLOW + "0%");
             }else if ((lore.get(i).startsWith(ChatColor.YELLOW + "your pet menu!"))){
-                lore.remove(i);
+                lore.set(i, ChatColor.GRAY + "--------------------");
             }
         }
         itemMeta.setLore(lore);

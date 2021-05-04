@@ -173,6 +173,45 @@ public class Config {
         config.set("collections." + collection.toLowerCase() + "_collected", newValue);
     }
 
+    public static boolean getBanned(Player player){
+        File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        return config.getBoolean("moderation.banned");
+    }
+
+    public static void setBanned(Player player, boolean val) throws IOException{
+        File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        config.set("moderation.banned", val);
+        config.save(file);
+    }
+
+    public static String getBanReason(Player player){
+        File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        return config.getString("moderation.ban_reason");
+    }
+
+    public static void setBanReason(Player player, String val) throws IOException{
+        File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        config.set("moderation.ban_reason", val);
+        config.save(file);
+    }
+
+    public static int getTimesKicked(Player player){
+        File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        return config.getInt("moderation.times_kicked");
+    }
+
+    public static void setTimesKicked(Player player, int val) throws IOException{
+        File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        config.set("moderation.times_kicked", val);
+        config.save(file);
+    }
+
     public static void createPlayer(String name) throws IOException {
         File folder = new File(main.getDataFolder() + File.separator + "Players");
         if (!folder.exists()) {
@@ -247,6 +286,10 @@ public class Config {
 
             config.set("pets.active-pet", item);
             config.set("pets.stored-pets", pets);
+
+            config.set("moderation.banned", false);
+            config.set("moderation.ban_reason", "");
+            config.set("moderation.times_kicked", 0);
 
             config.save(playerFile);
         }

@@ -84,7 +84,7 @@ public class ItemUtil {
         }
     }
 
-    public static void addLoreMessage(String string, List<String> itemMeta){
+    public static List<String> addLoreMessage(String string, List<String> itemMeta){
         String[] strings = string.split(" ");
         String tmp = "";
         for (String s : strings){
@@ -98,6 +98,7 @@ public class ItemUtil {
         if (tmp.length() > 0) {
             itemMeta.add(ChatColor.GRAY + tmp);
         }
+        return itemMeta;
     }
 
     public static void addItalicLore(String string, SkyblockStatItem item){
