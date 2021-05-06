@@ -140,6 +140,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);
         Bukkit.getPluginManager().registerEvents(new AbilityListener(), this);
         Bukkit.getPluginManager().registerEvents(new StatListener(), this);
+        Bukkit.getPluginManager().registerEvents(new CollectionsListener(), this);
     }
 
     private void registerCommands(){

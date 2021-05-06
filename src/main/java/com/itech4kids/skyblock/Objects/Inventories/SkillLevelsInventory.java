@@ -98,7 +98,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                 break;
             case COMBAT:
                 this.setItem(0, combat);
-                createInventory("Warrior", index, lvlItem, meta, lore, i, ChatColor.BLUE + "☣ Crit Chance", ChatColor.WHITE + "Grants " + ChatColor.RED + "+"  + ChatColor.RED + "4% " + ChatColor.WHITE + " extra damage to mobs");
+                createInventory("Warrior", index, lvlItem, meta, lore, i, ChatColor.BLUE + "☣ Crit Chance", ChatColor.WHITE + "Grants " + ChatColor.RED + "+"  + ChatColor.RED + "4%" + ChatColor.WHITE + " extra damage to mobs");
                 break;
             case FORAGING:
                 this.setItem(0, foraging);

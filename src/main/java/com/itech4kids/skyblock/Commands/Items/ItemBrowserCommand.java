@@ -80,10 +80,19 @@ public class ItemBrowserCommand implements CommandExecutor {
             // Material category
             List<String> materialCategoryLore = new ArrayList<>();
             materialCategoryLore.add(ChatColor.GRAY + "Click to view the");
-            materialCategoryLore.add(ChatColor.GRAY + "Boots Category!");
+            materialCategoryLore.add(ChatColor.GRAY + "Materials Category!");
             materialCategoryLore.add("");
             materialCategoryLore.add(ChatColor.YELLOW + "Click to view!");
             ItemStack materialCategoryItem = itemHandler.createBasicItem(Material.DIAMOND_BLOCK, ChatColor.GREEN + "Material", materialCategoryLore, (short) 0,true, 1);
+
+            // Tools category
+            List<String> toolsCategoryLore = new ArrayList<>();
+            toolsCategoryLore.add(ChatColor.GRAY + "Click to view the");
+            toolsCategoryLore.add(ChatColor.GRAY + "Tools Category!");
+            toolsCategoryLore.add("");
+            toolsCategoryLore.add(ChatColor.YELLOW + "Click to view!");
+            ItemStack toolsCategoryItem = itemHandler.createBasicItem(Material.DIAMOND_PICKAXE, ChatColor.GREEN + "Tools", materialCategoryLore, (short) 0,false, 1);
+
 
             // Add categories to the item browser
             menu.setItem(10, swordCategoryItem);
@@ -92,6 +101,7 @@ public class ItemBrowserCommand implements CommandExecutor {
             menu.setItem(13,leggingsCategoryItem);
             menu.setItem(14,bootsCategoryItem);
             menu.setItem(15,materialCategoryItem);
+            menu.setItem(16,toolsCategoryItem);
 
             player.openInventory(skyblockPlayer.getInventory("Item Browser"));
             return false;

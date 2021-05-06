@@ -52,7 +52,7 @@ public class InventoryListener implements Listener {
             } else if(event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GREEN + "boots")){
                 player.sendMessage(ChatColor.YELLOW + "Opening boots category...");
                 player.performCommand("bootscategory");
-            } else if(event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GREEN + "materials")){
+            } else if(event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GREEN + "material")){
                 player.sendMessage(ChatColor.YELLOW + "Opening materials category...");
                 player.performCommand("materialscategory");
             }

@@ -149,28 +149,43 @@ public class Config {
         config.save(file);
     }
 
-    public static int getCollectionLevel(Player player, String collection){
+    public static int getCollectionLevel(Player player, String collectionType, String collection){
         File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-        return config.getInt("collections." + collection.toLowerCase() + "_level");
+        return config.getInt("collections." + collectionType.toLowerCase() + "." + collection.toLowerCase() + "_level");
     }
 
-    public static int getCollectionCollected(Player player, String collection){
+    public static int getCollectionCollected(Player player, String collectionType, String collection){
         File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-        return config.getInt("collections." + collection.toLowerCase() + "_collected");
+        return config.getInt("collections." + collectionType.toLowerCase() + "." + collection.toLowerCase() + "_collected");
     }
 
-    public static void setCollectionLevel(Player player, String collection, int newValue) throws IOException{
+    public static void setCollectionLevel(Player player, String collectionType, String collection, int newValue) throws IOException{
         File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-        config.set("collections." + collection.toLowerCase() + "_level", newValue);
+        config.set("collections." + collectionType.toLowerCase() + "." + collection.toLowerCase() + "_level", newValue);
+        config.save(file);
     }
 
-    public static void setCollectionCollected(Player player, String collection, int newValue) throws IOException{
+    public static void setCollectionCollected(Player player, String collectionType, String collection, int newValue) throws IOException{
         File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-        config.set("collections." + collection.toLowerCase() + "_collected", newValue);
+        config.set("collections." + collectionType.toLowerCase() + "." + collection.toLowerCase() + "_collected", newValue);
+        config.save(file);
+    }
+
+    public static boolean getCollectionUnlocked(Player player, String collectionType, String collection) {
+        File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        return config.getBoolean("collections_unlocked." + collectionType.toLowerCase() + "." + collection.toLowerCase());
+    }
+
+    public static void setCollectionUnlocked(Player player, String collectionType, String collection, boolean newValue) throws IOException {
+        File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        config.set("collections_unlocked." + collectionType.toLowerCase() + "." + collection.toLowerCase(), newValue);
+        config.save(file);
     }
 
     public static boolean getBanned(Player player){
@@ -274,8 +289,111 @@ public class Config {
             config.set("stats.farming_fortune", 0);
             config.set("stats.foraging_fortune", 0);
 
-            config.set("collections.cobblestone_level", 0);
-            config.set("collections.cobblestone_collected", 0);
+            config.set("collections.farming.wheat_level", 0);
+            config.set("collections.farming.wheat_collected", 0);
+            config.set("collections.farming.carrot_level", 0);
+            config.set("collections.farming.carrot_collected", 0);
+            config.set("collections.farming.potato_level", 0);
+            config.set("collections.farming.potato_collected", 0);
+            config.set("collections.farming.pumpkin_level", 0);
+            config.set("collections.farming.pumpkin_collected", 0);
+            config.set("collections.farming.melon_level", 0);
+            config.set("collections.farming.melon_collected", 0);
+            config.set("collections.farming.seed_level", 0);
+            config.set("collections.farming.seed_collected", 0);
+            config.set("collections.farming.mushroom_level", 0);
+            config.set("collections.farming.mushroom_collected", 0);
+            config.set("collections.farming.cocoa_beans_level", 0);
+            config.set("collections.farming.cocoa_beans_collected", 0);
+            config.set("collections.farming.cactus_level", 0);
+            config.set("collections.farming.cactus_collected", 0);
+            config.set("collections.farming.sugarcane_level", 0);
+            config.set("collections.farming.sugarcane_collected", 0);
+            config.set("collections.farming.feather_level", 0);
+            config.set("collections.farming.feather_collected", 0);
+            config.set("collections.farming.leather_level", 0);
+            config.set("collections.farming.leather_collected", 0);
+            config.set("collections.farming.raw_porkchop_level", 0);
+            config.set("collections.farming.raw_porkchop_collected", 0);
+            config.set("collections.farming.raw_chicken_level", 0);
+            config.set("collections.farming.raw_chicken_collected", 0);
+            config.set("collections.farming.mutton_level", 0);
+            config.set("collections.farming.mutton_collected", 0);
+            config.set("collections.farming.raw_rabbit_level", 0);
+            config.set("collections.farming.raw_rabbit_collected", 0);
+            config.set("collections.farming.nether_wart_level", 0);
+            config.set("collections.farming.nether_wart_collected", 0);
+
+            config.set("collections.mining.cobblestone_level", 0);
+            config.set("collections.mining.cobblestone_collected", 0);
+            config.set("collections.mining.coal_level", 0);
+            config.set("collections.mining.coal_collected", 0);
+            config.set("collections.mining.iron_level", false);
+            config.set("collections.mining.iron_collected", false);
+            config.set("collections.mining.gold_level", false);
+            config.set("collections.mining.gold_collected", false);
+            config.set("collections.mining.diamond_level", false);
+            config.set("collections.mining.diamond_collected", false);
+            config.set("collections.mining.lapis_level", false);
+            config.set("collections.mining.lapis_collected", false);
+            config.set("collections.mining.emerald_level", false);
+            config.set("collections.mining.emerald_collected", false);
+            config.set("collections.mining.redstone_level", false);
+            config.set("collections.mining.redstone_collected", false);
+            config.set("collections.mining.quartz_level", false);
+            config.set("collections.mining.quartz_collected", false);
+            config.set("collections.mining.obsidian_level", false);
+            config.set("collections.mining.obsidian_collected", false);
+            config.set("collections.mining.glowstone_dust_level", false);
+            config.set("collections.mining.glowstone_dust_collected", false);
+            config.set("collections.mining.gravel_level", false);
+            config.set("collections.mining.gravel_collected", false);
+            config.set("collections.mining.ice_level", false);
+            config.set("collections.mining.ice_collected", false);
+            config.set("collections.mining.netherrack_level", false);
+            config.set("collections.mining.netherrack_collected", false);
+            config.set("collections.mining.sand_level", false);
+            config.set("collections.mining.sand_collected", false);
+            config.set("collections.mining.end_stone_level", false);
+            config.set("collections.mining.end_stone_collected", false);
+            config.set("collections.mining.mithril_level", false);
+            config.set("collections.mining.mithril_collected", false);
+
+            config.set("collections_unlocked.farming.wheat", false);
+            config.set("collections_unlocked.farming.carrot", false);
+            config.set("collections_unlocked.farming.potato", false);
+            config.set("collections_unlocked.farming.pumkin", false);
+            config.set("collections_unlocked.farming.melon", false);
+            config.set("collections_unlocked.farming.seed", false);
+            config.set("collections_unlocked.farming.mushroom", false);
+            config.set("collections_unlocked.farming.cocoa_beans", false);
+            config.set("collections_unlocked.farming.cactus", false);
+            config.set("collections_unlocked.farming.sugarcane", false);
+            config.set("collections_unlocked.farming.feather", false);
+            config.set("collections_unlocked.farming.leather", false);
+            config.set("collections_unlocked.farming.raw_porkchop", false);
+            config.set("collections_unlocked.farming.raw_chicken", false);
+            config.set("collections_unlocked.farming.mutton", false);
+            config.set("collections_unlocked.farming.raw_rabbit", false);
+            config.set("collections_unlocked.farming.nether_wart", false);
+
+            config.set("collections_unlocked.mining.cobblestone", false);
+            config.set("collections_unlocked.mining.coal", false);
+            config.set("collections_unlocked.mining.iron", false);
+            config.set("collections_unlocked.mining.gold", false);
+            config.set("collections_unlocked.mining.diamond", false);
+            config.set("collections_unlocked.mining.lapis", false);
+            config.set("collections_unlocked.mining.emerald", false);
+            config.set("collections_unlocked.mining.redstone", false);
+            config.set("collections_unlocked.mining.quartz", false);
+            config.set("collections_unlocked.mining.obsidian", false);
+            config.set("collections_unlocked.mining.glowstone_dust", false);
+            config.set("collections_unlocked.mining.gravel", false);
+            config.set("collections_unlocked.mining.ice", false);
+            config.set("collections_unlocked.mining.netherrack", false);
+            config.set("collections_unlocked.mining.sand", false);
+            config.set("collections_unlocked.mining.end_stone", false);
+            config.set("collections_unlocked.mining.mithril", false);
 
             ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (byte) SkullType.PLAYER.ordinal());
             ItemMeta itemMeta = item.getItemMeta();

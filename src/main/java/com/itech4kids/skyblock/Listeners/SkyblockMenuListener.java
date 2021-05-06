@@ -195,7 +195,7 @@ public class SkyblockMenuListener implements Listener {
                     player.openInventory(menu);
                     break;
                 case "collections":
-                    skyblockPlayer.setInventory("Collection", Bukkit.createInventory(null, 54, "Collection"));
+                    player.performCommand("collections main");
                     break;
                 case "recipe book":
                     skyblockPlayer.setInventory("Recipe Book", Bukkit.createInventory(null, 54, "Recipe Book"));

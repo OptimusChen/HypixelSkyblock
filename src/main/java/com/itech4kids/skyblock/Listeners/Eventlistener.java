@@ -623,6 +623,10 @@ public class Eventlistener implements Listener {
                     }
                 }
 
+            }else{
+                e.setCancelled(true);
+                SkyblockPlayer vicitm = main.getPlayer(e.getEntity().getName());
+                vicitm.setStat(SkyblockStats.HEALTH, (int) (vicitm.getStat(SkyblockStats.HEALTH) + e.getFinalDamage()));
             }
         }else if (e.getDamager() instanceof Projectile){
             Projectile projectile = (Projectile) e.getDamager();

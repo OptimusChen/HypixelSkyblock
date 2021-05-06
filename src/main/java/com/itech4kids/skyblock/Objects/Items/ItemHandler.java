@@ -959,4 +959,42 @@ public class ItemHandler {
         return coin;
     }
 
+    public static ItemStack createCollectionItem(int type, String collectionName, String collectionLevel, int percentageUnlocked, int collected, int maxCollected, List<String> coopPlayers, List<String> collectionRewards, Short data){
+        ItemStack item = new ItemStack(type);
+        ItemMeta meta = item.getItemMeta();
+        String itemName = collectionName + " " + collectionLevel;
+        item.setTypeId(type);
+        item.setDurability(data);
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GRAY + "View all your " + collectionName + " Collection");
+        lore.add(ChatColor.GRAY + "progress and rewards!");
+        lore.add("");
+        lore.add(ChatColor.GRAY + "Collection Unlocked: " + ChatColor.YELLOW + percentageUnlocked + ChatColor.GOLD + "%");
+        lore.add(ChatColor.WHITE + "-------------------- " + ChatColor.YELLOW + collected + ChatColor.GOLD + "/" + ChatColor.YELLOW + maxCollected);
+        lore.add("");
+        lore.add(ChatColor.GRAY + "Co-op Contributions:");
+        if(coopPlayers.size() >= 2){
+            for(String s : coopPlayers){
+                lore.add(ChatColor.RED + "[ADMIN] " + s);
+            }
+        } else{
+            lore.add(coopPlayers.get(0));
+        }
+        lore.add(ChatColor.GRAY + "Total: " + ChatColor.YELLOW + collected);
+        lore.add("");
+        lore.add(ChatColor.GRAY + itemName + " Rewards:");
+        if(collectionRewards.size() >= 2){
+            for(String s : collectionRewards){
+                lore.add(" " + s);
+            }
+        } else{
+            lore.add(" " + collectionRewards.get(0));
+        }
+        lore.add("");
+        lore.add(ChatColor.YELLOW + "Click to view!");
+        meta.setDisplayName(ChatColor.YELLOW + itemName);
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        return item;
+    }
 }
