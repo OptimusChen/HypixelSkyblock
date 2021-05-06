@@ -120,6 +120,7 @@ public class SkyblockEnderman extends EntityEnderman implements Listener {
                 if (e.getDamager() instanceof Player){
                     SkyblockPlayer skyblockPlayer = Main.getMain().getPlayer(e.getDamager().getName());
                     Bukkit.getPluginManager().callEvent(new SkyblockSkillExpGainEvent(skyblockPlayer, SkillType.COMBAT, xp));
+                    enderman.setHealth(0);
                 }
             }
         }
@@ -131,7 +132,6 @@ public class SkyblockEnderman extends EntityEnderman implements Listener {
             public void run() {
                 if (armorStand.isDead()){
                     cancel();
-                    armorStand.remove();
                 }else{
                     armorStand.setCustomNameVisible(true);
                     String s = ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + "Lv" + level + ChatColor.DARK_GRAY + "] " + ChatColor.RED + name + " " + ChatColor.GREEN + health + ChatColor.DARK_GRAY + "/" + ChatColor.GREEN + maxHealth;

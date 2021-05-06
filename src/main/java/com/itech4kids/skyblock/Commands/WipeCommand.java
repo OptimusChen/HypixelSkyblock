@@ -14,11 +14,19 @@ public class WipeCommand implements CommandExecutor {
         if (args.length == 0){
             sender.sendMessage(ChatColor.RED + "Specify the player please!");
         }else{
-            Player cheater = Bukkit.getPlayer(args[0]);
-            cheater.sendMessage(ChatColor.RED + "Cheating has been detected on one or more of your Skyblock Profiles and your profiles have been wiped.");
-            cheater.performCommand("warp hub");
-            IslandManager.deleteWorld(cheater);
-            cheater.kickPlayer(ChatColor.RED + "Cheating has been detected on one or more of your Skyblock Profiles and your profiles have been wiped.");
+            try {
+                Player cheater = Bukkit.getPlayer(args[0]);
+                cheater.sendMessage(ChatColor.RED + "Cheating has been detected on one or more of your Skyblock Profiles and your profiles have been wiped.");
+                cheater.performCommand("warp hub");
+                IslandManager.deleteWorld(cheater);
+                if (sender instanceof Player){
+                    ((Player) sender).performCommand("ban " + cheater.getName() + " Boosting detected on multiple Skyblock profiles");
+                }else{
+                    cheater.kickPlayer(ChatColor.RED + "Boosting detected on multiple Skyblock profiles");
+                }
+            }catch (Exception e){
+                sender.sendMessage(ChatColor.RED + "This player is not onlinr!");
+            }
         }
 
         return false;

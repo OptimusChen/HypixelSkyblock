@@ -58,6 +58,8 @@ public class IslandManager {
 
             world.setGameRuleValue("keepInventory", "true");
             world.setGameRuleValue("naturalRegeneration", "false");
+            world.setGameRuleValue("doMobSpawning", "false");
+            world.setGameRuleValue("fireSpread", "false");
 
             new BukkitRunnable() {
                 @Override

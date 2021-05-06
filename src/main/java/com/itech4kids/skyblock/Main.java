@@ -7,11 +7,13 @@ import com.itech4kids.skyblock.Commands.ItemBrowser.Boots.BootsCategoryCommand;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Chestplate.ChestplateCategoryCommand;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Helmet.HelmetCategoryCommand;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Leggings.LeggingsCategoryCommand;
+import com.itech4kids.skyblock.Commands.ItemBrowser.Material.MaterialCategoryCommand;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Sword.SwordCategoryCommand;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Sword.SwordCategoryCommandPage2;
 import com.itech4kids.skyblock.Commands.Items.*;
 import com.itech4kids.skyblock.Commands.*;
 import com.itech4kids.skyblock.Commands.Setup.LaunchPadSetUpCommand;
+import com.itech4kids.skyblock.Commands.Setup.LocationSetupCommand;
 import com.itech4kids.skyblock.Commands.Setup.MobSpawnSetUpCommand;
 import com.itech4kids.skyblock.CustomMobs.Dragon.SkyblockDragon;
 import com.itech4kids.skyblock.CustomMobs.Enderman.SkyblockEnderman;
@@ -23,12 +25,10 @@ import com.itech4kids.skyblock.Listeners.*;
 import com.itech4kids.skyblock.Objects.Island.IslandManager;
 import com.itech4kids.skyblock.Objects.Items.ItemHandler;
 import com.itech4kids.skyblock.Objects.Items.SkyblockUsableItem;
+import com.itech4kids.skyblock.Objects.SkyblockLocation;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
 import com.itech4kids.skyblock.Objects.SkyblockStats;
-import com.itech4kids.skyblock.Util.Config;
-import com.itech4kids.skyblock.Util.CustomMobSpawning;
-import com.itech4kids.skyblock.Util.ItemUtil;
-import com.itech4kids.skyblock.Util.LaunchPadConfig;
+import com.itech4kids.skyblock.Util.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.md_5.bungee.api.ChatColor;
@@ -65,11 +65,12 @@ public class Main extends JavaPlugin {
         main = this;
         players = new HashMap<>();
         damage_indicator = new ArrayList<>();
-        registerListeners();
         registerCustomMobs();
+        registerListeners();
         registerCommands();
         new Config(this);
         new IslandManager();
+        new LocationsManager();
         ItemHandler.init();
         try { new LaunchPadConfig(this); } catch (IOException e) { e.printStackTrace(); }
         try {
@@ -77,8 +78,15 @@ public class Main extends JavaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         spawnCustomMobs();
+    }
+
+    private void registerCustomMobs(){
+        registerEntity("Enderman", 58, SkyblockEnderman.class);
+        registerEntity("Dragon", 63, SkyblockDragon.class);
+        registerEntity("Zombie", 54, SkyblockZombie.class);
+        registerEntity("Jerry", 120, JERRY.class);
+
     }
 
     private void registerMobSpawnLocations(){
@@ -155,20 +163,14 @@ public class Main extends JavaPlugin {
         getCommand("chestplatecategory").setExecutor(new ChestplateCategoryCommand());
         getCommand("leggingscategory").setExecutor(new LeggingsCategoryCommand());
         getCommand("bootscategory").setExecutor(new BootsCategoryCommand());
+        getCommand("materialscategory").setExecutor(new MaterialCategoryCommand());
         getCommand("visit").setExecutor(new VisitCommand());
         getCommand("launchpad").setExecutor(new LaunchPadSetUpCommand());
         getCommand("wipe").setExecutor(new WipeCommand());
         getCommand("mobspawn").setExecutor(new MobSpawnSetUpCommand());
         getCommand("kick").setExecutor(new KickCommand());
         getCommand("ban").setExecutor(new BanCommand());
-    }
-
-    private void registerCustomMobs(){
-        registerEntity("Enderman", 58, SkyblockEnderman.class);
-        registerEntity("Dragon", 63, SkyblockDragon.class);
-        registerEntity("Zombie", 54, SkyblockZombie.class);
-        registerEntity("Jerry", 120, JERRY.class);
-
+        getCommand("location").setExecutor(new LocationSetupCommand());
     }
 
     public void updateMaxHealth(SkyblockPlayer skyblockPlayer) {
@@ -312,7 +314,8 @@ public class Main extends JavaPlugin {
         DecimalFormat formatter = new DecimalFormat("#,###");
         formatter.setGroupingUsed(true);
 
-        SkyblockPlayer activePlayer = getPlayer(player.getName());
+        SkyblockPlayer skyblockPlayer = getPlayer(player.getName());
+        skyblockPlayer.location = LocationsManager.getLocation(player.getLocation());
 
         Score score = objective.getScore(org.bukkit.ChatColor.GRAY + "" + dateString + " " + "Skyblock");
         score.setScore(scoreNum--);
@@ -322,11 +325,12 @@ public class Main extends JavaPlugin {
         score.setScore(scoreNum--);
         score = objective.getScore(org.bukkit.ChatColor.GRAY + " " + hours + ":" + minutes + "pm " + ChatColor.YELLOW + "☀");
         score.setScore(scoreNum--);
-        score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + ChatColor.GREEN + "Hub Island");
+        //score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + ChatColor.GRAY + "None");
+        score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + org.bukkit.ChatColor.AQUA + "Location");
         score.setScore(scoreNum--);
         score = objective.getScore(org.bukkit.ChatColor.WHITE + " ");
         score.setScore(scoreNum--);
-        score = objective.getScore(org.bukkit.ChatColor.WHITE + "Purse: " + ChatColor.GOLD +  formatter.format(Config.getPurseCoins(activePlayer.getBukkitPlayer())));
+        score = objective.getScore(org.bukkit.ChatColor.WHITE + "Purse: " + ChatColor.GOLD +  formatter.format(Config.getPurseCoins(skyblockPlayer.getBukkitPlayer())));
         score.setScore(scoreNum--);
         score = objective.getScore(org.bukkit.ChatColor.WHITE + "Bits: " + ChatColor.AQUA + formatter.format(Config.getBits(player)));
         score.setScore(scoreNum--);
@@ -527,6 +531,7 @@ public class Main extends JavaPlugin {
                 }else if (player.isOnline()){
                     SkyblockPlayer skyblockPlayer = getPlayer(player.getName());
                     updateMaxHealth(skyblockPlayer);
+                    updateScoreBoard(player);
 
                     if (skyblockPlayer.getStat(SkyblockStats.SPEED) > 900){
                         skyblockPlayer.setStat(SkyblockStats.SPEED, 900);

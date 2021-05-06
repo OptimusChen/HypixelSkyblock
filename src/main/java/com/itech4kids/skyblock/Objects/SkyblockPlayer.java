@@ -1,28 +1,17 @@
 package com.itech4kids.skyblock.Objects;
 
-import com.itech4kids.skyblock.Main;
-import com.itech4kids.skyblock.Objects.Items.SkyblockItem;
 import com.itech4kids.skyblock.Util.Config;
-import net.minecraft.server.v1_8_R3.EntityArmorStand;
-import net.minecraft.server.v1_8_R3.IChatBaseComponent;
-import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftArmorStand;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.Scoreboard;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +40,9 @@ public class SkyblockPlayer {
     public ArrayList<Player> tradedPlayers;
     public boolean tradeAccepted;
 
+    public ArrayList<SkyblockLocation> locations;
+    public SkyblockLocation location;
+
     public SkyblockPlayer(Player player){
         this.player = player;
         tradedPlayers = new ArrayList<>();
@@ -63,6 +55,9 @@ public class SkyblockPlayer {
 
         padName = "";
         brokenBlock = null;
+
+        locations = new ArrayList<>();
+        location = null;
 
         ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (byte) SkullType.PLAYER.ordinal());
         ItemMeta itemMeta = item.getItemMeta();

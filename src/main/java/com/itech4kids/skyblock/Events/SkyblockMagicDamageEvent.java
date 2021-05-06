@@ -35,14 +35,14 @@ public class SkyblockMagicDamageEvent extends PlayerEvent implements Cancellable
         for (Entity entity1 : player.getNearbyEntities(nearby, nearby, nearby)) {
             if (entity1 instanceof LivingEntity) {
                 entity = (LivingEntity) entity1;
-
-                if (!entity.hasMetadata("NPC")) {
-                    Bukkit.getPluginManager().callEvent(new EntityDamageEvent(entity, EntityDamageEvent.DamageCause.CUSTOM, (skyblockPlayer.getStat(SkyblockStats.ABILITY_DAMAGE) + abilityDamage) * (1 + (skyblockPlayer.getStat(SkyblockStats.MANA) / 100F) * scaling)));
-                } else {
-                    Bukkit.getPluginManager().callEvent(new NPCDamageEvent(CitizensAPI.getNPCRegistry().getNPC(entity), new EntityDamageEvent(entity, EntityDamageEvent.DamageCause.CUSTOM, (skyblockPlayer.getStat(SkyblockStats.ABILITY_DAMAGE) + abilityDamage) * (1 + (skyblockPlayer.getStat(SkyblockStats.MANA) / 100F) * scaling))));
-                }
-                if (!entity.getType().equals(EntityType.ARMOR_STAND)) {
-                    //ItemUtil.setDamageIndicator(entity.getLocation(), ChatColor.GRAY + formatter.format(Math.round((skyblockPlayer.getStat(SkyblockStats.ABILITY_DAMAGE) + abilityDamage) * (1 + (skyblockPlayer.getStat(SkyblockStats.MANA) / 100F) * scaling))));
+                if (entity1 instanceof Player && !entity1.hasMetadata("NPC")){
+                    return;
+                }else {
+                    if (!entity.hasMetadata("NPC")) {
+                        Bukkit.getPluginManager().callEvent(new EntityDamageEvent(entity, EntityDamageEvent.DamageCause.CUSTOM, (skyblockPlayer.getStat(SkyblockStats.ABILITY_DAMAGE) + abilityDamage) * (1 + (skyblockPlayer.getStat(SkyblockStats.MANA) / 100F) * scaling)));
+                    } else {
+                        Bukkit.getPluginManager().callEvent(new NPCDamageEvent(CitizensAPI.getNPCRegistry().getNPC(entity), new EntityDamageEvent(entity, EntityDamageEvent.DamageCause.CUSTOM, (skyblockPlayer.getStat(SkyblockStats.ABILITY_DAMAGE) + abilityDamage) * (1 + (skyblockPlayer.getStat(SkyblockStats.MANA) / 100F) * scaling))));
+                    }
                 }
             }
         }

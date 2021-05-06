@@ -29,12 +29,12 @@ public class ItemBrowserCommand implements CommandExecutor {
         Player player = (Player) sender;
         if(args.length == 0) {
             SkyblockPlayer skyblockPlayer = Main.getMain().getPlayer(player.getName());
-            skyblockPlayer.setInventory("Item Browser", Bukkit.createInventory(null, 54, "Item Browser"));
+            skyblockPlayer.setInventory("Item Browser", Bukkit.createInventory(null, 27, "Item Browser"));
             Inventory menu = skyblockPlayer.getInventory("Item Browser");
 
             ItemStack emptySpace = itemHandler.createEmptySpace();
 
-            for (int index = 0; index < 54; index++) {
+            for (int index = 0; index < 27; index++) {
                 menu.setItem(index, emptySpace);
             }
             // Sword category
@@ -77,12 +77,21 @@ public class ItemBrowserCommand implements CommandExecutor {
             bootsCategoryLore.add(ChatColor.YELLOW + "Click to view!");
             ItemStack bootsCategoryItem = ItemHandler.createBasicLeatherArmor(Material.LEATHER_BOOTS, ChatColor.GREEN + "Boots", Color.fromRGB(242, 93, 24), bootsCategoryLore, 1, 1);
 
+            // Material category
+            List<String> materialCategoryLore = new ArrayList<>();
+            materialCategoryLore.add(ChatColor.GRAY + "Click to view the");
+            materialCategoryLore.add(ChatColor.GRAY + "Boots Category!");
+            materialCategoryLore.add("");
+            materialCategoryLore.add(ChatColor.YELLOW + "Click to view!");
+            ItemStack materialCategoryItem = itemHandler.createBasicItem(Material.DIAMOND_BLOCK, ChatColor.GREEN + "Material", materialCategoryLore, (short) 0,true, 1);
+
             // Add categories to the item browser
             menu.setItem(10, swordCategoryItem);
             menu.setItem(11, helmetCategoryItem);
             menu.setItem(12, chestplateCategoryItem);
             menu.setItem(13,leggingsCategoryItem);
             menu.setItem(14,bootsCategoryItem);
+            menu.setItem(15,materialCategoryItem);
 
             player.openInventory(skyblockPlayer.getInventory("Item Browser"));
             return false;

@@ -31,6 +31,7 @@ import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_8_R3.metadata.EntityMetadataStore;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
@@ -579,49 +580,50 @@ public class Eventlistener implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent e){
-        double NPCdamage;
         if (e.getDamager() instanceof Player) {
-            if (!e.getDamager().hasMetadata("NPC") && !e.getEntity().hasMetadata("NPC")) {
-                SkyblockPlayer skyblockPlayer = main.getPlayer(e.getDamager().getName());
-                int i = new Random().nextInt(100);
-                int r = new Random().nextInt(100);
-                DecimalFormat formatter = new DecimalFormat("#,###");
-                formatter.setGroupingUsed(true);
-                double damage = 5 + skyblockPlayer.getStat((SkyblockStats.DAMAGE)) + (skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 5) * (1 + skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 100);
-                if (!e.getEntity().getType().equals(EntityType.ARMOR_STAND)) {
-                    if (i <= skyblockPlayer.getStat(SkyblockStats.CRIT_CHANCE)) {
-                        e.setDamage(damage * ((100 + skyblockPlayer.getStat(SkyblockStats.CRIT_DAMAGE))) / 100);
-                        ItemUtil.setDamageIndicator(e.getEntity().getLocation(), ItemUtil.addCritTexture(String.valueOf(formatter.format(Math.round(e.getDamage())))));
-                    } else {
-                        e.setDamage(damage);
-                        ItemUtil.setDamageIndicator(e.getEntity().getLocation(), org.bukkit.ChatColor.GRAY + "" + formatter.format(Math.round(e.getDamage())));
-                    }
-                    if (r <= skyblockPlayer.getStat(SkyblockStats.FEROCITY)) {
-                        if (!skyblockPlayer.ferocityCooldown) {
-                            skyblockPlayer.getBukkitPlayer().playSound(skyblockPlayer.getBukkitPlayer().getLocation(), Sound.FIRE_IGNITE, 100, 0);
-                            skyblockPlayer.ferocityCooldown = true;
-                            Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(skyblockPlayer.getBukkitPlayer(), e.getEntity(), EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage));
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    skyblockPlayer.ferocityCooldown = false;
-                                }
-                            }.runTaskLater(main, 5);
+            if (!(e.getEntity() instanceof Player) && !(e.getEntity().hasMetadata("NPC"))) {
+                if (!e.getDamager().hasMetadata("NPC") && !e.getEntity().hasMetadata("NPC")) {
+                    SkyblockPlayer skyblockPlayer = main.getPlayer(e.getDamager().getName());
+                    int i = new Random().nextInt(100);
+                    int r = new Random().nextInt(100);
+                    DecimalFormat formatter = new DecimalFormat("#,###");
+                    formatter.setGroupingUsed(true);
+                    double damage = 5 + skyblockPlayer.getStat((SkyblockStats.DAMAGE)) + (skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 5) * (1 + skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 100);
+                    if (!e.getEntity().getType().equals(EntityType.ARMOR_STAND)) {
+                        if (i <= skyblockPlayer.getStat(SkyblockStats.CRIT_CHANCE)) {
+                            e.setDamage(damage * ((100 + skyblockPlayer.getStat(SkyblockStats.CRIT_DAMAGE))) / 100);
+                            ItemUtil.setDamageIndicator(e.getEntity().getLocation(), ItemUtil.addCritTexture(String.valueOf(formatter.format(Math.round(e.getDamage())))));
+                        } else {
+                            e.setDamage(damage);
+                            ItemUtil.setDamageIndicator(e.getEntity().getLocation(), org.bukkit.ChatColor.GRAY + "" + formatter.format(Math.round(e.getDamage())));
+                        }
+                        if (r <= skyblockPlayer.getStat(SkyblockStats.FEROCITY)) {
+                            if (!skyblockPlayer.ferocityCooldown) {
+                                skyblockPlayer.getBukkitPlayer().playSound(skyblockPlayer.getBukkitPlayer().getLocation(), Sound.FIRE_IGNITE, 100, 0);
+                                skyblockPlayer.ferocityCooldown = true;
+                                Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(skyblockPlayer.getBukkitPlayer(), e.getEntity(), EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage));
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        skyblockPlayer.ferocityCooldown = false;
+                                    }
+                                }.runTaskLater(main, 5);
+                            }
                         }
                     }
+                } else if (e.getDamager().hasMetadata("NPC") && !e.getEntity().hasMetadata("NPC")) {
+                    NPC npc = CitizensAPI.getNPCRegistry().getNPC(e.getDamager());
+                    SkyblockPlayer skyblockPlayer = main.getPlayer(e.getEntity().getName());
+                    if (npc.getName().contains(ChatColor.RED + "Yeti")) {
+                        e.setDamage((300 * (skyblockPlayer.getBukkitPlayer().getMaxHealth() / skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH))));
+                        skyblockPlayer.setStat(SkyblockStats.HEALTH, (skyblockPlayer.getStat(SkyblockStats.HEALTH) - 300));
+                    } else if (npc.getName().contains(ChatColor.RED + "Frozen Steve")) {
+                        e.setDamage((20 * (skyblockPlayer.getBukkitPlayer().getMaxHealth() / skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH))));
+                        skyblockPlayer.setStat(SkyblockStats.HEALTH, (skyblockPlayer.getStat(SkyblockStats.HEALTH) - 50));
+                    }
                 }
-            }else if (e.getDamager().hasMetadata("NPC") && !e.getEntity().hasMetadata("NPC")){
-                NPC npc = CitizensAPI.getNPCRegistry().getNPC(e.getDamager());
-                SkyblockPlayer skyblockPlayer = main.getPlayer(e.getEntity().getName());
-                if (npc.getName().contains(ChatColor.RED + "Yeti")) {
-                    e.setDamage((300 * (skyblockPlayer.getBukkitPlayer().getMaxHealth() / skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH))));
-                    skyblockPlayer.setStat(SkyblockStats.HEALTH, (skyblockPlayer.getStat(SkyblockStats.HEALTH) - 300));
-                }else if (npc.getName().contains(ChatColor.RED + "Frozen Steve")){
-                    e.setDamage((20 * (skyblockPlayer.getBukkitPlayer().getMaxHealth() / skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH))));
-                    skyblockPlayer.setStat(SkyblockStats.HEALTH, (skyblockPlayer.getStat(SkyblockStats.HEALTH) - 50));
-                }
-            }
 
+            }
         }else if (e.getDamager() instanceof Projectile){
             Projectile projectile = (Projectile) e.getDamager();
             if (projectile.getShooter() instanceof Player){

@@ -75,6 +75,94 @@ public class ItemHandler {
     // Misc
     public static ItemStack grappling_hook;
 
+    //Material/Minerals
+    public static Map<String, ItemStack> materialMap;
+    //Farming
+    public static ItemStack enchanted_bread;
+    public static ItemStack enchanted_hay_bale;
+    public static ItemStack enchanted_carrot;
+    public static ItemStack enchanted_carrot_on_a_stick;
+    public static ItemStack enchanted_golden_carrot;
+    public static ItemStack enchanted_potato;
+    public static ItemStack enchanted_baked_potato;
+    public static ItemStack enchanted_pumpkin;
+    public static ItemStack enchanted_melon;
+    public static ItemStack enchanted_glistering_melon;
+    public static ItemStack enchanted_melon_block;
+    public static ItemStack enchanted_red_mushroom;
+    public static ItemStack enchanted_brown_mushroom;
+    public static ItemStack enchanted_red_mushroom_block;
+    public static ItemStack enchanted_brown_mushroom_block;
+    public static ItemStack enchanted_cocoa_beans;
+    public static ItemStack enchanted_cookie;
+    public static ItemStack enchanted_cactus_green;
+    public static ItemStack enchanted_cactus;
+    public static ItemStack enchanted_sugar;
+    public static ItemStack enchanted_paper;
+    public static ItemStack enchanted_sugar_cane;
+    public static ItemStack enchanted_leather;
+    public static ItemStack enchanted_raw_beef;
+    public static ItemStack enchanted_pork;
+    public static ItemStack enchanted_grilled_pork;
+    public static ItemStack enchanted_raw_chicken;
+    public static ItemStack enchanted_egg;
+    public static ItemStack enchanted_cake;
+    public static ItemStack enchanted_super_egg;
+    public static ItemStack enchanted_feather;
+    public static ItemStack enchanted_mutton;
+    public static ItemStack enchanted_cooked_mutton;
+    public static ItemStack enchanted_raw_rabbit;
+    public static ItemStack enchanted_rabbit_foot;
+    public static ItemStack enchanted_rabbit_hide;
+    public static ItemStack enchanted_nether_wart;
+
+    //Mining
+    public static ItemStack enchanted_cobblestone;
+    public static ItemStack enchanted_coal;
+    public static ItemStack enchanted_coal_block;
+    public static ItemStack enchanted_iron;
+    public static ItemStack enchanted_iron_block;
+    public static ItemStack enchanted_gold;
+    public static ItemStack enchanted_gold_block;
+    public static ItemStack enchanted_diamond;
+    public static ItemStack enchanted_diamond_block;
+    public static ItemStack enchanted_lapis;
+    public static ItemStack enchanted_lapis_block;
+    public static ItemStack enchanted_emerald;
+    public static ItemStack enchanted_emerald_block;
+    public static ItemStack enchanted_redstone;
+    public static ItemStack enchanted_redstone_block;
+    public static ItemStack enchanted_quartz;
+    public static ItemStack enchanted_quartz_block;
+    public static ItemStack enchanted_obsidian;
+    public static ItemStack enchanted_glowstone;
+    public static ItemStack enchanted_glowstone_block;
+    public static ItemStack enchanted_flint;
+    public static ItemStack enchanted_ice;
+    public static ItemStack enchanted_packed_ice;
+    public static ItemStack enchanted_sand;
+    public static ItemStack enchanted_endstone;
+    public static ItemStack enchanted_snow_block;
+
+    //Combat
+    public static ItemStack enchanted_rotten_flesh;
+    public static ItemStack enchanted_bone;
+    public static ItemStack enchanted_bone_block;
+    public static ItemStack enchanted_string;
+    public static ItemStack enchanted_spider_eye;
+    public static ItemStack enchanted_gunpowder;
+    public static ItemStack enchanted_firework;
+    public static ItemStack enchanted_ender_pearl;
+    public static ItemStack enchanted_ghast_tear;
+    public static ItemStack enchanted_slime_ball;
+    public static ItemStack enchanted_blaze_powder;
+    public static ItemStack enchanted_blaze_rod;
+    public static ItemStack enchanted_magma_ball;
+
+    //Foraging
+
+    //Fishing
+
     // Other
     public static ItemStack skyblock_menu;
 
@@ -85,7 +173,7 @@ public class ItemHandler {
         initTools();
         initFishing();
         initMisc();
-
+        initMaterials();
     }
 
     public static void initArmor(){
@@ -158,6 +246,89 @@ public class ItemHandler {
 
     public static void initFishing(){
 
+    }
+
+    public static void initMaterials(){
+        materialMap = new HashMap<>();
+
+        enchanted_baked_potato = createMaterialItem(Material.BAKED_POTATO, (short) 0, true, ChatColor.GREEN + "UNCOMMON", false, "Baked Potato");
+        enchanted_blaze_powder = createMaterialItem(Material.BLAZE_POWDER, (short) 0, true, ChatColor.GREEN + "UNCOMMON", true, "Blaze Powder");
+        enchanted_blaze_rod = createMaterialItem(Material.BLAZE_ROD, (short) 0, true, ChatColor.GREEN + "UNCOMMON", true, "Blaze Rod");
+        enchanted_bone = createMaterialItem(Material.BONE, (short) 0, true, ChatColor.WHITE + "COMMON", false, "Bone");
+        enchanted_bone_block = createMaterialItem(Material.QUARTZ_BLOCK, (short) 0, true, ChatColor.BLUE + "RARE", false, "Bone Block");
+        enchanted_bread = createMaterialItem(Material.BREAD, (short) 0, true, ChatColor.GREEN + "UNCOMMON", false, "Bread");
+        enchanted_brown_mushroom = createMaterialItem(Material.BROWN_MUSHROOM, (short) 0, true, ChatColor.WHITE + "COMMON", false, "Brown Mushroom");
+        enchanted_brown_mushroom_block = createMaterialItem(Material.HUGE_MUSHROOM_2, (short) 0, true, ChatColor.WHITE + "COMMON", false, "Brown Mushroom Block");
+        enchanted_cactus = createMaterialItem(Material.INK_SACK, (short) 2, true, ChatColor.GREEN + "UNCOMMON", true, "Cactus");
+        enchanted_cactus_green = createMaterialItem(Material.CACTUS, (short) 0, true, ChatColor.BLUE + "RARE", true, "Cactus Green");
+        enchanted_cake = createMaterialItem(Material.CAKE, 0, true, ChatColor.GREEN + "UNCOMMON", true, "Cake");
+        enchanted_carrot = createMaterialItem(Material.CARROT, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Carrot");
+        enchanted_carrot_on_a_stick = createMaterialItem(Material.CARROT_STICK, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Carrot on a Stick");
+        enchanted_coal = createMaterialItem(Material.COAL, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Coal");
+        enchanted_coal_block = createMaterialItem(Material.COAL_BLOCK, 0, true, ChatColor.BLUE + "RARE", false, "Coal Block");
+        enchanted_cobblestone = createMaterialItem(Material.COBBLESTONE, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Cobblestone");
+        enchanted_cocoa_beans = createMaterialItem(Material.COCOA, 0, true, ChatColor.GREEN + "UNCOMMON", true, "Cocoa Beans");
+        enchanted_cooked_mutton = createMaterialItem(Material.COOKED_MUTTON, 0, true, ChatColor.BLUE + "RARE", true, "Cooked Mutton");
+        enchanted_cookie = createMaterialItem(Material.COOKIE, 0, true, ChatColor.BLUE + "RARE", true, "Cookie");
+        enchanted_diamond = createMaterialItem(Material.DIAMOND, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Diamond");
+        enchanted_diamond_block = createMaterialItem(Material.DIAMOND_BLOCK, 0, true, ChatColor.BLUE + "RARE", false, "Diamond Block");
+        enchanted_egg = createMaterialItem(Material.EGG, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Egg");
+        enchanted_emerald = createMaterialItem(Material.EMERALD, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Emerald");
+        enchanted_emerald_block = createMaterialItem(Material.EMERALD_BLOCK, 0, true, ChatColor.BLUE + "RARE", false, "Emerald Block");
+        enchanted_ender_pearl = createMaterialItem(Material.ENDER_PEARL, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Ender Pearl");
+        enchanted_endstone = createMaterialItem(Material.ENDER_STONE, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Endstone");
+        enchanted_feather = createMaterialItem(Material.FEATHER, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Feather");
+        enchanted_flint = createMaterialItem(Material.FLINT, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Flint");
+        enchanted_ghast_tear = createMaterialItem(Material.GHAST_TEAR, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Ghast Tear");
+        enchanted_glistering_melon = createMaterialItem(Material.SPECKLED_MELON, 0, true, ChatColor.GREEN + "UNCOMMON", true, "Glistering Melon");
+        enchanted_glowstone = createMaterialItem(Material.GLOWSTONE_DUST, 0, true, ChatColor.GREEN + "UNCOMMON", true, "Glowstone Dust");
+        enchanted_glowstone_block = createMaterialItem(Material.GLOWSTONE, 0, true, ChatColor.BLUE + "RARE", true, "Glowstone");
+        enchanted_gold = createMaterialItem(Material.GOLD_INGOT, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Gold Ingot");
+        enchanted_gold_block = createMaterialItem(Material.GOLD_BLOCK, 0, true, ChatColor.BLUE + "RARE", false, "Gold Block");
+        enchanted_golden_carrot = createMaterialItem(Material.GOLDEN_CARROT, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Golden Carrot");
+        enchanted_grilled_pork = createMaterialItem(Material.GRILLED_PORK, 0, true, ChatColor.BLUE + "RARE", false, "Grilled Pork");
+        enchanted_gunpowder = createMaterialItem(Material.SULPHUR, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Gunpowder");
+        enchanted_firework = createMaterialItem(Material.FIREWORK, 0, true, ChatColor.BLUE + "RARE", false, "Firework");
+        enchanted_hay_bale = createMaterialItem(Material.HAY_BLOCK, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Hay Bale");
+        enchanted_ice = createMaterialItem(Material.ICE, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Ice");
+        enchanted_iron = createMaterialItem(Material.IRON_INGOT, 0, true, ChatColor.GREEN + "UNCOMMON", false, "Iron Ingot");
+        /*
+        enchanted_iron_block;
+        enchanted_lapis;
+        enchanted_lapis_block;
+        enchanted_leather;
+        enchanted_magma_ball;
+        enchanted_melon;
+        enchanted_melon_block;
+        enchanted_nether_wart;
+        enchanted_obsidian;
+        enchanted_packed_ice;
+        enchanted_paper;
+        enchanted_pork;
+        enchanted_potato;
+        enchanted_pumpkin;
+        enchanted_quartz;
+        enchanted_quartz_block;
+        enchanted_rabbit_foot;
+        enchanted_mutton;
+        enchanted_rabbit_hide;
+        enchanted_raw_beef;
+        enchanted_raw_chicken;
+        enchanted_raw_rabbit;
+        enchanted_red_mushroom;
+        enchanted_red_mushroom_block;
+        enchanted_redstone;
+        enchanted_redstone_block;
+        enchanted_rotten_flesh;
+        enchanted_sand;
+        enchanted_slime_ball;
+        enchanted_snow_block;
+        enchanted_spider_eye;
+        enchanted_sugar;
+        enchanted_sugar_cane;
+        enchanted_super_egg;
+        enchanted_string;
+         */
     }
 
     public static void initMisc(){
@@ -646,6 +817,46 @@ public class ItemHandler {
         meta.spigot().setUnbreakable(true);
         meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
         item.setItemMeta(meta);
+        return item;
+    }
+
+    public static ItemStack createMaterialItem(Material material, short durability, boolean enchGlint, String rarity, boolean brewingIngredient, String name){
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+        List<String> lore = new ArrayList<>();
+        item.setDurability(durability);
+        if (enchGlint){
+            meta.addEnchant(Enchantment.LURE, 1, true);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
+        if (brewingIngredient){
+            lore.add(ChatColor.DARK_GRAY + "Brewing Ingredient");
+        }
+        meta.setDisplayName(ChatColor.getLastColors(rarity) + "Enchanted " + name);
+        lore.add(ChatColor.getLastColors(rarity) + ChatColor.BOLD + ChatColor.stripColor(rarity));
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        materialMap.put(ChatColor.stripColor(item.getItemMeta().getDisplayName()), item);
+        return item;
+    }
+
+    public static ItemStack createMaterialItem(Material material, int durability, boolean enchGlint, String rarity, boolean brewingIngredient, String name){
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+        List<String> lore = new ArrayList<>();
+        item.setDurability((short) durability);
+        if (enchGlint){
+            meta.addEnchant(Enchantment.LURE, 1, true);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
+        if (brewingIngredient){
+            lore.add(ChatColor.DARK_GRAY + "Brewing Ingredient");
+        }
+        meta.setDisplayName(ChatColor.getLastColors(rarity) + "Enchanted " + name);
+        lore.add(ChatColor.getLastColors(rarity) + ChatColor.BOLD + ChatColor.stripColor(rarity));
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        materialMap.put(ChatColor.stripColor(item.getItemMeta().getDisplayName()), item);
         return item;
     }
 

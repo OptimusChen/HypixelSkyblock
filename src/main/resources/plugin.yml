@@ -49,6 +49,7 @@ commands:
     description: WIP
   bootscategory:
     description: WIP
+  materialscategory:
   visit:
     description: Visit other players islands
   launchpad:
@@ -60,3 +61,4 @@ commands:
     description: Setup mob spawn locations
   ban:
   kick:
+  location:
