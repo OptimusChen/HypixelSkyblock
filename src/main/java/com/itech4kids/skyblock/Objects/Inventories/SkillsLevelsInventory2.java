@@ -2,7 +2,7 @@ package com.itech4kids.skyblock.Objects.Inventories;
 
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.Items.GuiItems.SkyblockSkillGuiItem;
-import com.itech4kids.skyblock.Objects.SkillType;
+import com.itech4kids.skyblock.Enums.SkillType;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
 import com.itech4kids.skyblock.Util.Config;
 import org.apache.commons.lang.StringUtils;
@@ -17,7 +17,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -6,18 +6,16 @@ import com.itech4kids.skyblock.Objects.Island.IslandManager;
 import com.itech4kids.skyblock.Objects.Items.GuiItems.SkyblockGuiItem;
 import com.itech4kids.skyblock.Objects.Items.GuiItems.SkyblockSkillGuiItem;
 import com.itech4kids.skyblock.Objects.Items.GuiItems.SkyblockStatItem;
-import com.itech4kids.skyblock.Objects.Items.Item;
+import com.itech4kids.skyblock.Objects.Pets.PetEvent.SkyblockPetEquipEvent;
+import com.itech4kids.skyblock.Objects.Pets.PetEvent.SkyblockPetUnequipEvent;
 import com.itech4kids.skyblock.Objects.Pets.SkyblockPet;
 import com.itech4kids.skyblock.Objects.Pets.SkyblockPetGuiItem;
-import com.itech4kids.skyblock.Objects.Pets.SkyblockPetsItem;
-import com.itech4kids.skyblock.Objects.SkillType;
+import com.itech4kids.skyblock.Enums.SkillType;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
-import com.itech4kids.skyblock.Objects.SkyblockStats;
+import com.itech4kids.skyblock.Enums.SkyblockStats;
 import com.itech4kids.skyblock.Util.Config;
 import com.itech4kids.skyblock.Util.ItemUtil;
-import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,7 +26,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.io.IOException;
-import java.nio.channels.SelectionKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -285,7 +282,7 @@ public class SkyblockMenuListener implements Listener {
                     player.openInventory(menu);
                     break;
                 case "crafting table":
-                    player.performCommand("workbench");
+                    player.performCommand("craft");
                     break;
                 case "wardrobe":
                     skyblockPlayer.setInventory("Wardrobe", Bukkit.createInventory(null, 54, "Wardrobe"));
@@ -366,6 +363,7 @@ public class SkyblockMenuListener implements Listener {
                     for (int i = 0; i < lore.size(); ++i) {
                         String string = lore.get(i);
                         if (string.startsWith(ChatColor.RED + "Click to despawn!")) {
+                            Bukkit.getPluginManager().callEvent(new SkyblockPetUnequipEvent(player, skyblockPlayer.activePet));
                             skyblockPlayer.activePet.remove();
                             skyblockPlayer.activePet = null;
                             Config.setActivePet(player, null);
@@ -381,6 +379,7 @@ public class SkyblockMenuListener implements Listener {
                                 skyblockPlayer.activePet.remove();
                             }
                             skyblockPlayer.activePet = SkyblockPet.spawnArmorStand(player, e.getCurrentItem());
+                            Bukkit.getPluginManager().callEvent(new SkyblockPetEquipEvent(player, skyblockPlayer.activePet));
                             break;
                         }
                     }

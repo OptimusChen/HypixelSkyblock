@@ -6,9 +6,9 @@ import com.itech4kids.skyblock.CustomMobs.Zombie.SkyblockZombieType;
 import com.itech4kids.skyblock.Events.SkyblockSkillExpGainEvent;
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.Island.IslandManager;
-import com.itech4kids.skyblock.Objects.SkillType;
+import com.itech4kids.skyblock.Enums.SkillType;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
-import com.itech4kids.skyblock.Objects.SkyblockStats;
+import com.itech4kids.skyblock.Enums.SkyblockStats;
 import com.itech4kids.skyblock.Util.Config;
 import com.itech4kids.skyblock.Util.RegenerativeBlock;
 import net.citizensnpcs.api.CitizensAPI;
@@ -27,12 +27,9 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 public class SkillGainListeners implements Listener {
@@ -58,9 +55,8 @@ public class SkillGainListeners implements Listener {
         if (e.getState().equals(PlayerFishEvent.State.CAUGHT_FISH)) {
             if (c <= skyblockPlayer.getStat(SkyblockStats.SEA_CREATURE_CHANCE)) {
                 if (r2 == 0) {
-                    SkyblockZombie skyblockZombie = new SkyblockZombie(SkyblockZombieType.SEA_WALKER, ((CraftWorld) player.getWorld()).getHandle());
-                    world.addEntity(skyblockZombie);
-                    skyblockZombie.enderTeleportTo(x, y, z);
+                    SkyblockZombie skyblockZombie = new SkyblockZombie(SkyblockZombieType.SEA_WALKER, e.getHook().getLocation());
+
                 } else if (r2 == 1) {
                     NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, ChatColor.RED + "Yeti " + ChatColor.GREEN + Main.format(1 * 2000000) + ChatColor.RED + "❤");
                     npc.spawn(new Location(world.getWorld(), x, y, z));

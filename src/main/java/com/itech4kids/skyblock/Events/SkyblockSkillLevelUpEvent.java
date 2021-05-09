@@ -1,6 +1,6 @@
 package com.itech4kids.skyblock.Events;
 
-import com.itech4kids.skyblock.Objects.SkillType;
+import com.itech4kids.skyblock.Enums.SkillType;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
 import com.itech4kids.skyblock.Util.Config;
 import org.bukkit.Sound;

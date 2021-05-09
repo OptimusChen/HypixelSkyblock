@@ -1,4 +1,4 @@
-package com.itech4kids.skyblock.Commands;
+package com.itech4kids.skyblock.Commands.PlayerCommands;
 
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.Items.ItemHandler;

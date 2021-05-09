@@ -1,4 +1,4 @@
-package com.itech4kids.skyblock.Commands;
+package com.itech4kids.skyblock.Commands.Moderation;
 
 import com.itech4kids.skyblock.Objects.Island.IslandManager;
 import org.bukkit.Bukkit;

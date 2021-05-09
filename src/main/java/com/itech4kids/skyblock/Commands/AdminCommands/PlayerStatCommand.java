@@ -1,8 +1,8 @@
-package com.itech4kids.skyblock.Commands;
+package com.itech4kids.skyblock.Commands.AdminCommands;
 
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
-import com.itech4kids.skyblock.Objects.SkyblockStats;
+import com.itech4kids.skyblock.Enums.SkyblockStats;
 import com.itech4kids.skyblock.Util.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

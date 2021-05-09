@@ -1,4 +1,4 @@
-package com.itech4kids.skyblock.Commands;
+package com.itech4kids.skyblock.Commands.Moderation;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

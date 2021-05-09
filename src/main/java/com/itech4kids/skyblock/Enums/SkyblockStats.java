@@ -1,4 +1,4 @@
-package com.itech4kids.skyblock.Objects;
+package com.itech4kids.skyblock.Enums;
 
 public enum SkyblockStats {
 

@@ -468,10 +468,6 @@ public class ItemHandler {
         end_stone_swordAbilityDesc.add(ChatColor.GRAY + "on your next hit (within 5");
         end_stone_swordAbilityDesc.add(ChatColor.GRAY + "seconds) depending on how");
         end_stone_swordAbilityDesc.add(ChatColor.GRAY + "much mana was consumed!");
-        List<String> recluse_fangAbilityDesc = new ArrayList<>();;
-        List<String> reaper_falchionLore = new ArrayList<>();
-        List<String> pooch_SwordLore = new ArrayList<>();
-        List<String> edible_MaceAbliityDesc = new ArrayList<>();
 
         aspect_of_the_jerry = createInGameItem(Material.WOOD_SWORD, ChatColor.WHITE + "Aspect of the Jerry", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Parley", Collections.singletonList(ChatColor.GRAY + "Channel your inner Jerry."), "RIGHT CLICK", 0, "5s", "COMMON SWORD", 1, 0, 0, 0, 0, 0, 0,0,true);
         fancy_sword = createInGameItem(Material.GOLD_SWORD, ChatColor.WHITE + "Fancy Sword", ReforgeTypes.NO_REFORGE, 1, fancySwordDescription, true, false, "", null, "", 0, "", "COMMON SWORD", 20, 0, 0, 0, 0, 0, 0,0,true);
@@ -498,10 +494,6 @@ public class ItemHandler {
         zombie_sword = createInGameItem(Material.IRON_SWORD, ChatColor.BLUE + "Zombie Sword", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Instant Heal", zombieSwordAbilityDesc, "RIGHT CLICK", 0, "", "RARE SWORD", 100, 50, 0, 0, 0, 50, 0, 0, true);
         ornate_zombie_sword = createInGameItem(Material.GOLD_SWORD, ChatColor.DARK_PURPLE + "Ornate Zombie Sword", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Instant Heal", ornateZombieSwordAbilityDesc, "RIGHT CLICK", 70, "", "EPIC SWORD", 110, 60, 0, 0, 0, 50, 0, 0, true);
         end_stone_sword = createInGameItem(Material.GOLD_SWORD, ChatColor.LIGHT_PURPLE + "End Stone Sword", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Extreme Focus", end_stone_swordAbilityDesc, "RIGHT CLICK", 0, "", "EPIC SWORD", 120, 80, 0, 0, 0, 0, 0, 0, true);
-        //recluse_fang = createInGameItem(Material.IRON_SWORD, ChatColor.BLUE + "Recluse Fang", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Squash Em'", ItemUtil.addLoreMessage("§7Squash §eSpiders §7to accumulate §c❁Strength §7against them. §c+1 §c❁Strength§7 per §a40 §7squashed".replaceAll(" ", " "), recluse_fangAbilityDesc), "", 0, "", "RARE SWORD", 120, 30, 0, 20, 0, 0, 0, 0, true);
-        //reaper_falchion = createInGameItem(Material.DIAMOND_SWORD, ChatColor.DARK_PURPLE + "Reaper Falchion", ReforgeTypes.NO_REFORGE, 1, ItemUtil.addLoreMessage("§7Heal §c10❤ HP§7 per hit. §7Deal §a+200% damage to Zombies. §7Receive §a20% less damage from Zombies when held.", reaper_falchionLore), false, false, "", null, "", 0, "", "EPIC SWORD", 120, 100, 0, 0, 0, 200, 0, 0, true);
-        //pooch_sword = createInGameItem(Material.GOLD_SWORD, ChatColor.GOLD + "Pooch Sword", ReforgeTypes.NO_REFORGE, 1, ItemUtil.addLoreMessage("§7Deal §c+1 §7Damage per §c50 §cmax ❤§7. Receive §a-20% §7damage from wolves. Gain §c+150❁ Strength §7against wolves.".replaceAll(" ", " "), pooch_SwordLore), false, false, "", null, "", 0, "", "LEGENDARY SWORD", 120, 20, 0, 0, 0, 0, 5, 0, true);
-        //edibleMace = createInGameItem(Material.MUTTON, ChatColor.BLUE + "Edible Mace", ReforgeTypes.NO_REFORGE, 1, null, false, true, "ME SMASH HEAD", ItemUtil.addLoreMessage("§7Your next attack deals double damage and §7weakens animals, making them deal §7-35% damage for §a30 §7seconds." + "\n §8Debuff §8doesn't stack.", edible_MaceAbliityDesc), "RIGHT CLICK", 100, "", "RARE SWORD", 125, 25, 0, 0, 0, 0, 0, 0, true);
 
         swordMap.put("aspect_of_the_jerry", aspect_of_the_jerry);
         swordMap.put("fancy_sword", fancy_sword);

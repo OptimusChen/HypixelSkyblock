@@ -1,10 +1,9 @@
-package com.itech4kids.skyblock.Commands;
+package com.itech4kids.skyblock.Commands.PlayerCommands;
 
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.Items.GuiItems.SkyblockGuiItem;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
-import com.itech4kids.skyblock.Objects.SkyblockStats;
-import com.itech4kids.skyblock.Util.Config;
+import com.itech4kids.skyblock.Enums.SkyblockStats;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -44,7 +43,7 @@ public class SkyblockMenuCommand implements CommandExecutor {
             ArrayList<String> lore = new ArrayList<String>();
             skullMeta.setDisplayName(ChatColor.GREEN + "Your Skyblock Stats");
             lore.add(ChatColor.RED + "❤ Health " + ChatColor.WHITE + skyblockPlayer.getStat(SkyblockStats.HEALTH) + " HP");
-            lore.add(ChatColor.GREEN + "❈ Defence " + ChatColor.WHITE + skyblockPlayer.getStat(SkyblockStats.DEFENSE));
+            lore.add(ChatColor.GREEN + "❈ Defense " + ChatColor.WHITE + skyblockPlayer.getStat(SkyblockStats.DEFENSE));
             lore.add(ChatColor.RED + "❁ Strength " + ChatColor.WHITE + skyblockPlayer.getStat(SkyblockStats.STRENGTH));
             lore.add(ChatColor.WHITE + "✦ Speed " + ChatColor.WHITE + skyblockPlayer.getStat(SkyblockStats.SPEED));
             lore.add(ChatColor.BLUE + "☣ Crit Chance " + ChatColor.WHITE + skyblockPlayer.getStat(SkyblockStats.CRIT_CHANCE) + "%");

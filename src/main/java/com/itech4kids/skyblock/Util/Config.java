@@ -1,31 +1,20 @@
 package com.itech4kids.skyblock.Util;
 
 import com.itech4kids.skyblock.Main;
-import com.itech4kids.skyblock.Objects.Pets.SkyblockPetsItem;
-import com.itech4kids.skyblock.Objects.SkillType;
-import com.itech4kids.skyblock.Objects.SkyblockStats;
-import net.minecraft.server.v1_8_R3.IChatBaseComponent;
-import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
-import org.apache.commons.lang.StringUtils;
+import com.itech4kids.skyblock.Enums.SkyblockStats;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Config {
 

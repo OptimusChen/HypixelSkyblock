@@ -3,6 +3,10 @@ package com.itech4kids.skyblock;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.itech4kids.skyblock.Commands.AdminCommands.ItemCommand;
+import com.itech4kids.skyblock.Commands.AdminCommands.PlayerStatCommand;
+import com.itech4kids.skyblock.Commands.AdminCommands.SkillCommand;
+import com.itech4kids.skyblock.Commands.AdminCommands.SpawnCustomMobCommand;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Boots.BootsCategoryCommand;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Chestplate.ChestplateCategoryCommand;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Helmet.HelmetCategoryCommand;
@@ -12,22 +16,30 @@ import com.itech4kids.skyblock.Commands.ItemBrowser.Sword.SwordCategoryCommand;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Sword.SwordCategoryCommandPage2;
 import com.itech4kids.skyblock.Commands.Items.*;
 import com.itech4kids.skyblock.Commands.*;
-import com.itech4kids.skyblock.Commands.Setup.LaunchPadSetUpCommand;
-import com.itech4kids.skyblock.Commands.Setup.LocationSetupCommand;
-import com.itech4kids.skyblock.Commands.Setup.MobSpawnSetUpCommand;
+import com.itech4kids.skyblock.Commands.Moderation.BanCommand;
+import com.itech4kids.skyblock.Commands.Moderation.KickCommand;
+import com.itech4kids.skyblock.Commands.Moderation.WipeCommand;
+import com.itech4kids.skyblock.Commands.PlayerCommands.*;
+import com.itech4kids.skyblock.Commands.Setup.*;
 import com.itech4kids.skyblock.CustomMobs.Dragon.SkyblockDragon;
 import com.itech4kids.skyblock.CustomMobs.Enderman.SkyblockEnderman;
 import com.itech4kids.skyblock.CustomMobs.Enderman.SkyblockEndermanType;
 import com.itech4kids.skyblock.CustomMobs.PlayerEntities.JERRY;
+import com.itech4kids.skyblock.CustomMobs.SEntityHandler;
+import com.itech4kids.skyblock.CustomMobs.Slayer.SlayerManager;
+import com.itech4kids.skyblock.CustomMobs.Spider.SkyblockSpider;
+import com.itech4kids.skyblock.CustomMobs.Spider.SkyblockSpiderType;
+import com.itech4kids.skyblock.CustomMobs.Wolf.SkyblockWolf;
+import com.itech4kids.skyblock.CustomMobs.Wolf.SkyblockWolfType;
 import com.itech4kids.skyblock.CustomMobs.Zombie.SkyblockZombie;
 import com.itech4kids.skyblock.CustomMobs.Zombie.SkyblockZombieType;
 import com.itech4kids.skyblock.Listeners.*;
+import com.itech4kids.skyblock.Objects.Crafting.CraftingRecipe;
 import com.itech4kids.skyblock.Objects.Island.IslandManager;
 import com.itech4kids.skyblock.Objects.Items.ItemHandler;
 import com.itech4kids.skyblock.Objects.Items.SkyblockUsableItem;
-import com.itech4kids.skyblock.Objects.SkyblockLocation;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
-import com.itech4kids.skyblock.Objects.SkyblockStats;
+import com.itech4kids.skyblock.Enums.SkyblockStats;
 import com.itech4kids.skyblock.Util.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -36,7 +48,6 @@ import net.minecraft.server.v1_8_R3.EntityInsentient;
 import net.minecraft.server.v1_8_R3.EntityTypes;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -59,6 +70,10 @@ public class Main extends JavaPlugin {
     public HashMap<String, SkyblockPlayer> players;
     private static Main main;
     public static ArrayList<ArmorStand> damage_indicator;
+    public CraftingRecipe recipe;
+
+    public SEntityHandler handler;
+    public SlayerManager slayerManger;
 
     @Override
     public void onEnable(){
@@ -68,9 +83,12 @@ public class Main extends JavaPlugin {
         registerCustomMobs();
         registerListeners();
         registerCommands();
+        handler = new SEntityHandler();
+        slayerManger = new SlayerManager();
         new Config(this);
         new IslandManager();
         new LocationsManager();
+        recipe = new CraftingRecipe(this);
         ItemHandler.init();
         try { new LaunchPadConfig(this); } catch (IOException e) { e.printStackTrace(); }
         try {
@@ -82,9 +100,7 @@ public class Main extends JavaPlugin {
     }
 
     private void registerCustomMobs(){
-        registerEntity("Enderman", 58, SkyblockEnderman.class);
         registerEntity("Dragon", 63, SkyblockDragon.class);
-        registerEntity("Zombie", 54, SkyblockZombie.class);
         registerEntity("Jerry", 120, JERRY.class);
 
     }
@@ -97,13 +113,10 @@ public class Main extends JavaPlugin {
                     if (location.getChunk().isLoaded()) {
                         int i = rand.nextInt(2);
                         if (i == 0) {
-                            SkyblockZombie skyblockZombie = new SkyblockZombie(type, ((CraftWorld) location.getWorld()).getHandle());
-                            if (skyblockZombie.getBukkitEntity().getNearbyEntities(2, 2, 2).size() == 0) {
-                                ((CraftWorld) location.getWorld()).getHandle().addEntity(skyblockZombie);
-                                skyblockZombie.getBukkitEntity().teleport(location);
-                                for (Player player : Bukkit.getOnlinePlayers()) {
-                                    player.playEffect(location, Effect.CLOUD, 10);
-                                }
+                            SkyblockZombie skyblockZombie = new SkyblockZombie(type, location);
+                            skyblockZombie.getVanillaEntity().teleport(location);
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                player.playEffect(location, Effect.CLOUD, 10);
                             }
                         }
                     }
@@ -117,14 +130,49 @@ public class Main extends JavaPlugin {
                         int i = rand.nextInt(2);
                         if (!type.equals(SkyblockEndermanType.ZEALOT)) {
                             if (i == 0) {
-                                SkyblockEnderman skyblockEnderman = new SkyblockEnderman(type, ((CraftWorld) location.getWorld()).getHandle());
-                                if (skyblockEnderman.getBukkitEntity().getNearbyEntities(2, 2, 2).size() == 0) {
-                                    ((CraftWorld) location.getWorld()).getHandle().addEntity(skyblockEnderman);
-                                    skyblockEnderman.getBukkitEntity().teleport(location);
-                                    for (Player player : Bukkit.getOnlinePlayers()) {
-                                        player.playEffect(location, Effect.CLOUD, 10);
-                                    }
+                                SkyblockEnderman skyblockEnderman = new SkyblockEnderman(type, location);
+                                skyblockEnderman.getVanillaEntity().teleport(location);
+                                for (Player player : Bukkit.getOnlinePlayers()) {
+                                    player.playEffect(location, Effect.CLOUD, 10);
                                 }
+                            }
+                        }else{
+                            SkyblockEnderman skyblockEnderman = new SkyblockEnderman(type, location);
+                            skyblockEnderman.getVanillaEntity().teleport(location);
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                player.playEffect(location, Effect.CLOUD, 10);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (SkyblockWolfType type : SkyblockWolfType.values()){
+            if (CustomMobSpawning.getMobSpawnLocations(type.name().toLowerCase()) != null){
+                for (Location location : CustomMobSpawning.getMobSpawnLocations(type.name().toLowerCase())){
+                    if (location.getChunk().isLoaded()) {
+                        int i = rand.nextInt(2);
+                        if (i == 0) {
+                            SkyblockWolf skyblockWolf = new SkyblockWolf(type, location);
+                            skyblockWolf.getVanillaEntity().teleport(location);
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                player.playEffect(location, Effect.CLOUD, 10);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (SkyblockSpiderType type : SkyblockSpiderType.values()){
+            if (CustomMobSpawning.getMobSpawnLocations(type.name().toLowerCase()) != null){
+                for (Location location : CustomMobSpawning.getMobSpawnLocations(type.name().toLowerCase())){
+                    if (location.getChunk().isLoaded()) {
+                        int i = rand.nextInt(2);
+                        if (i == 0) {
+                            SkyblockSpider skyblockSpider = new SkyblockSpider(type, location);
+                            skyblockSpider.getVanillaEntity().teleport(location);
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                player.playEffect(location, Effect.CLOUD, 10);
                             }
                         }
                     }
@@ -141,6 +189,8 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new AbilityListener(), this);
         Bukkit.getPluginManager().registerEvents(new StatListener(), this);
         Bukkit.getPluginManager().registerEvents(new CollectionsListener(), this);
+        Bukkit.getPluginManager().registerEvents(new CraftingListeners(), this);
+        Bukkit.getPluginManager().registerEvents(new EntityDamageListeners(), this);
     }
 
     private void registerCommands(){
@@ -172,6 +222,8 @@ public class Main extends JavaPlugin {
         getCommand("kick").setExecutor(new KickCommand());
         getCommand("ban").setExecutor(new BanCommand());
         getCommand("location").setExecutor(new LocationSetupCommand());
+        getCommand("craft").setExecutor(new WorkBenchCommand());
+        getCommand("spawnNpc").setExecutor(new SpawnNpcCommand());
     }
 
     public void updateMaxHealth(SkyblockPlayer skyblockPlayer) {
@@ -326,8 +378,11 @@ public class Main extends JavaPlugin {
         score.setScore(scoreNum--);
         score = objective.getScore(org.bukkit.ChatColor.GRAY + " " + hours + ":" + minutes + "pm " + ChatColor.YELLOW + "☀");
         score.setScore(scoreNum--);
-        //score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + ChatColor.GRAY + "None");
-        score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + org.bukkit.ChatColor.AQUA + "Location");
+        if (skyblockPlayer.location != null){
+            score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + skyblockPlayer.location.color + skyblockPlayer.location.name);
+        }else{
+            score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + ChatColor.GRAY + "None");
+        }
         score.setScore(scoreNum--);
         score = objective.getScore(org.bukkit.ChatColor.WHITE + " ");
         score.setScore(scoreNum--);
