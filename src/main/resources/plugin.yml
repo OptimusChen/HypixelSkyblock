@@ -64,3 +64,6 @@ commands:
   location:
   craft:
   spawnNpc:
+  clearchat:
+  slayer:
+  spot:

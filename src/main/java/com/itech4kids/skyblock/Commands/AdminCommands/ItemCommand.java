@@ -49,6 +49,7 @@ public class ItemCommand implements CommandExecutor {
         items.add(ItemHandler.reaper_falchion);
         items.add(ItemHandler.pooch_sword);
         items.add(ItemHandler.edibleMace);
+        items.add(ItemHandler.maddox_batphone);
 
         if(!(sender instanceof Player)){
             sender.sendMessage(ChatColor.RED + "Only players can use this command!");

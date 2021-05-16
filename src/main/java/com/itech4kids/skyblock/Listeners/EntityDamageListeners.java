@@ -1,6 +1,7 @@
 package com.itech4kids.skyblock.Listeners;
 
 import com.itech4kids.skyblock.CustomMobs.SEntity;
+import com.itech4kids.skyblock.Events.SkyblockEntitySkillGainEvent;
 import com.itech4kids.skyblock.Events.SkyblockSkillExpGainEvent;
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Enums.SkillType;
@@ -41,17 +42,20 @@ public class EntityDamageListeners implements Listener {
         DecimalFormat formatter = new DecimalFormat("#,###");
         formatter.setGroupingUsed(true);
 
-        if (!e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK)){
-            if (!e.getEntity().getType().equals(EntityType.ARMOR_STAND)) {
-                ItemUtil.setDamageIndicator(e.getEntity().getLocation(), ChatColor.GRAY + "" + formatter.format(Math.round(e.getFinalDamage())));
-            }
-        }
-
         if (e.getEntity() instanceof Player){
             if (!e.getEntity().hasMetadata("NPC")) {
                 if (!e.isCancelled()) {
                     SkyblockPlayer skyblockPlayer = main.getPlayer(e.getEntity().getName());
-                    e.setDamage((e.getFinalDamage() * (skyblockPlayer.getBukkitPlayer().getMaxHealth() / skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH))));
+                    ItemUtil.setDamageIndicator(e.getEntity().getLocation(), ChatColor.GRAY + "" + Math.round(e.getFinalDamage() - (e.getFinalDamage() * ((skyblockPlayer.getStat(SkyblockStats.DEFENSE)/(skyblockPlayer.getStat(SkyblockStats.DEFENSE) + 100F))))));
+                    skyblockPlayer.setStat(SkyblockStats.HEALTH, (int) (skyblockPlayer.getStat(SkyblockStats.HEALTH) - (e.getFinalDamage() - (e.getFinalDamage() * ((skyblockPlayer.getStat(SkyblockStats.DEFENSE)/(skyblockPlayer.getStat(SkyblockStats.DEFENSE) + 100F)))))));
+                    e.setDamage(0);
+                    skyblockPlayer.getBukkitPlayer().setHealth(skyblockPlayer.getBukkitPlayer().getHealth() - (((e.getFinalDamage() - (e.getFinalDamage() * ((skyblockPlayer.getStat(SkyblockStats.DEFENSE)/(skyblockPlayer.getStat(SkyblockStats.DEFENSE) + 100F))))) * (skyblockPlayer.getBukkitPlayer().getMaxHealth() / (skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH))))));
+                }
+            }
+        }else{
+            if (!e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK)){
+                if (!e.getEntity().getType().equals(EntityType.ARMOR_STAND)) {
+                    ItemUtil.setDamageIndicator(e.getEntity().getLocation(), ChatColor.GRAY + "" + formatter.format(Math.round(e.getFinalDamage())));
                 }
             }
         }
@@ -89,7 +93,7 @@ public class EntityDamageListeners implements Listener {
 
         DecimalFormat formatter = new DecimalFormat("#,###");
         formatter.setGroupingUsed(true);
-        double damage = 5 + skyblockPlayer.getStat((SkyblockStats.DAMAGE)) + (skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 5) * (1 + skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 100);
+        double damage = 5 + skyblockPlayer.getStat((SkyblockStats.DAMAGE)) + (skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 5F) * (1 + skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 100F);
         if (!npc.getEntity().getType().equals(EntityType.ARMOR_STAND)) {
             if (i <= skyblockPlayer.getStat(SkyblockStats.CRIT_CHANCE)) {
                 ItemUtil.setDamageIndicator(npc.getEntity().getLocation(), ItemUtil.addCritTexture(String.valueOf(formatter.format(Math.round((damage * ((100 + skyblockPlayer.getStat(SkyblockStats.CRIT_DAMAGE))) / 100))))));
@@ -143,12 +147,13 @@ public class EntityDamageListeners implements Listener {
                     int r = new Random().nextInt(100);
                     DecimalFormat formatter = new DecimalFormat("#,###");
                     formatter.setGroupingUsed(true);
-                    double damage = 5 + skyblockPlayer.getStat((SkyblockStats.DAMAGE)) + (skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 5) * (1 + skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 100);
+                    double damage = 5 + skyblockPlayer.getStat((SkyblockStats.DAMAGE)) + (skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 5F) * (1 + skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 100F);
 
                     if (e.getEntity().hasMetadata("identifier")){
                         SEntity sEntity = Main.getMain().handler.getEntity(e.getEntity());
                         if (!e.getEntity().getType().equals(EntityType.ARMOR_STAND)) {
                             sEntity.addDespawnDelay(15*20);
+                            sEntity.setLastDamager(skyblockPlayer.getBukkitPlayer());
                             if (i <= skyblockPlayer.getStat(SkyblockStats.CRIT_CHANCE)) {
                                 e.setDamage((damage * ((100 + skyblockPlayer.getStat(SkyblockStats.CRIT_DAMAGE))) / 100)/sEntity.getMaximumHealth());
                                 ItemUtil.setDamageIndicator(e.getEntity().getLocation(), ItemUtil.addCritTexture(String.valueOf(formatter.format(Math.round((damage * ((100 + skyblockPlayer.getStat(SkyblockStats.CRIT_DAMAGE))) / 100))))));
@@ -200,26 +205,29 @@ public class EntityDamageListeners implements Listener {
                     NPC npc = CitizensAPI.getNPCRegistry().getNPC(e.getDamager());
                     SkyblockPlayer skyblockPlayer = main.getPlayer(e.getEntity().getName());
                     if (npc.getName().contains(ChatColor.RED + "Yeti")) {
-                        e.setDamage((300 * (skyblockPlayer.getBukkitPlayer().getMaxHealth() / skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH))));
-                        skyblockPlayer.setStat(SkyblockStats.HEALTH, (skyblockPlayer.getStat(SkyblockStats.HEALTH) - 300));
+                        skyblockPlayer.setStat(SkyblockStats.HEALTH, (int) (skyblockPlayer.getStat(SkyblockStats.HEALTH) - (300 - (300 * ((skyblockPlayer.getStat(SkyblockStats.DEFENSE)/(skyblockPlayer.getStat(SkyblockStats.DEFENSE) + 100F)))))));
+                        e.setDamage((((300 - (300 * ((skyblockPlayer.getStat(SkyblockStats.DEFENSE)/(skyblockPlayer.getStat(SkyblockStats.DEFENSE) + 100F))))) * (skyblockPlayer.getBukkitPlayer().getMaxHealth() / (skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH))))));
                     } else if (npc.getName().contains(ChatColor.RED + "Frozen Steve")) {
-                        e.setDamage((50 * (skyblockPlayer.getBukkitPlayer().getMaxHealth() / skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH))));
-                        skyblockPlayer.setStat(SkyblockStats.HEALTH, (skyblockPlayer.getStat(SkyblockStats.HEALTH) - 50));
+                        skyblockPlayer.setStat(SkyblockStats.HEALTH, (int) (skyblockPlayer.getStat(SkyblockStats.HEALTH) - (50 - (50 * ((skyblockPlayer.getStat(SkyblockStats.DEFENSE)/(skyblockPlayer.getStat(SkyblockStats.DEFENSE) + 100F)))))));
+                        e.setDamage((((50 - (50 * ((skyblockPlayer.getStat(SkyblockStats.DEFENSE)/(skyblockPlayer.getStat(SkyblockStats.DEFENSE) + 100F))))) * (skyblockPlayer.getBukkitPlayer().getMaxHealth() / (skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH))))));
                     }
                 }
 
             }else{
-                e.setCancelled(true);
+                if (!e.getDamager().hasMetadata("NPC")){
+                    e.setCancelled(true);
+                }
+
             }
         }else if (e.getDamager() instanceof Projectile){
             Projectile projectile = (Projectile) e.getDamager();
             if (projectile.getShooter() instanceof Player){
-                SkyblockPlayer skyblockPlayer = main.getPlayer(e.getDamager().getName());
+                SkyblockPlayer skyblockPlayer = main.getPlayer(((Player) projectile.getShooter()).getName());
                 int i = new Random().nextInt(100);
                 int r = new Random().nextInt(100);
                 DecimalFormat formatter = new DecimalFormat("#,###");
                 formatter.setGroupingUsed(true);
-                double damage = 5 + skyblockPlayer.getStat((SkyblockStats.DAMAGE)) + (skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 5) * (1 + skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 100);
+                double damage = 5 + skyblockPlayer.getStat((SkyblockStats.DAMAGE)) + (skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 5F) * (1 + skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 100F);
                 if (!e.getEntity().getType().equals(EntityType.ARMOR_STAND)) {
                     if (i <= skyblockPlayer.getStat(SkyblockStats.CRIT_CHANCE)) {
                         e.setDamage(damage * ((100 + skyblockPlayer.getStat(SkyblockStats.CRIT_DAMAGE))) / 100);
@@ -249,9 +257,26 @@ public class EntityDamageListeners implements Listener {
                 if (e.getEntity() instanceof Player){
                     sEntity.setDespawnDelay(15*20);
                     SkyblockPlayer skyblockPlayer = main.getPlayer(e.getEntity().getName());
-                    e.setDamage(sEntity.getAttackDamage());
-                    e.setDamage((e.getFinalDamage() * (skyblockPlayer.getBukkitPlayer().getMaxHealth() / skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH))));
-                    skyblockPlayer.setStat(SkyblockStats.HEALTH, (skyblockPlayer.getStat(SkyblockStats.HEALTH) - sEntity.getAttackDamage()));
+                    skyblockPlayer.setStat(SkyblockStats.HEALTH, (int) (skyblockPlayer.getStat(SkyblockStats.HEALTH) - (sEntity.getAttackDamage() - (sEntity.getAttackDamage() * ((skyblockPlayer.getStat(SkyblockStats.DEFENSE)/(skyblockPlayer.getStat(SkyblockStats.DEFENSE) + 100F)))))));
+                    e.setDamage(0);
+                    skyblockPlayer.getBukkitPlayer().setHealth(skyblockPlayer.getBukkitPlayer().getHealth() - (((sEntity.getAttackDamage() - (sEntity.getAttackDamage() * ((skyblockPlayer.getStat(SkyblockStats.DEFENSE)/(skyblockPlayer.getStat(SkyblockStats.DEFENSE) + 100F))))) * (skyblockPlayer.getBukkitPlayer().getMaxHealth() / (skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH))))));
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDeath(EntityDeathEvent e){
+        Entity entity = e.getEntity();
+        if (e.getEntity().hasMetadata("identifier")) {
+            SEntity sEntity = Main.getMain().handler.getEntity(entity);
+            e.setDroppedExp(0);
+            e.getDrops().clear();
+            if (sEntity.getSkillType() != null){
+                try {
+                    Bukkit.getPluginManager().callEvent(new SkyblockEntitySkillGainEvent(Main.getMain().getPlayer(sEntity.getLastDamager().getName()), sEntity.getSkillType(), sEntity.getSkillExpDropped(), sEntity.getVanillaEntity()));
+                } catch (IOException exception) {
+                    exception.printStackTrace();
                 }
             }
         }

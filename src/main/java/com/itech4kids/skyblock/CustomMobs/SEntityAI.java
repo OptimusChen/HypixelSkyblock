@@ -98,6 +98,7 @@ public class SEntityAI {
                             if (sEntity.getVanillaEntity().getType().equals(EntityType.ZOMBIE)){
                                 Zombie zombie = (Zombie) sEntity.getVanillaEntity();
                                 zombie.setTarget((LivingEntity) entity);
+                                zombie.setVillager(false);
                                 AttributeInstance attributes = ((EntityInsentient)((CraftEntity)sEntity.getVanillaEntity()).getHandle()).getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
 
                                 attributes.setValue(0.3);

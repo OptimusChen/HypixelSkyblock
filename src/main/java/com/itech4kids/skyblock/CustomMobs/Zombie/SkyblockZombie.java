@@ -2,6 +2,7 @@ package com.itech4kids.skyblock.CustomMobs.Zombie;
 
 import com.itech4kids.skyblock.CustomMobs.SEntity;
 import com.itech4kids.skyblock.CustomMobs.SEntityAI;
+import com.itech4kids.skyblock.Enums.SkillType;
 import com.itech4kids.skyblock.Main;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -29,6 +30,8 @@ public class SkyblockZombie extends SEntity {
         switch (zombieType){
             case GRAVEYARD:
                 loadStats(100, 20, true, equipment, "Zombie", 1);
+                setSkillExpDropped(7);
+                setSkillType(SkillType.COMBAT);
                 break;
             case SEA_WALKER:
                 helmet = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
@@ -72,6 +75,8 @@ public class SkyblockZombie extends SEntity {
                 loadStats(2000, 350, true, equipment, "Crypt Ghoul", 30);
 
                 SEntityAI.runGhoulAI(this);
+                setSkillExpDropped(30);
+                setSkillType(SkillType.COMBAT);
                 break;
             case GOLDEN_GHOUL:
                 chestplate = new ItemStack(Material.GOLD_CHESTPLATE);
@@ -88,6 +93,8 @@ public class SkyblockZombie extends SEntity {
                 loadStats(45000, 800, true, equipment, "Golden Ghoul", 50);
 
                 SEntityAI.runGhoulAI(this);
+                setSkillExpDropped(45);
+                setSkillType(SkillType.COMBAT);
                 break;
             case LAPIS_ZOMBIE:
                 helmet = new ItemStack(Material.SEA_LANTERN);

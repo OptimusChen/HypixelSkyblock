@@ -3,10 +3,7 @@ package com.itech4kids.skyblock;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.itech4kids.skyblock.Commands.AdminCommands.ItemCommand;
-import com.itech4kids.skyblock.Commands.AdminCommands.PlayerStatCommand;
-import com.itech4kids.skyblock.Commands.AdminCommands.SkillCommand;
-import com.itech4kids.skyblock.Commands.AdminCommands.SpawnCustomMobCommand;
+import com.itech4kids.skyblock.Commands.AdminCommands.*;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Boots.BootsCategoryCommand;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Chestplate.ChestplateCategoryCommand;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Helmet.HelmetCategoryCommand;
@@ -24,8 +21,8 @@ import com.itech4kids.skyblock.Commands.Setup.*;
 import com.itech4kids.skyblock.CustomMobs.Dragon.SkyblockDragon;
 import com.itech4kids.skyblock.CustomMobs.Enderman.SkyblockEnderman;
 import com.itech4kids.skyblock.CustomMobs.Enderman.SkyblockEndermanType;
-import com.itech4kids.skyblock.CustomMobs.PlayerEntities.JERRY;
 import com.itech4kids.skyblock.CustomMobs.SEntityHandler;
+import com.itech4kids.skyblock.CustomMobs.Slayer.SlayerListener;
 import com.itech4kids.skyblock.CustomMobs.Slayer.SlayerManager;
 import com.itech4kids.skyblock.CustomMobs.Spider.SkyblockSpider;
 import com.itech4kids.skyblock.CustomMobs.Spider.SkyblockSpiderType;
@@ -38,12 +35,12 @@ import com.itech4kids.skyblock.Objects.Crafting.CraftingRecipe;
 import com.itech4kids.skyblock.Objects.Island.IslandManager;
 import com.itech4kids.skyblock.Objects.Items.ItemHandler;
 import com.itech4kids.skyblock.Objects.Items.SkyblockUsableItem;
+import com.itech4kids.skyblock.Objects.Potions.SPotListener;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
 import com.itech4kids.skyblock.Enums.SkyblockStats;
 import com.itech4kids.skyblock.Util.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_8_R3.EntityInsentient;
 import net.minecraft.server.v1_8_R3.EntityTypes;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
@@ -101,7 +98,6 @@ public class Main extends JavaPlugin {
 
     private void registerCustomMobs(){
         registerEntity("Dragon", 63, SkyblockDragon.class);
-        registerEntity("Jerry", 120, JERRY.class);
 
     }
 
@@ -191,6 +187,10 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new CollectionsListener(), this);
         Bukkit.getPluginManager().registerEvents(new CraftingListeners(), this);
         Bukkit.getPluginManager().registerEvents(new EntityDamageListeners(), this);
+        Bukkit.getPluginManager().registerEvents(new MerchantListeners(), this);
+        Bukkit.getPluginManager().registerEvents(new SlayerListener(), this);
+        Bukkit.getPluginManager().registerEvents(new SPotListener(), this);
+
     }
 
     private void registerCommands(){
@@ -224,6 +224,9 @@ public class Main extends JavaPlugin {
         getCommand("location").setExecutor(new LocationSetupCommand());
         getCommand("craft").setExecutor(new WorkBenchCommand());
         getCommand("spawnNpc").setExecutor(new SpawnNpcCommand());
+        getCommand("clearchat").setExecutor(new ClearChatCommand());
+        getCommand("slayer").setExecutor(new SlayerCommand());
+        getCommand("spot").setExecutor(new PotionCommand());
     }
 
     public void updateMaxHealth(SkyblockPlayer skyblockPlayer) {
@@ -369,31 +372,138 @@ public class Main extends JavaPlugin {
 
         SkyblockPlayer skyblockPlayer = getPlayer(player.getName());
         skyblockPlayer.location = LocationsManager.getLocation(player.getLocation());
+        Score score;
 
-        Score score = objective.getScore(org.bukkit.ChatColor.GRAY + "" + dateString + " " + "Skyblock");
-        score.setScore(scoreNum--);
-        score = objective.getScore(org.bukkit.ChatColor.GRAY + "   ");
-        score.setScore(scoreNum--);
-        score = objective.getScore(org.bukkit.ChatColor.WHITE + " Spring 10th");
-        score.setScore(scoreNum--);
-        score = objective.getScore(org.bukkit.ChatColor.GRAY + " " + hours + ":" + minutes + "pm " + ChatColor.YELLOW + "☀");
-        score.setScore(scoreNum--);
-        if (skyblockPlayer.location != null){
-            score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + skyblockPlayer.location.color + skyblockPlayer.location.name);
-        }else{
-            score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + ChatColor.GRAY + "None");
+        switch (skyblockPlayer.state){
+            case DEFAULT:
+                score = objective.getScore(org.bukkit.ChatColor.GRAY + "" + dateString + " " + "Skyblock");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.GRAY + "   ");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + " Spring 10th");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.GRAY + " " + hours + ":" + minutes + "pm " + ChatColor.YELLOW + "☀");
+                score.setScore(scoreNum--);
+                if (skyblockPlayer.location != null){
+                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + skyblockPlayer.location.color + skyblockPlayer.location.name);
+                }else{
+                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + ChatColor.GRAY + "None");
+                }
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + " ");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "Purse: " + ChatColor.GOLD +  formatter.format(Config.getPurseCoins(skyblockPlayer.getBukkitPlayer())));
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "Bits: " + ChatColor.AQUA + formatter.format(Config.getBits(player)));
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "  ");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.YELLOW + "www.hypixel.net");
+                score.setScore(scoreNum--);
+                return scoreNum;
+            case SLAYER_QUEST_1:
+                score = objective.getScore(org.bukkit.ChatColor.GRAY + "" + dateString + " " + "Skyblock");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.GRAY + "   ");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + " Spring 10th");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.GRAY + " " + hours + ":" + minutes + "pm " + ChatColor.YELLOW + "☀");
+                score.setScore(scoreNum--);
+                if (skyblockPlayer.location != null){
+                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + skyblockPlayer.location.color + skyblockPlayer.location.name);
+                }else{
+                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + ChatColor.GRAY + "None");
+                }
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + " ");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "Purse: " + ChatColor.GOLD +  formatter.format(Config.getPurseCoins(skyblockPlayer.getBukkitPlayer())));
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "Bits: " + ChatColor.AQUA + formatter.format(Config.getBits(player)));
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "          ");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "Slayer Quest");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.DARK_RED + slayerManger.getQuest(player).getBoss().getName() + " " + slayerManger.getQuest(player).getBoss().getBossLevel());
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.GRAY + " (" + ChatColor.YELLOW + Main.format(slayerManger.getQuest(player).getExp()) + ChatColor.GRAY + "/" + ChatColor.RED + Main.format(slayerManger.getQuest(player).getNeededExp()) + ChatColor.GRAY + ") Combat XP");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "  ");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.YELLOW + "www.hypixel.net");
+                score.setScore(scoreNum--);
+                return scoreNum;
+            case SLAYER_QUEST_2:
+                score = objective.getScore(org.bukkit.ChatColor.GRAY + "" + dateString + " " + "Skyblock");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.GRAY + "   ");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + " Spring 10th");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.GRAY + " " + hours + ":" + minutes + "pm " + ChatColor.YELLOW + "☀");
+                score.setScore(scoreNum--);
+                if (skyblockPlayer.location != null){
+                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + skyblockPlayer.location.color + skyblockPlayer.location.name);
+                }else{
+                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + ChatColor.GRAY + "None");
+                }
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + " ");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "Purse: " + ChatColor.GOLD +  formatter.format(Config.getPurseCoins(skyblockPlayer.getBukkitPlayer())));
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "Bits: " + ChatColor.AQUA + formatter.format(Config.getBits(player)));
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "           ");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "Slayer Quest");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.DARK_RED + slayerManger.getQuest(player).getBoss().getName() + " " + slayerManger.getQuest(player).getBoss().getBossLevel());
+                score.setScore(scoreNum--);
+                score = objective.getScore(ChatColor.YELLOW + "Slay the boss!");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "  ");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.YELLOW + "www.hypixel.net");
+                score.setScore(scoreNum--);
+                return scoreNum;
+            case SLAYER_QUEST_3:
+                score = objective.getScore(org.bukkit.ChatColor.GRAY + "" + dateString + " " + "Skyblock");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.GRAY + "   ");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + " Spring 10th");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.GRAY + " " + hours + ":" + minutes + "pm " + ChatColor.YELLOW + "☀");
+                score.setScore(scoreNum--);
+                if (skyblockPlayer.location != null){
+                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + skyblockPlayer.location.color + skyblockPlayer.location.name);
+                }else{
+                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + ChatColor.GRAY + "None");
+                }
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + " ");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "Purse: " + ChatColor.GOLD +  formatter.format(Config.getPurseCoins(skyblockPlayer.getBukkitPlayer())));
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "Bits: " + ChatColor.AQUA + formatter.format(Config.getBits(player)));
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "          ");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "Slayer Quest");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.DARK_RED + slayerManger.getQuest(player).getBoss().getName() + " " + slayerManger.getQuest(player).getBoss().getBossLevel());
+                score.setScore(scoreNum--);
+                score = objective.getScore(ChatColor.GREEN + "Boss slain!");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.WHITE + "  ");
+                score.setScore(scoreNum--);
+                score = objective.getScore(org.bukkit.ChatColor.YELLOW + "www.hypixel.net");
+                score.setScore(scoreNum--);
+                return scoreNum;
         }
-        score.setScore(scoreNum--);
-        score = objective.getScore(org.bukkit.ChatColor.WHITE + " ");
-        score.setScore(scoreNum--);
-        score = objective.getScore(org.bukkit.ChatColor.WHITE + "Purse: " + ChatColor.GOLD +  formatter.format(Config.getPurseCoins(skyblockPlayer.getBukkitPlayer())));
-        score.setScore(scoreNum--);
-        score = objective.getScore(org.bukkit.ChatColor.WHITE + "Bits: " + ChatColor.AQUA + formatter.format(Config.getBits(player)));
-        score.setScore(scoreNum--);
-        score = objective.getScore(org.bukkit.ChatColor.WHITE + "  ");
-        score.setScore(scoreNum--);
-        score = objective.getScore(org.bukkit.ChatColor.YELLOW + "www.hypixel.net");
-        score.setScore(scoreNum--);
 
         return scoreNum;
     }
@@ -509,6 +619,7 @@ public class Main extends JavaPlugin {
                     updateScoreBoard(player);
 
                     updateMaxHealth(skyblockPlayer);
+
                     //player.setWalkSpeed(skyblockPlayer.getStat(SkyblockStats.SPEED)/1000);
 
                 }
@@ -547,7 +658,7 @@ public class Main extends JavaPlugin {
                     cancel(); // this cancels it when they leave
                 }else if (player.isOnline()){
 
-                    if (skyblockPlayer.getStat(SkyblockStats.MANA) <= skyblockPlayer.getStat(SkyblockStats.MAX_MANA) - ((skyblockPlayer.getStat(SkyblockStats.MAX_MANA) + 100)/50)) {
+                    if (skyblockPlayer.getStat(SkyblockStats.MANA) < skyblockPlayer.getStat(SkyblockStats.MAX_MANA) - ((skyblockPlayer.getStat(SkyblockStats.MAX_MANA) + 100)/50)) {
                         skyblockPlayer.setStat(SkyblockStats.MANA, skyblockPlayer.getStat(SkyblockStats.MANA) + ((skyblockPlayer.getStat(SkyblockStats.MAX_MANA) + 100)/50));
                     }else{
                         skyblockPlayer.setStat(SkyblockStats.MANA, skyblockPlayer.getStat(SkyblockStats.MAX_MANA));
@@ -567,7 +678,7 @@ public class Main extends JavaPlugin {
                     cancel(); // this cancels it when they leave
                 }else if (player.isOnline()){
 
-                    if (skyblockPlayer.getStat(SkyblockStats.HEALTH) <= skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH) - (int) (1.5 + skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH)/100)) {
+                    if (skyblockPlayer.getStat(SkyblockStats.HEALTH) < skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH) - (int) (1.5 + skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH)/100)) {
                         updateHealth(skyblockPlayer, (int) (1.5 + skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH)/100));
                     }else{
                         skyblockPlayer.setStat(SkyblockStats.HEALTH, skyblockPlayer.getStat(SkyblockStats.MAX_HEALTH));

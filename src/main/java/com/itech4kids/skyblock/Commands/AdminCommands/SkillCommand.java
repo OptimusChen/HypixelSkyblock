@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import java.io.IOException;
 
 public class SkillCommand implements CommandExecutor {
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         if (args.length == 0){
@@ -29,7 +30,7 @@ public class SkillCommand implements CommandExecutor {
                     e.printStackTrace();
                 }
 
-                player.sendMessage(ChatColor.GREEN + "Sucess!");
+                player.sendMessage(ChatColor.GREEN + "Success!");
             }
         }
         return false;

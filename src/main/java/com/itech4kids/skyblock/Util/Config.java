@@ -216,6 +216,32 @@ public class Config {
         config.save(file);
     }
 
+    public static int getSlayerXP(String name, Player player){
+        File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        return config.getInt("slayer." + name + "-xp");
+    }
+
+    public static int getSlayerLvl(String name, Player player){
+        File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        return config.getInt("slayer." + name + "-level");
+    }
+
+    public static void setSlayerLvl(String name, Player player, int i) throws IOException {
+        File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        config.set("slayer." + name + "-level", i);
+        config.save(file);
+    }
+
+    public static void setSlayerXP(String name, Player player, int i) throws IOException {
+        File file = new File(main.getDataFolder()+File.separator+"Players"+File.separator+player.getUniqueId()+".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        config.set("slayer." + name + "-xp", i);
+        config.save(file);
+    }
+
     public static void createPlayer(String name) throws IOException {
         File folder = new File(main.getDataFolder() + File.separator + "Players");
         if (!folder.exists()) {
@@ -397,6 +423,14 @@ public class Config {
             config.set("moderation.banned", false);
             config.set("moderation.ban_reason", "");
             config.set("moderation.times_kicked", 0);
+
+            config.set("slayer.spider-level", 1);
+            config.set("slayer.zombie-level", 1);
+            config.set("slayer.wolf-level", 1);
+
+            config.set("slayer.spider-xp", 0);
+            config.set("slayer.zombie-xp", 0);
+            config.set("slayer.wolf-xp", 0);
 
             config.save(playerFile);
         }

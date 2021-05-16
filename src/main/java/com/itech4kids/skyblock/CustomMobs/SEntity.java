@@ -1,13 +1,18 @@
 package com.itech4kids.skyblock.CustomMobs;
 
+import com.itech4kids.skyblock.Enums.SkillType;
+import com.itech4kids.skyblock.Events.SkyblockEntitySkillGainEvent;
+import com.itech4kids.skyblock.Events.SkyblockSkillExpGainEvent;
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Util.ItemUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -28,9 +33,14 @@ public abstract class SEntity {
 
     private int lifespan;
 
+    private Player lastDamager;
+    private int skillExpDropped;
+    private SkillType skillType;
+
     public SEntity(EntityType entityType){
         this.entityType = entityType;
         this.lifespan = 20*15;
+        this.skillType = null;
     }
 
     public boolean loadStats(int health, int damage, boolean isUndead, HashMap<String, ItemStack> equipment, String name, int level){
@@ -74,13 +84,23 @@ public abstract class SEntity {
                         entity.setCustomName(ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + "Lv" + level + ChatColor.DARK_GRAY + "] " + ChatColor.RED + name + " " + ChatColor.GREEN + (health) + ChatColor.DARK_GRAY + "/" + ChatColor.GREEN + (maximumHealth) + ChatColor.RED + "❤");
                         lifespan = lifespan - 1;
                         if (lifespan <= 0){
-                            Main.getMain().handler.unRegisterEntity(entity);
                             entity.remove();
+                            Main.getMain().handler.unRegisterEntity(entity);
+                            cancel();
+
                         }
                         if (health <= 0){
+                            try {
+                                Bukkit.getPluginManager().callEvent(new SkyblockEntitySkillGainEvent(Main.getMain().getPlayer(lastDamager.getName()), getSkillType(), skillExpDropped, getVanillaEntity()));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
                             entity.setCustomName(ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + "Lv" + level + ChatColor.DARK_GRAY + "] " + ChatColor.RED + name + " " + ChatColor.GREEN + 0 + ChatColor.DARK_GRAY + "/" + ChatColor.GREEN + maximumHealth + ChatColor.RED + "❤");
                             Main.getMain().handler.unRegisterEntity(entity);
                             lentity.setHealth(0);
+                            cancel();
+
                         }
                     }
                 }
@@ -89,6 +109,26 @@ public abstract class SEntity {
 
         vanillaEntity = entity;
         return entity;
+    }
+
+    public int getSkillExpDropped(){
+        return skillExpDropped;
+    }
+
+    public SkillType getSkillType(){
+        return skillType;
+    }
+
+    public void setSkillType(SkillType type){
+        this.skillType = type;
+    }
+
+    public void setLastDamager(Player player){
+        lastDamager = player;
+    }
+
+    public void setSkillExpDropped(int i){
+        skillExpDropped = i;
     }
 
     public boolean registerEntity(){
@@ -132,6 +172,10 @@ public abstract class SEntity {
     public int addDespawnDelay(int i){
         lifespan = lifespan + i;
         return lifespan;
+    }
+
+    public Player getLastDamager(){
+        return lastDamager;
     }
 
     public int getDespawnDelay(){

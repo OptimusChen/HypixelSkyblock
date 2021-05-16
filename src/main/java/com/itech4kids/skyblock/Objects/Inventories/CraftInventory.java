@@ -18,14 +18,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CraftInventory extends CraftInventoryCustom implements Listener {
+public class CraftInventory extends CraftInventoryCustom {
 
     private List<Integer> craftingSlots;
     private Integer resultSlot;
 
     public CraftInventory() {
         super(null, 54, "Craft Item");
-        Bukkit.getPluginManager().registerEvents(this, Main.getMain());
 
         Inventory menu = this;
 

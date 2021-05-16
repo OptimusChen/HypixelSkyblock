@@ -82,12 +82,6 @@ public class IslandManager {
                 }
             }.runTaskLater(Main.getMain(), 5);
 
-            JERRY jerry = new JERRY(((CraftWorld) world).getHandle());
-            jerry.enderTeleportTo(2, 100, 26);
-            ((CraftWorld) world).getHandle().addEntity(jerry);
-            jerry.enderTeleportTo(2, 100, 26);
-            jerry.getBukkitEntity().teleport(new Location(world, 2, 100, 26));
-
         }
         return false;
     }

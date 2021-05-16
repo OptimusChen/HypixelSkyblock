@@ -12,9 +12,16 @@ public class SvenBoss extends SlayerBoss {
     private int trueDPS;
     private boolean hasCalledPups;
 
-    public SvenBoss(Player spawner, Location spawnLocation, int bossLevel) {
+    private Player spawner;
+    private int bossLevel;
+
+    public SvenBoss(Player spawner, int bossLevel) {
         super(EntityType.WOLF, bossLevel);
         hasCalledPups = false;
+
+        this.spawner = spawner;
+        this.bossLevel = bossLevel;
+
         switch (bossLevel){
             case 1:
                 trueDPS = 0;
@@ -29,11 +36,13 @@ public class SvenBoss extends SlayerBoss {
                 trueDPS = 200;
                 break;
         }
+    }
 
+    public void summon(Location spawnLocation){
         spawnSlayerBoss(spawnLocation, -1);
         registerEntity();
         SlayerAI.runSvenAI(this, bossLevel, spawner);
-        //Main.getMain().slayerManger.registerBoss(this);
+        Main.getMain().slayerManger.registerBoss(this);
     }
 
     public void callPups(){

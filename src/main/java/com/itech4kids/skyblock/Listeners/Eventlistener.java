@@ -1,5 +1,7 @@
 package com.itech4kids.skyblock.Listeners;
 
+import com.itech4kids.skyblock.CustomMobs.SEntity;
+import com.itech4kids.skyblock.CustomMobs.Slayer.SlayerBoss;
 import com.itech4kids.skyblock.Events.SkyblockSkillExpGainEvent;
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.Island.IslandManager;
@@ -149,21 +151,6 @@ public class Eventlistener implements Listener {
                     }.runTaskTimer(Main.getMain(), 5L, 10);
                 }
             }.runTaskLater(main, 5);
-
-//        PacketReader reader = new PacketReader();
-//        reader.inject(player);
-//        if (SkyblockYeti.getNpcs() == null){
-//            return;
-//        }else if (SkyblockYeti.getNpcs().isEmpty()){
-//            return;
-//        }else{
-//            new BukkitRunnable() {
-//                @Override
-//                public void run() {
-//                    SkyblockYeti.addJoinPacket(player.getPlayer());
-//                }
-//            }.runTaskLater(Main.getMain(), 1);
-//        }
         }
     }
 
@@ -284,12 +271,19 @@ public class Eventlistener implements Listener {
             }else{
                 player.sendMessage(ChatColor.RED + "You died and lost " + formatter.format(Config.getPurseCoins(player)) + " coins!");
             }
+
             e.setKeepInventory(true);
 
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     player.playSound(player.getLocation(), Sound.ZOMBIE_METAL, 10, 2);
+
+                    if (player.getWorld().getName().equalsIgnoreCase("world")){
+                        player.performCommand("warp hub");
+                    }else{
+                        player.teleport(new Location(player.getWorld(), 0, 100, 0));
+                    }
                 }
             }.runTaskLater(main, 2);
         }
@@ -430,7 +424,12 @@ public class Eventlistener implements Listener {
     public void onUnload(ChunkUnloadEvent e){
         for (Entity entity : e.getChunk().getEntities()){
             if (entity instanceof LivingEntity){
-                if (entity.hasMetadata("slayerID")) return;
+                if (entity.hasMetadata("identifier")){
+                    Main.getMain().handler.unRegisterEntity(entity);
+                }
+                if (entity.hasMetadata("NPC")){
+                    return;
+                }
                 entity.remove();
             }
         }
@@ -510,7 +509,7 @@ public class Eventlistener implements Listener {
     private void launch(final Player p, final String padName) {
         final ArmorStand am = (ArmorStand)p.getWorld().spawnEntity(p.getLocation(), EntityType.ARMOR_STAND);
         am.setVisible(false);
-        am.setPassenger((Entity)p);
+        am.setPassenger(p);
         this.isJumping.put(p, am);
         spawnExplosion(p);
         new BukkitRunnable() {
@@ -562,6 +561,11 @@ public class Eventlistener implements Listener {
 
     @EventHandler
     public void onFoodLevelChange(FoodLevelChangeEvent e){
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onArmorStand(PlayerArmorStandManipulateEvent e){
         e.setCancelled(true);
     }
 

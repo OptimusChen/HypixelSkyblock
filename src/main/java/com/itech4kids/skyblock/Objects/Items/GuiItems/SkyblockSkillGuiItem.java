@@ -4,6 +4,7 @@ import com.itech4kids.skyblock.Enums.SkillType;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
 import com.itech4kids.skyblock.Util.Config;
 import com.itech4kids.skyblock.Util.ItemUtil;
+import com.itech4kids.skyblock.Util.SkillsManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemFlag;
@@ -33,7 +34,7 @@ public class SkyblockSkillGuiItem extends ItemStack {
         i = Config.getStatLvl(skyblockPlayer.getBukkitPlayer(), skillType.name().toLowerCase()) + 1;
 
         lore.add(" ");
-        lore.add(ChatColor.GRAY + "Progress to Level " + i + ": " + ChatColor.RED + "N/A");
+        lore.add(ChatColor.GRAY + "Progress to Level " + i + ": " + ChatColor.YELLOW + Math.round(Config.getStatExp(skyblockPlayer.getBukkitPlayer(), skillType.name().toLowerCase().replaceAll(" ", " "))/(SkillsManager.getNextLvl(Config.getStatLvl(skyblockPlayer.getBukkitPlayer(), skillType.name().toLowerCase().replaceAll(" ", " "))))) + "%");
         lore.add(" ");
         lore.add(ChatColor.GRAY + "Level " + i + " rewards:");
         lore.add(ChatColor.YELLOW + " " + otherName + " " + i);

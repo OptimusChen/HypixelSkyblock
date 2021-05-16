@@ -25,6 +25,7 @@ public class SEntityHandler {
     }
 
     public void unRegisterEntity(int identifier){
+        entities.get(identifier).getVanillaEntity().removeMetadata("identifier", Main.getMain());
         entities.remove(identifier);
     }
 
@@ -33,6 +34,7 @@ public class SEntityHandler {
         for (Map.Entry<Integer, SEntity> entry : entities.entrySet()){
             if (entry.getValue().getVanillaEntity().getMetadata("identifier").equals(entity.getMetadata("identifier"))){
                 entities_2.remove(entry.getKey(), entry.getValue());
+                entity.removeMetadata("identifier", Main.getMain());
             }
         }
 

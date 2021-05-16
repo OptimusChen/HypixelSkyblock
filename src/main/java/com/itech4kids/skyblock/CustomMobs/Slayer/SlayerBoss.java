@@ -1,13 +1,11 @@
 package com.itech4kids.skyblock.CustomMobs.Slayer;
 
 import com.itech4kids.skyblock.CustomMobs.SEntity;
+import com.itech4kids.skyblock.Events.SlayerEvent.SkyblockSlayerKillEvent;
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.Items.ItemHandler;
 import com.itech4kids.skyblock.Util.ItemUtil;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.SkullType;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
@@ -18,7 +16,7 @@ import java.util.HashMap;
 public abstract class SlayerBoss extends SEntity {
 
     private Integer slayerExp;
-    private Integer costToStart;
+    private int bossLevel;
 
     private HashMap<String, ItemStack> equipment;
 
@@ -29,6 +27,10 @@ public abstract class SlayerBoss extends SEntity {
     public SlayerBoss(EntityType slayerEntityType, int bossLevel) {
         super(slayerEntityType);
         equipment = new HashMap<>();
+
+        this.bossLevel = bossLevel;
+
+        slayerExp = 0;
 
         entityType = slayerEntityType;
         lifespan = 180*20;
@@ -53,18 +55,23 @@ public abstract class SlayerBoss extends SEntity {
                 switch (bossLevel){
                     case 1:
                         loadStats(500, 15, true, equipment, "Revenant Horror", 10);
+                        slayerExp = 5;
                         break;
                     case 2:
                         loadStats(20000, 25, true, equipment, "Revenant Horror", 70);
+                        slayerExp = 25;
                         break;
                     case 3:
                         loadStats(400000, 90, true, equipment, "Revenant Horror", 310);
+                        slayerExp = 100;
                         break;
                     case 4:
                         loadStats(1500000, 300, true, equipment, "Revenant Horror", 610);
+                        slayerExp = 500;
                         break;
                     case 5:
                         loadStats(10000000, 1800, true, equipment, "Revenant Horror", 1210);
+                        slayerExp = 1000;
                         break;
                 }
                 break;
@@ -72,15 +79,19 @@ public abstract class SlayerBoss extends SEntity {
                 switch (bossLevel){
                     case 1:
                         loadStats(2000, 60, false, new HashMap<>(), "Sven Packmaster", 20);
+                        slayerExp = 5;
                         break;
                     case 2:
                         loadStats(40000, 75, false, new HashMap<>(), "Sven Packmaster", 100);
+                        slayerExp = 25;
                         break;
                     case 3:
                         loadStats(750000, 135, false, new HashMap<>(), "Sven Packmaster", 430);
+                        slayerExp = 100;
                         break;
                     case 4:
                         loadStats(2000000, 330, false, new HashMap<>(), "Sven Packmaster", 700);
+                        slayerExp = 500;
                         break;
                 }
                 break;
@@ -88,15 +99,19 @@ public abstract class SlayerBoss extends SEntity {
                 switch (bossLevel) {
                     case 1:
                         loadStats(750, 35, false, new HashMap<>(), "Tarantula Broodfather", 40);
+                        slayerExp = 5;
                         break;
                     case 2:
                         loadStats(30000, 45, false, new HashMap<>(), "Tarantula Broodfather", 90);
+                        slayerExp = 25;
                         break;
                     case 3:
                         loadStats(900000, 155, false, new HashMap<>(), "Tarantula Broodfather", 180);
+                        slayerExp = 100;
                         break;
                     case 4:
                         loadStats(2400000, 400, false, new HashMap<>(), "Tarantula Broodfather", 260);
+                        slayerExp = 500;
                         break;
                 }
                 break;
@@ -142,11 +157,14 @@ public abstract class SlayerBoss extends SEntity {
                         if (lifespan <= 0){
                             display.remove();
                             Main.getMain().handler.unRegisterEntity(getVanillaEntity());
+                            Main.getMain().slayerManger.unRegisterBoss(getVanillaEntity());
                             entity.remove();
                         }
                         if (getHealth() <= 0){
+                            Bukkit.getPluginManager().callEvent(new SkyblockSlayerKillEvent(getLastDamager(), Main.getMain().slayerManger.getEntity(getVanillaEntity())));
                             display.remove();
                             Main.getMain().handler.unRegisterEntity(getVanillaEntity());
+                            Main.getMain().slayerManger.unRegisterBoss(getVanillaEntity());
                             lentity.setHealth(0);
                         }
                     }
@@ -158,8 +176,8 @@ public abstract class SlayerBoss extends SEntity {
         return entity;
     }
 
-    public int getCostToStart(){
-        return costToStart;
+    public int getBossLevel(){
+        return bossLevel;
     }
 
     public int getExpReward(){

@@ -74,6 +74,8 @@ public class ItemHandler {
 
     // Misc
     public static ItemStack grappling_hook;
+    public static ItemStack maddox_batphone;
+    public static SkullMeta maddox_meta;
 
     //Material/Minerals
     public static Map<String, ItemStack> materialMap;
@@ -345,6 +347,7 @@ public class ItemHandler {
 
         miscMap.put("grappling_hook", grappling_hook);
         miscMap.put("skyblock_menu", skyblock_menu);
+        miscMap.put("maddox_batphone", maddox_batphone);
     }
 
     public static void initSwords(){
@@ -494,6 +497,7 @@ public class ItemHandler {
         zombie_sword = createInGameItem(Material.IRON_SWORD, ChatColor.BLUE + "Zombie Sword", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Instant Heal", zombieSwordAbilityDesc, "RIGHT CLICK", 0, "", "RARE SWORD", 100, 50, 0, 0, 0, 50, 0, 0, true);
         ornate_zombie_sword = createInGameItem(Material.GOLD_SWORD, ChatColor.DARK_PURPLE + "Ornate Zombie Sword", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Instant Heal", ornateZombieSwordAbilityDesc, "RIGHT CLICK", 70, "", "EPIC SWORD", 110, 60, 0, 0, 0, 50, 0, 0, true);
         end_stone_sword = createInGameItem(Material.GOLD_SWORD, ChatColor.LIGHT_PURPLE + "End Stone Sword", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Extreme Focus", end_stone_swordAbilityDesc, "RIGHT CLICK", 0, "", "EPIC SWORD", 120, 80, 0, 0, 0, 0, 0, 0, true);
+        //recluse_fang = createInGameItem(Material.IRON_SWORD, ChatColor.BLUE + "Recluse Fang", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Squash 'em", Arrays.asList());
 
         swordMap.put("aspect_of_the_jerry", aspect_of_the_jerry);
         swordMap.put("fancy_sword", fancy_sword);
@@ -989,4 +993,82 @@ public class ItemHandler {
         item.setItemMeta(meta);
         return item;
     }
+
+    public static ItemStack createMerchantItem(ItemStack itemStack, int coins){
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta.getLore() != null){
+            List<String> lore = meta.getLore();
+            lore.add(" ");
+            lore.add(ChatColor.GRAY + "Cost");
+            lore.add(ChatColor.GOLD + "" + coins + " Coins");
+            lore.add(" ");
+            lore.add(ChatColor.YELLOW + "Click to trade!");
+            if (itemStack.getMaxStackSize() == 64) {
+                lore.add(ChatColor.YELLOW + "Right-Click for more trading options!");
+            }
+            meta.setLore(lore);
+        }else{
+            List<String> lore = new ArrayList<>();
+            lore.add(ChatColor.WHITE + "" + ChatColor.BOLD + "COMMON");
+            lore.add(" ");
+            lore.add(ChatColor.GRAY + "Cost");
+            lore.add(ChatColor.GOLD + "" + coins + " Coins");
+            lore.add(" ");
+            lore.add(ChatColor.YELLOW + "Click to trade!");
+            if (itemStack.getMaxStackSize() == 64) {
+                lore.add(ChatColor.YELLOW + "Right-Click for more trading options!");
+            }
+            meta.setLore(lore);
+        }
+        itemStack.setItemMeta(meta);
+        return itemStack;
+    }
+
+    public static ItemStack createMerchantItem(ItemStack itemStack, int coins, boolean b){
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta.getLore() != null){
+            List<String> lore = meta.getLore();
+            lore.add(" ");
+            lore.add(ChatColor.GRAY + "Cost");
+            lore.add(ChatColor.GOLD + "" + coins + " Coins");
+            lore.add(" ");
+            lore.add(ChatColor.YELLOW + "Click to trade!");
+            meta.setLore(lore);
+        }else{
+            List<String> lore = new ArrayList<>();
+            lore.add(ChatColor.WHITE + "" + ChatColor.BOLD + "COMMON");
+            lore.add(" ");
+            lore.add(ChatColor.GRAY + "Cost");
+            lore.add(ChatColor.GOLD + "" + coins + " Coins");
+            lore.add(" ");
+            lore.add(ChatColor.YELLOW + "Click to trade!");
+            meta.setLore(lore);
+        }
+        itemStack.setItemMeta(meta);
+        return itemStack;
+    }
+
+    public static ItemStack merchantItemToItemStack(ItemStack itemStack1){
+        ItemStack itemStack = new ItemStack(itemStack1);
+        List<String> lore = itemStack.getItemMeta().getLore();
+        ItemMeta meta = itemStack.getItemMeta();
+        if (itemStack.getMaxStackSize() > 1) {
+            lore.remove(lore.size() - 6);
+            lore.remove(lore.size() - 5);
+            lore.remove(lore.size() - 4);
+            lore.remove(lore.size() - 3);
+            lore.remove(lore.size() - 2);
+            lore.remove(lore.size() - 1);
+        }else{
+            lore.remove(lore.size() - 5);
+            lore.remove(lore.size() - 4);
+            lore.remove(lore.size() - 3);
+            lore.remove(lore.size() - 2);
+            lore.remove(lore.size() - 1);
+        }
+        meta.setLore(lore);
+        itemStack.setItemMeta(meta);
+        return itemStack;
+    }
+
 }

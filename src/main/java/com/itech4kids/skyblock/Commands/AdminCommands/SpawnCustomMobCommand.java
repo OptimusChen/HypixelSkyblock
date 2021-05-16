@@ -69,13 +69,16 @@ public class SpawnCustomMobCommand implements CommandExecutor {
                     case "slayer":
                         switch (args[1].toLowerCase()){
                             case "revenant":
-                                RevenantBoss revenant = new RevenantBoss(player, player.getLocation(), Integer.parseInt(args[2]));
+                                RevenantBoss revenant = new RevenantBoss(player, Integer.parseInt(args[2]));
+                                revenant.summon(player.getLocation());
                                 break;
                             case "sven":
-                                SvenBoss sven = new SvenBoss(player, player.getLocation(), Integer.parseInt(args[2]));
+                                SvenBoss sven = new SvenBoss(player, Integer.parseInt(args[2]));
+                                sven.summon(player.getLocation());
                                 break;
                             case "tarantula":
-                                TarantulaBoss tarantula = new TarantulaBoss(player, player.getLocation(), Integer.parseInt(args[2]));
+                                TarantulaBoss tarantula = new TarantulaBoss(player, Integer.parseInt(args[2]));
+                                tarantula.summon(player.getLocation());
                                 break;
                         }
                         break;
@@ -112,11 +115,6 @@ public class SpawnCustomMobCommand implements CommandExecutor {
                         }
                         break;
                     case "jerry":
-                        JERRY jerry = new JERRY(world);
-                        jerry.enderTeleportTo(2, 100, 26);
-                        world.addEntity(jerry);
-                        jerry.enderTeleportTo(2, 100, 26);
-                        jerry.getBukkitEntity().teleport(new Location(world.getWorld(), 2, 100, 26));
                         break;
                     }
                 }

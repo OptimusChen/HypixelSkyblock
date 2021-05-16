@@ -34,27 +34,43 @@ public class LocationsManager {
         File file = new File(Main.getMain().getDataFolder()+File.separator+"locations.yml");
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
         SkyblockLocation loc = null;
-        /*
-        for (String string : getStoredLocations()) {
-            loc = new SkyblockLocation((Location) config.get(string + ".pos1"), (Location) config.get(string + ".pos2"),
-                    config.getString(string + ".name"), ChatColor.valueOf(config.getString(string + ".color")), config.getInt(string + ".weight"));
+//        ArrayList<SkyblockLocation> locs = new ArrayList<>();
+//
+//        for (String string : getStoredLocations()) {
+//            loc = new SkyblockLocation((Location) config.get(string + ".pos1"), (Location) config.get(string + ".pos2"),
+//                    config.getString(string + ".name"), ChatColor.valueOf(config.getString(string + ".color")), config.getInt(string + ".weight"));
+//
+//            double x1 = loc.pos1.getX();
+//            double y1 = loc.pos1.getY();
+//            double z1 = loc.pos1.getZ();
+//
+//            double x2 = loc.pos2.getX();
+//            double y2 = loc.pos2.getY();
+//            double z2 = loc.pos2.getZ();
+//
+//            if((location.getX() > x1) && (location.getY() > y1) && (location.getZ() > z1) && (location.getX() < x2) && (location.getY() < y2) && (location.getZ() < z2)) {
+//                locs.add(loc);
+//            } else {
+//                loc = null;
+//            }
+//        }
+//
+//        if (locs.size() >= 1){
+//            for (SkyblockLocation skyblockLocation : locs){
+//                if (loc != null) {
+//                    if (skyblockLocation.weight > loc.weight){
+//                        loc = skyblockLocation;
+//                    }
+//                }else{
+//                    loc = skyblockLocation;
+//                }
+//            }
+//        }else{
+//            return null;
+//        }
 
-            double x1 = loc.pos1.getX();
-            double y1 = loc.pos1.getY();
-            double z1 = loc.pos1.getZ();
+        return loc;
 
-            double x2 = loc.pos2.getX();
-            double y2 = loc.pos2.getY();
-            double z2 = loc.pos2.getZ();
-
-            if((location.getX() > x1) && (location.getY() > y1) && (location.getZ() > z1) && (location.getX() < x2) && (location.getY() < y2) && (location.getZ() < z2)) {
-                return loc;
-            } else {
-                loc = null;
-            }
-        }
-         */
-        return null;
     }
 
     public static ArrayList<String> getStoredLocations(){
