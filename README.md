@@ -1,5 +1,5 @@
 # RemakeSkyblock
-Hypixel Skyblock Remake!
+Hypixel Skyblock Remake
 
 
 # Current Features: 
@@ -16,3 +16,8 @@ Hypixel Skyblock Remake!
  - Collections
  - Merchants
  - Dragons
+
+# Not Coming Soon
+ - Dungeons
+ - Bazaar 
+ - Auctions
