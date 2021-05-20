@@ -17,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -134,6 +135,55 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                 createInventory("Catacombs", index, lvlItem, meta, lore, i, "Placeholder", "Placeholder");
                 break;
         }
+
+        for (ItemStack itemStack : this.getContents()){
+            if (itemStack.getAmount() % 5 == 0 & itemStack.getDurability() == 5){
+                itemStack.setDurability((short) 0);
+                switch (skillType){
+                    case FARMING:
+                        itemStack.setType(Material.HAY_BLOCK);
+                        break;
+                    case MINING:
+                        itemStack.setType(Material.IRON_BLOCK);
+                        break;
+                    case COMBAT:
+                        itemStack.setType(Material.DIAMOND_HELMET);
+                        break;
+                    case FORAGING:
+                        itemStack.setType(Material.LOG);
+                        break;
+                    case FISHING:
+                        itemStack.setType(Material.PRISMARINE);
+                        break;
+                    case ENCHANTING:
+                        itemStack.setType(Material.ENCHANTED_BOOK);
+                        break;
+                    case ALCHEMY:
+                        itemStack.setType(Material.BLAZE_ROD);
+                        break;
+                    case CARPENTRY:
+                        itemStack.setType(Material.ARMOR_STAND);
+                        break;
+                    case RUNECRAFTING:
+                        itemStack.setType(Material.ENDER_PORTAL_FRAME);
+                        break;
+                    case SOCIAL:
+                        itemStack.setType(Material.BLAZE_POWDER);
+                        break;
+                    case TAMING:
+                        itemStack.setType(Material.GOLDEN_CARROT);
+                        break;
+                    case CATACOMBS:
+                        itemStack.setType(Material.SKULL_ITEM);
+                        itemStack.setDurability((short) 3);
+//                        SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
+//                        skullMeta.setOwner("Wither");
+//                        itemStack.setItemMeta(skullMeta);
+                        break;
+                }
+            }
+        }
+
     }
 
     public void createInventory(String s, int index, ItemStack lvlItem, ItemMeta meta, List<String> lore, int i, String stat, String stat2){
@@ -667,7 +717,7 @@ public class SkillLevelsInventory extends CraftInventoryCustom implements Listen
                     this.setItem(7, lvlItem);
                     lore.clear();
                 }
-            }else if (index >= 20 && index < 26){
+            }else if (index >= 20){
                 if (index < i) {
                     lvlItem.setDurability((short) 5);
                     meta.setDisplayName(ChatColor.GREEN + StringUtils.capitalize(skillType.name().toLowerCase()) + " " + index);
