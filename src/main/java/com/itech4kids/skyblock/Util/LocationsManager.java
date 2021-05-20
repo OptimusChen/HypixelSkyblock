@@ -2,10 +2,8 @@ package com.itech4kids.skyblock.Util;
 
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.SkyblockLocation;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.apache.commons.lang.math.IntRange;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -34,43 +32,49 @@ public class LocationsManager {
         File file = new File(Main.getMain().getDataFolder()+File.separator+"locations.yml");
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
         SkyblockLocation loc = null;
-//        ArrayList<SkyblockLocation> locs = new ArrayList<>();
-//
-//        for (String string : getStoredLocations()) {
-//            loc = new SkyblockLocation((Location) config.get(string + ".pos1"), (Location) config.get(string + ".pos2"),
-//                    config.getString(string + ".name"), ChatColor.valueOf(config.getString(string + ".color")), config.getInt(string + ".weight"));
-//
-//            double x1 = loc.pos1.getX();
-//            double y1 = loc.pos1.getY();
-//            double z1 = loc.pos1.getZ();
-//
-//            double x2 = loc.pos2.getX();
-//            double y2 = loc.pos2.getY();
-//            double z2 = loc.pos2.getZ();
-//
-//            if((location.getX() > x1) && (location.getY() > y1) && (location.getZ() > z1) && (location.getX() < x2) && (location.getY() < y2) && (location.getZ() < z2)) {
-//                locs.add(loc);
-//            } else {
-//                loc = null;
-//            }
-//        }
-//
-//        if (locs.size() >= 1){
-//            for (SkyblockLocation skyblockLocation : locs){
-//                if (loc != null) {
-//                    if (skyblockLocation.weight > loc.weight){
-//                        loc = skyblockLocation;
-//                    }
-//                }else{
-//                    loc = skyblockLocation;
-//                }
-//            }
-//        }else{
-//            return null;
-//        }
+        ArrayList<SkyblockLocation> locs = new ArrayList<>();
+
+        for (String string : getStoredLocations()) {
+            loc = new SkyblockLocation((Location) config.get(string + ".pos1"), (Location) config.get(string + ".pos2"),
+                    config.getString(string + ".name"), ChatColor.valueOf(config.getString(string + ".color")), config.getInt(string + ".weight"));
+
+            double x1 = loc.pos1.getX();
+            double y1 = loc.pos1.getY();
+            double z1 = loc.pos1.getZ();
+
+            double x2 = loc.pos2.getX();
+            double y2 = loc.pos2.getY();
+            double z2 = loc.pos2.getZ();
+
+            if (inCuboid(location, loc.pos1, loc.pos2)){
+                locs.add(loc);
+            } else {
+                loc = null;
+            }
+        }
+
+        if (locs.size() >= 1){
+            for (SkyblockLocation skyblockLocation : locs){
+                if (loc != null) {
+                    if (skyblockLocation.weight > loc.weight){
+                        loc = skyblockLocation;
+                    }
+                }else{
+                    loc = skyblockLocation;
+                }
+            }
+        }else{
+            return null;
+        }
 
         return loc;
 
+    }
+
+    public static boolean inCuboid(Location origin, Location l1, Location l2){
+        return new IntRange(l1.getX(), l2.getX()).containsDouble(origin.getX())
+                && new IntRange(l1.getY(), l2.getY()).containsDouble(origin.getY())
+                &&  new IntRange(l1.getZ(), l2.getZ()).containsDouble(origin.getZ());
     }
 
     public static ArrayList<String> getStoredLocations(){

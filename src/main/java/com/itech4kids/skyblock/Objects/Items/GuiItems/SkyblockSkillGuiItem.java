@@ -37,7 +37,9 @@ public class SkyblockSkillGuiItem extends ItemStack {
         lore.add(ChatColor.GRAY + "Progress to Level " + i + ": " + ChatColor.YELLOW + Math.round(Config.getStatExp(skyblockPlayer.getBukkitPlayer(), skillType.name().toLowerCase().replaceAll(" ", " "))/(SkillsManager.getNextLvl(Config.getStatLvl(skyblockPlayer.getBukkitPlayer(), skillType.name().toLowerCase().replaceAll(" ", " "))))) + "%");
         lore.add(" ");
         lore.add(ChatColor.GRAY + "Level " + i + " rewards:");
-        lore.add(ChatColor.YELLOW + " " + otherName + " " + i);
+        for (String string : SkillsManager.getRewards(skillType, Config.getStatLvl(skyblockPlayer.getBukkitPlayer(), skillType.name().toLowerCase()) + 1)){
+            lore.add(" " + string);
+        }
         if (rewardsLore != null) {
             for (String s : rewardsLore) {
                 lore.add(s);

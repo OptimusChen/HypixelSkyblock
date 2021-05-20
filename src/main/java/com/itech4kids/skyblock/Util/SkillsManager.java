@@ -111,26 +111,26 @@ public class SkillsManager {
                 return 3700000;
             case 50:
                 return 4000000;
-//            case 51:
-//                return 4300000;
-//            case 52:
-//                return 4600000;
-//            case 53:
-//                return 4900000;
-//            case 54:
-//                return 5200000;
-//            case 55:
-//                return 5500000;
-//            case 56:
-//                return 5800000;
-//            case 57:
-//                return 6100000;
-//            case 58:
-//                return 6400000;
-//            case 59:
-//                return 6700000;
-//            case 60:
-//                return 7000000;
+            case 51:
+                return 4300000;
+            case 52:
+                return 4600000;
+            case 53:
+                return 4900000;
+            case 54:
+                return 5200000;
+            case 55:
+                return 5500000;
+            case 56:
+                return 5800000;
+            case 57:
+                return 6100000;
+            case 58:
+                return 6400000;
+            case 59:
+                return 6700000;
+            case 60:
+                return 7000000;
         }
         return 0;
     }
@@ -248,12 +248,14 @@ public class SkillsManager {
         format.setGroupingUsed(true);
         switch (type){
             case COMBAT:
+                rewards.add(ChatColor.YELLOW + "Warrior " + lvl);
                 rewards.add(ChatColor.WHITE + "Grants " + ChatColor.RED + "+4% " + ChatColor.WHITE + "extra");
                 rewards.add(ChatColor.WHITE + "damage to mobs");
                 rewards.add(ChatColor.DARK_GRAY + "+" + ChatColor.BLUE + "0.5☣ Crit Chance");
                 rewards.add(ChatColor.DARK_GRAY + "+" + ChatColor.GOLD + format.format(getCoinRewards(lvl)) + " Coins");
                 break;
             case FORAGING:
+                rewards.add(ChatColor.YELLOW + "Logger " + lvl);
                 rewards.add(ChatColor.WHITE + "Grants " + ChatColor.DARK_GRAY + "+" + ChatColor.GOLD + "4☘ " + ChatColor.WHITE + "Foraging");
                 rewards.add(ChatColor.WHITE + "Fortune");
                 if (lvl < 14){
@@ -267,6 +269,7 @@ public class SkillsManager {
                 rewards.add(ChatColor.DARK_GRAY + "+" + ChatColor.GOLD + format.format(getCoinRewards(lvl)) + " Coins");
                 break;
             case FARMING:
+                rewards.add(ChatColor.YELLOW + "Farmhand " + lvl);
                 rewards.add(ChatColor.WHITE + "Grants " + ChatColor.DARK_GRAY + "+" + ChatColor.GOLD + "4☘ " + "Farming");
                 rewards.add(ChatColor.WHITE + "Fortune");
                 if (lvl < 14){
@@ -282,6 +285,7 @@ public class SkillsManager {
                 rewards.add(ChatColor.DARK_GRAY + "+" + ChatColor.GOLD + format.format(getCoinRewards(lvl)) + " Coins");
                 break;
             case FISHING:
+                rewards.add(ChatColor.YELLOW + "Treasure Hunter " + lvl);
                 rewards.add(ChatColor.WHITE + "Grants " + ChatColor.AQUA + "+0.2% " + ChatColor.WHITE + "chance");
                 rewards.add(ChatColor.WHITE + "of catching treasure when");
                 rewards.add(ChatColor.WHITE + "fishing");
@@ -298,6 +302,7 @@ public class SkillsManager {
                 rewards.add(ChatColor.DARK_GRAY + "+" + ChatColor.GOLD + format.format(getCoinRewards(lvl)) + " Coins");
                 break;
             case ENCHANTING:
+                rewards.add(ChatColor.YELLOW + "Conjourer " + lvl);
                 rewards.add(ChatColor.WHITE + "Grants " + ChatColor.AQUA + "+4% " + ChatColor.WHITE + "more");
                 rewards.add(ChatColor.WHITE + "EXP from any source");
                 rewards.add(ChatColor.DARK_GRAY + "+" + ChatColor.RED + "0.5✹ Ability Damage");
@@ -306,6 +311,7 @@ public class SkillsManager {
                 rewards.add(ChatColor.DARK_GRAY + "+" + ChatColor.GOLD + format.format(getCoinRewards(lvl)) + " Coins");
                 break;
             case ALCHEMY:
+                rewards.add(ChatColor.YELLOW + "Brewer " + lvl);
                 rewards.add(ChatColor.WHITE + "Grants a " + ChatColor.AQUA + "+1% " + ChatColor.WHITE + "effect");
                 rewards.add(ChatColor.WHITE + "duration on potions you");
                 rewards.add(ChatColor.WHITE + "brew");
@@ -318,12 +324,14 @@ public class SkillsManager {
                 rewards.add(ChatColor.DARK_GRAY + "+" + ChatColor.GOLD + format.format(getCoinRewards(lvl)) + " Coins");
                 break;
             case TAMING:
+                rewards.add(ChatColor.YELLOW + "Zoologist " + lvl);
                 rewards.add(ChatColor.WHITE + "Grants " + ChatColor.LIGHT_PURPLE + "+1% " + ChatColor.WHITE + "extra");
                 rewards.add(ChatColor.WHITE + "pet exp");
                 rewards.add(ChatColor.DARK_GRAY + "+" + ChatColor.LIGHT_PURPLE + "0.5♣ Pet Luck");
                 rewards.add(ChatColor.DARK_GRAY + "+" + ChatColor.GOLD + format.format(getCoinRewards(lvl)) + " Coins");
                 break;
             case MINING:
+                rewards.add(ChatColor.YELLOW + "Spelunker " + lvl);
                 rewards.add(ChatColor.WHITE + "Grants " + ChatColor.DARK_GRAY + "+" + ChatColor.GOLD + "4☘ " + "Mining");
                 rewards.add(ChatColor.WHITE + "Fortune");
                 if (lvl < 14){

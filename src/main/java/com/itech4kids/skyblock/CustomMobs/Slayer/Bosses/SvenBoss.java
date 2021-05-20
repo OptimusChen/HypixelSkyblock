@@ -1,11 +1,14 @@
 package com.itech4kids.skyblock.CustomMobs.Slayer.Bosses;
 
+import com.itech4kids.skyblock.CustomMobs.Slayer.Miniboss.SvenPups;
 import com.itech4kids.skyblock.CustomMobs.Slayer.SlayerAI;
 import com.itech4kids.skyblock.CustomMobs.Slayer.SlayerBoss;
 import com.itech4kids.skyblock.Main;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
 
 public class SvenBoss extends SlayerBoss {
 
@@ -15,9 +18,13 @@ public class SvenBoss extends SlayerBoss {
     private Player spawner;
     private int bossLevel;
 
+    public ArrayList<SvenPups> pups;
+
     public SvenBoss(Player spawner, int bossLevel) {
         super(EntityType.WOLF, bossLevel);
         hasCalledPups = false;
+
+        pups = new ArrayList<>();
 
         this.spawner = spawner;
         this.bossLevel = bossLevel;

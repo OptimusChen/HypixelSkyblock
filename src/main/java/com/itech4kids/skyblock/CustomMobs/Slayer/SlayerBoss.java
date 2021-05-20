@@ -144,6 +144,11 @@ public abstract class SlayerBoss extends SEntity {
                 @Override
                 public void run() {
                     if (entity.isDead()){
+                        Bukkit.getPluginManager().callEvent(new SkyblockSlayerKillEvent(getLastDamager(), Main.getMain().slayerManger.getEntity(getVanillaEntity())));
+                        display.remove();
+                        Main.getMain().handler.unRegisterEntity(getVanillaEntity());
+                        Main.getMain().slayerManger.unRegisterBoss(getVanillaEntity());
+                        lentity.setHealth(0);
                         cancel();
                     }else{
                         entity.setCustomNameVisible(true);

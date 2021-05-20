@@ -54,7 +54,6 @@ public class SlayerAI {
 
                         if (spider.getLocation().distance(spawner.getLocation()) > 10){
                             Vector vector = getDifferentialVector(spider.getLocation(), spawner.getLocation());
-                            setSpeed(vector, 0.3);
                             spider.setVelocity(vector);
                         }
 
@@ -84,6 +83,9 @@ public class SlayerAI {
             @Override
             public void run() {
                 if (sven.getVanillaEntity().isDead()){
+                    for (SvenPups pups : sven.pups){
+                        pups.subtractHealth(Integer.MAX_VALUE);
+                    }
                     cancel();
                 }else{
                     if (sven.getVanillaEntity().getType().equals(EntityType.WOLF)) {
@@ -101,6 +103,7 @@ public class SlayerAI {
                                 if (sven.getHealth() <= sven.getMaximumHealth() / 2) {
                                     for (int i = 0; i < 10; ++i) {
                                         SvenPups pups = new SvenPups(wolf.getLocation(), sven);
+                                        sven.pups.add(pups);
                                     }
                                     sven.callPups();
                                     spawner.playSound(spawner.getLocation(), Sound.WOLF_HOWL, 10, 2);

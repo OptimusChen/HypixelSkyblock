@@ -10,7 +10,7 @@ public class SPotListener implements Listener {
     @EventHandler
     public void onPotion(PlayerItemConsumeEvent e){
         if (e.getItem().getType().equals(Material.POTION)){
-            
+
         }
     }
 

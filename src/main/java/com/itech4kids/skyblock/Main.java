@@ -4,6 +4,7 @@ import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.itech4kids.skyblock.Commands.AdminCommands.*;
+import com.itech4kids.skyblock.Commands.CollectionsCommand;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Boots.BootsCategoryCommand;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Chestplate.ChestplateCategoryCommand;
 import com.itech4kids.skyblock.Commands.ItemBrowser.Helmet.HelmetCategoryCommand;
@@ -85,6 +86,11 @@ public class Main extends JavaPlugin {
         new Config(this);
         new IslandManager();
         new LocationsManager();
+        try {
+            new MessageConfig(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         recipe = new CraftingRecipe(this);
         ItemHandler.init();
         try { new LaunchPadConfig(this); } catch (IOException e) { e.printStackTrace(); }
@@ -190,6 +196,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new MerchantListeners(), this);
         Bukkit.getPluginManager().registerEvents(new SlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new SPotListener(), this);
+        Bukkit.getPluginManager().registerEvents(new CollectionsListener(), this);
 
     }
 
@@ -227,6 +234,8 @@ public class Main extends JavaPlugin {
         getCommand("clearchat").setExecutor(new ClearChatCommand());
         getCommand("slayer").setExecutor(new SlayerCommand());
         getCommand("spot").setExecutor(new PotionCommand());
+        getCommand("collectionstat").setExecutor(new CollectionStatCommand());
+
     }
 
     public void updateMaxHealth(SkyblockPlayer skyblockPlayer) {
@@ -385,7 +394,7 @@ public class Main extends JavaPlugin {
                 score = objective.getScore(org.bukkit.ChatColor.GRAY + " " + hours + ":" + minutes + "pm " + ChatColor.YELLOW + "☀");
                 score.setScore(scoreNum--);
                 if (skyblockPlayer.location != null){
-                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + skyblockPlayer.location.color + skyblockPlayer.location.name);
+                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + skyblockPlayer.location.color + skyblockPlayer.location.name.replaceAll("_", " "));
                 }else{
                     score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + ChatColor.GRAY + "None");
                 }
@@ -411,7 +420,7 @@ public class Main extends JavaPlugin {
                 score = objective.getScore(org.bukkit.ChatColor.GRAY + " " + hours + ":" + minutes + "pm " + ChatColor.YELLOW + "☀");
                 score.setScore(scoreNum--);
                 if (skyblockPlayer.location != null){
-                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + skyblockPlayer.location.color + skyblockPlayer.location.name);
+                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + skyblockPlayer.location.color + skyblockPlayer.location.name.replaceAll("_", " "));
                 }else{
                     score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + ChatColor.GRAY + "None");
                 }
@@ -445,7 +454,7 @@ public class Main extends JavaPlugin {
                 score = objective.getScore(org.bukkit.ChatColor.GRAY + " " + hours + ":" + minutes + "pm " + ChatColor.YELLOW + "☀");
                 score.setScore(scoreNum--);
                 if (skyblockPlayer.location != null){
-                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + skyblockPlayer.location.color + skyblockPlayer.location.name);
+                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + skyblockPlayer.location.color + skyblockPlayer.location.name.replaceAll("_", " "));
                 }else{
                     score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + ChatColor.GRAY + "None");
                 }
@@ -479,7 +488,7 @@ public class Main extends JavaPlugin {
                 score = objective.getScore(org.bukkit.ChatColor.GRAY + " " + hours + ":" + minutes + "pm " + ChatColor.YELLOW + "☀");
                 score.setScore(scoreNum--);
                 if (skyblockPlayer.location != null){
-                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + skyblockPlayer.location.color + skyblockPlayer.location.name);
+                    score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + skyblockPlayer.location.color + skyblockPlayer.location.name.replaceAll("_", " "));
                 }else{
                     score = objective.getScore(org.bukkit.ChatColor.WHITE + " ⏣ " + ChatColor.GRAY + "None");
                 }
@@ -703,7 +712,9 @@ public class Main extends JavaPlugin {
                     if (skyblockPlayer.getStat(SkyblockStats.SPEED) > 900){
                         skyblockPlayer.setStat(SkyblockStats.SPEED, 900);
                     }
+
                     player.setWalkSpeed(skyblockPlayer.getStat(SkyblockStats.SPEED)/1000F + 0.1F);
+
                     if (player.getLocation().getY() <= -11){
                         player.setHealth(0);
                     }

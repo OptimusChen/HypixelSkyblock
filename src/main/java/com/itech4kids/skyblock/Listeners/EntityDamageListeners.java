@@ -221,32 +221,36 @@ public class EntityDamageListeners implements Listener {
             }
         }else if (e.getDamager() instanceof Projectile){
             Projectile projectile = (Projectile) e.getDamager();
-            if (projectile.getShooter() instanceof Player){
-                SkyblockPlayer skyblockPlayer = main.getPlayer(((Player) projectile.getShooter()).getName());
-                int i = new Random().nextInt(100);
-                int r = new Random().nextInt(100);
-                DecimalFormat formatter = new DecimalFormat("#,###");
-                formatter.setGroupingUsed(true);
-                double damage = 5 + skyblockPlayer.getStat((SkyblockStats.DAMAGE)) + (skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 5F) * (1 + skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 100F);
-                if (!e.getEntity().getType().equals(EntityType.ARMOR_STAND)) {
-                    if (i <= skyblockPlayer.getStat(SkyblockStats.CRIT_CHANCE)) {
-                        e.setDamage(damage * ((100 + skyblockPlayer.getStat(SkyblockStats.CRIT_DAMAGE))) / 100);
-                        ItemUtil.setDamageIndicator(e.getEntity().getLocation(), ItemUtil.addCritTexture(String.valueOf(formatter.format(Math.round(e.getDamage())))));
-                    } else {
-                        e.setDamage(damage);
-                        ItemUtil.setDamageIndicator(e.getEntity().getLocation(), org.bukkit.ChatColor.GRAY + "" + formatter.format(Math.round(e.getDamage())));
-                    }
-                    if (r <= skyblockPlayer.getStat(SkyblockStats.FEROCITY)) {
-                        if (!skyblockPlayer.ferocityCooldown) {
-                            skyblockPlayer.getBukkitPlayer().playSound(skyblockPlayer.getBukkitPlayer().getLocation(), Sound.FIRE_IGNITE, 100, 0);
-                            skyblockPlayer.ferocityCooldown = true;
-                            Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(skyblockPlayer.getBukkitPlayer(), e.getEntity(), EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage));
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    skyblockPlayer.ferocityCooldown = false;
-                                }
-                            }.runTaskLater(main, 5);
+            if (projectile.getShooter() instanceof Player) {
+                if (e.getEntity() instanceof Player) {
+                    return;
+                } else {
+                    SkyblockPlayer skyblockPlayer = main.getPlayer(((Player) projectile.getShooter()).getName());
+                    int i = new Random().nextInt(100);
+                    int r = new Random().nextInt(100);
+                    DecimalFormat formatter = new DecimalFormat("#,###");
+                    formatter.setGroupingUsed(true);
+                    double damage = 5 + skyblockPlayer.getStat((SkyblockStats.DAMAGE)) + (skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 5F) * (1 + skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 100F);
+                    if (!e.getEntity().getType().equals(EntityType.ARMOR_STAND)) {
+                        if (i <= skyblockPlayer.getStat(SkyblockStats.CRIT_CHANCE)) {
+                            e.setDamage(damage * ((100 + skyblockPlayer.getStat(SkyblockStats.CRIT_DAMAGE))) / 100);
+                            ItemUtil.setDamageIndicator(e.getEntity().getLocation(), ItemUtil.addCritTexture(String.valueOf(formatter.format(Math.round(e.getDamage())))));
+                        } else {
+                            e.setDamage(damage);
+                            ItemUtil.setDamageIndicator(e.getEntity().getLocation(), org.bukkit.ChatColor.GRAY + "" + formatter.format(Math.round(e.getDamage())));
+                        }
+                        if (r <= skyblockPlayer.getStat(SkyblockStats.FEROCITY)) {
+                            if (!skyblockPlayer.ferocityCooldown) {
+                                skyblockPlayer.getBukkitPlayer().playSound(skyblockPlayer.getBukkitPlayer().getLocation(), Sound.FIRE_IGNITE, 100, 0);
+                                skyblockPlayer.ferocityCooldown = true;
+                                Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(skyblockPlayer.getBukkitPlayer(), e.getEntity(), EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage));
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        skyblockPlayer.ferocityCooldown = false;
+                                    }
+                                }.runTaskLater(main, 5);
+                            }
                         }
                     }
                 }

@@ -69,7 +69,11 @@ public class SlayerListener implements Listener {
                                     player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "  CLICK TO COLLECT");
                                     player.playSound(player.getLocation(), Sound.LEVEL_UP, 10, 1);
                                 }else{
-                                    player.sendMessage(ChatColor.YELLOW + "  Zombie Slayer LVL " + Config.getSlayerLvl("zombie", player) + "    " + ChatColor.GRAY + "Next LVL in " + ChatColor.LIGHT_PURPLE + (Main.getMain().slayerManger.getNextExpAmount(Config.getSlayerLvl("zombie", player), SlayerType.REVENANT) - Config.getSlayerXP("zombie", player)) + " XP");
+                                    if (Config.getSlayerLvl("zombie", player) == 9){
+                                        player.sendMessage(ChatColor.YELLOW + "  Zombie Slayer LVL " + Config.getSlayerLvl("zombie", player) + "    " + ChatColor.GREEN + "" + ChatColor.BOLD + "LVL MAXED OUT!");
+                                    }else {
+                                        player.sendMessage(ChatColor.YELLOW + "  Zombie Slayer LVL " + Config.getSlayerLvl("zombie", player) + "    " + ChatColor.GRAY + "Next LVL in " + ChatColor.LIGHT_PURPLE + (Main.getMain().slayerManger.getNextExpAmount(Config.getSlayerLvl("zombie", player), SlayerType.REVENANT) - Config.getSlayerXP("zombie", player)) + " XP");
+                                    }
                                 }
                                 break;
                             case TARANTULA:
@@ -82,8 +86,11 @@ public class SlayerListener implements Listener {
                                     player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "  CLICK TO COLLECT");
                                     player.playSound(player.getLocation(), Sound.LEVEL_UP, 10, 1);
                                 }else {
-                                    player.sendMessage(ChatColor.YELLOW + "  Spider Slayer LVL " + Config.getSlayerLvl("spider", player) + "    " + ChatColor.GRAY + "Next LVL in " + ChatColor.LIGHT_PURPLE + (Main.getMain().slayerManger.getNextExpAmount(Config.getSlayerLvl("spider", player), SlayerType.TARANTULA) - Config.getSlayerXP("spider", player)) + " XP");
-
+                                    if (Config.getSlayerLvl("spider", player) == 9){
+                                        player.sendMessage(ChatColor.YELLOW + "  Spider Slayer LVL " + Config.getSlayerLvl("spider", player) + "    " + ChatColor.GREEN + "" + ChatColor.BOLD + "LVL MAXED OUT!");
+                                    }else {
+                                        player.sendMessage(ChatColor.YELLOW + "  Spider Slayer LVL " + Config.getSlayerLvl("spider", player) + "    " + ChatColor.GRAY + "Next LVL in " + ChatColor.LIGHT_PURPLE + (Main.getMain().slayerManger.getNextExpAmount(Config.getSlayerLvl("spider", player), SlayerType.TARANTULA) - Config.getSlayerXP("spider", player)) + " XP");
+                                    }
                                 }
                                 break;
                             case SVEN:
@@ -96,7 +103,11 @@ public class SlayerListener implements Listener {
                                     player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "  CLICK TO COLLECT");
                                     player.playSound(player.getLocation(), Sound.LEVEL_UP, 10, 1);
                                 }else {
-                                    player.sendMessage(ChatColor.YELLOW + "  Wolf Slayer LVL " + Config.getSlayerLvl("wolf", player) + "    " + ChatColor.GRAY + "Next LVL in " + ChatColor.LIGHT_PURPLE + (Main.getMain().slayerManger.getNextExpAmount(Config.getSlayerLvl("wolf", player), SlayerType.TARANTULA) - Config.getSlayerXP("wolf", player)) + " XP");
+                                    if (Config.getSlayerLvl("wolf", player) == 9){
+                                        player.sendMessage(ChatColor.YELLOW + "  Wolf Slayer LVL " + Config.getSlayerLvl("wolf", player) + "    " + ChatColor.GREEN + "" + ChatColor.BOLD + "LVL MAXED OUT!");
+                                    }else {
+                                        player.sendMessage(ChatColor.YELLOW + "  Wolf Slayer LVL " + Config.getSlayerLvl("wolf", player) + "    " + ChatColor.GRAY + "Next LVL in " + ChatColor.LIGHT_PURPLE + (Main.getMain().slayerManger.getNextExpAmount(Config.getSlayerLvl("wolf", player), SlayerType.TARANTULA) - Config.getSlayerXP("wolf", player)) + " XP");
+                                    }
                                 }
                                 break;
                         }

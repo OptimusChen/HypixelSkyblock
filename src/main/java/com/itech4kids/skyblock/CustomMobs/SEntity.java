@@ -41,6 +41,7 @@ public abstract class SEntity {
         this.entityType = entityType;
         this.lifespan = 20*15;
         this.skillType = null;
+        lastDamager = null;
     }
 
     public boolean loadStats(int health, int damage, boolean isUndead, HashMap<String, ItemStack> equipment, String name, int level){
@@ -78,6 +79,7 @@ public abstract class SEntity {
                 @Override
                 public void run() {
                     if (entity.isDead()){
+                        Main.getMain().handler.unRegisterEntity(entity);
                         cancel();
                     }else{
                         entity.setCustomNameVisible(true);
@@ -91,7 +93,9 @@ public abstract class SEntity {
                         }
                         if (health <= 0){
                             try {
-                                Bukkit.getPluginManager().callEvent(new SkyblockEntitySkillGainEvent(Main.getMain().getPlayer(lastDamager.getName()), getSkillType(), skillExpDropped, getVanillaEntity()));
+                                if (skillType != null && lastDamager != null) {
+                                    Bukkit.getPluginManager().callEvent(new SkyblockEntitySkillGainEvent(Main.getMain().getPlayer(lastDamager.getName()), getSkillType(), skillExpDropped, getVanillaEntity()));
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
