@@ -17,7 +17,7 @@ Hypixel Skyblock Remake
  - Merchants
  - Dragons
 
-# Not Coming Soon
+# Not Coming Soon (Unless we're stupid enough to try)
  - Dungeons
  - Bazaar 
  - Auctions
