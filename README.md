@@ -13,7 +13,7 @@ Hypixel Skyblock Remake
 
 
 # Coming Soon
- - Collections
+ - Collections (Almost finished, a few bugs to work out)
  - Merchants
  - Dragons
 
