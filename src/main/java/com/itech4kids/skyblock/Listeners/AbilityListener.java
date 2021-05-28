@@ -1,21 +1,29 @@
 package com.itech4kids.skyblock.Listeners;
 
+import com.itech4kids.skyblock.CustomMobs.SEntity;
 import com.itech4kids.skyblock.Events.SkyblockAbilityUseEvent;
 import com.itech4kids.skyblock.Events.SkyblockMagicDamageEvent;
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
 import com.itech4kids.skyblock.Enums.SkyblockStats;
+import com.itech4kids.skyblock.Util.ItemUtil;
+import com.itech4kids.skyblock.Util.Util;
 import org.bukkit.*;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+
+import java.text.DecimalFormat;
+import java.util.Random;
 
 public class AbilityListener implements Listener {
 
@@ -157,7 +165,7 @@ public class AbilityListener implements Listener {
                             }
 
 
-                            Bukkit.getPluginManager().callEvent(new SkyblockMagicDamageEvent(player, null, 1, 3, "Iron Punch", 250));
+                            Bukkit.getPluginManager().callEvent(new SkyblockMagicDamageEvent(player, null, 1, 3, 3, 3, "Iron Punch", 250));
 
 
                         } else {
@@ -166,11 +174,176 @@ public class AbilityListener implements Listener {
                     } else {
                         player.sendMessage(no_mana);
                     }
-                }else if (ChatColor.stripColor(player.getItemInHand().getItemMeta().getDisplayName()).contains("Golem Sword")){
+                }else if (ChatColor.stripColor(player.getItemInHand().getItemMeta().getDisplayName()).contains("Midas Staff")){
+                    if (skyblockPlayer.getStat(SkyblockStats.MANA) >= 500) {
+                        if (skyblockPlayer.getCooldown("midas_staff") == 0 || player.hasPermission("skyblock.cooldown.bypass")) {
+                            Location loc = player.getLocation();
+                            Vector dir = loc.getDirection();
+                            dir.normalize();
+                            dir.multiply(2);
+                            loc.add(dir);
+                            loc.setY(loc.getY() + 1);
+                            loc.getWorld().spawnFallingBlock(loc, Material.GOLD_BLOCK, (byte ) 0);
 
+                            dir.normalize();
+                            dir.multiply(1);
+                            loc.add(dir);
+                            loc.getWorld().spawnFallingBlock(loc, Material.GOLD_BLOCK, (byte ) 0);
+
+                            dir.normalize();
+                            dir.multiply(1);
+                            loc.add(dir);
+                            loc.getWorld().spawnFallingBlock(loc, Material.GOLD_BLOCK, (byte ) 0);
+
+                            dir.normalize();
+                            dir.multiply(1);
+                            loc.add(dir);
+                            loc.getWorld().spawnFallingBlock(loc, Material.GOLD_BLOCK, (byte ) 0);
+
+                            Bukkit.broadcastMessage(rpGetPlayerDirection(player));
+
+                            switch (rpGetPlayerDirection(player)){
+                                case "west":
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() + 1, loc.getY(), loc.getZ()), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() - 1, loc.getY(), loc.getZ()), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() + 1, loc.getY(), loc.getZ() - 1), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() - 1, loc.getY(), loc.getZ() - 1), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() + 1, loc.getY(), loc.getZ() - 2), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() - 1, loc.getY(), loc.getZ() - 2), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() + 1, loc.getY(), loc.getZ() - 3), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() - 1, loc.getY(), loc.getZ() - 3), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() + 1, loc.getY(), loc.getZ() - 4), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() - 1, loc.getY(), loc.getZ() - 4), Material.GOLD_BLOCK, (byte) 0);
+                                    break;
+                                case "north":
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() + 3, loc.getY(), loc.getZ() + 1), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() + 3, loc.getY(), loc.getZ() - 1), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() + 2, loc.getY(), loc.getZ() + 1), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() + 2, loc.getY(), loc.getZ() - 1), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() + 1, loc.getY(), loc.getZ() + 1), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() + 1, loc.getY(), loc.getZ() - 1), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ() + 1), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ() - 1), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() - 1, loc.getY(), loc.getZ() + 1), Material.GOLD_BLOCK, (byte) 0);
+                                    loc.getWorld().spawnFallingBlock(new Location(loc.getWorld(), loc.getX() - 1, loc.getY(), loc.getZ() - 1), Material.GOLD_BLOCK, (byte) 0);
+                                    break;
+                                case "east":
+                                    break;
+                                case "south":
+                                    break;
+                            }
+
+                            player.playSound(player.getLocation(), Sound.DIG_GRASS, 10, 0);
+                            Bukkit.getPluginManager().callEvent(new SkyblockAbilityUseEvent(player, "Molten Wave", 500));
+
+                        } else {
+                            player.sendMessage(cooldown);
+                        }
+                    } else {
+                        player.sendMessage(no_mana);
+                    }
+                }else if (ChatColor.stripColor(player.getItemInHand().getItemMeta().getDisplayName()).contains("Axe of the Shredded")) {
+                    Location loc = player.getLocation();
+                    Vector dir = loc.getDirection();
+                    dir.normalize();
+                    dir.multiply(2);
+                    ArmorStand armorStand = Util.throwItem(player, new ItemStack(Material.DIAMOND_AXE), player.getLocation(), dir);
+                    final int[] lifespan = {0};
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (armorStand.isDead()){
+                                cancel();
+                            }else{
+                                lifespan[0] = lifespan[0] + 1;
+                                if (armorStand.getNearbyEntities(0.5, 0.5, 0.5).size() > 0){
+                                    for (Entity e : armorStand.getNearbyEntities(0.5, 0.5, 0.5)){
+                                        if (e instanceof Player){
+                                        }else {
+                                            int i = new Random().nextInt(100);
+                                            int r = new Random().nextInt(100);
+                                            DecimalFormat formatter = new DecimalFormat("#,###");
+                                            formatter.setGroupingUsed(true);
+                                            double damage = 5 + skyblockPlayer.getStat((SkyblockStats.DAMAGE)) + (skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 5F) * (1 + skyblockPlayer.getStat(SkyblockStats.STRENGTH) / 100F);
+
+                                            if (e.hasMetadata("identifier")) {
+                                                SEntity sEntity = Main.getMain().handler.getEntity(e);
+                                                if (!e.getType().equals(EntityType.ARMOR_STAND)) {
+                                                    sEntity.addDespawnDelay(15 * 20);
+                                                    sEntity.setLastDamager(skyblockPlayer.getBukkitPlayer());
+                                                    if (i <= skyblockPlayer.getStat(SkyblockStats.CRIT_CHANCE)) {
+                                                        if (Math.round((damage * ((100 + skyblockPlayer.getStat(SkyblockStats.CRIT_DAMAGE))) / 100) * 1/10) >= 1000000) {
+                                                            ItemUtil.setDamageIndicator(e.getLocation(), ItemUtil.addCritTexture(String.valueOf(Main.format(Math.round((damage * ((100 + skyblockPlayer.getStat(SkyblockStats.CRIT_DAMAGE))) / 100) * 1/10)))));
+                                                        } else {
+                                                            ItemUtil.setDamageIndicator(e.getLocation(), ItemUtil.addCritTexture(String.valueOf(formatter.format(Math.round((damage * ((100 + skyblockPlayer.getStat(SkyblockStats.CRIT_DAMAGE))) / 100) * 1/10)))));
+                                                        }
+                                                        sEntity.subtractHealth((int) Math.round((damage * ((100 + skyblockPlayer.getStat(SkyblockStats.CRIT_DAMAGE))) / 100)));
+                                                    } else {
+                                                        if (Math.round(damage) >= 1000000) {
+                                                            ItemUtil.setDamageIndicator(e.getLocation(), org.bukkit.ChatColor.GRAY + "" + Main.format(Math.round(damage * 1/10)));
+                                                        } else {
+                                                            ItemUtil.setDamageIndicator(e.getLocation(), org.bukkit.ChatColor.GRAY + "" + formatter.format(Math.round(damage * 1/10)));
+                                                        }
+                                                        sEntity.subtractHealth((int) Math.round(damage));
+                                                    }
+                                                    if (r <= skyblockPlayer.getStat(SkyblockStats.FEROCITY)) {
+                                                        if (!skyblockPlayer.ferocityCooldown) {
+                                                            skyblockPlayer.getBukkitPlayer().playSound(skyblockPlayer.getBukkitPlayer().getLocation(), Sound.FIRE_IGNITE, 100, 0);
+                                                            skyblockPlayer.ferocityCooldown = true;
+                                                            Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(skyblockPlayer.getBukkitPlayer(), e, EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage));
+                                                            new BukkitRunnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    skyblockPlayer.ferocityCooldown = false;
+                                                                }
+                                                            }.runTaskLater(Main.getMain(), 5);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            armorStand.remove();
+                                            cancel();
+                                        }
+                                    }
+                                }
+
+                                if (lifespan[0] > 4 * 20){
+                                    armorStand.remove();
+                                    cancel();
+                                }
+
+                            }
+                        }
+                    }.runTaskTimer(Main.getMain(), 5L, 5L);
                 }
             }
         }
+    }
+
+    public String rpGetPlayerDirection(Player playerSelf){
+        String dir = "";
+        float y = playerSelf.getLocation().getYaw();
+        if( y < 0 ){y += 360;}
+        y %= 360;
+        int i = (int)((y+8) / 22.5);
+        if(i == 0){dir = "west";}
+        else if(i == 1){dir = "west northwest";}
+        else if(i == 2){dir = "northwest";}
+        else if(i == 3){dir = "north northwest";}
+        else if(i == 4){dir = "north";}
+        else if(i == 5){dir = "north northeast";}
+        else if(i == 6){dir = "northeast";}
+        else if(i == 7){dir = "east northeast";}
+        else if(i == 8){dir = "east";}
+        else if(i == 9){dir = "east southeast";}
+        else if(i == 10){dir = "southeast";}
+        else if(i == 11){dir = "south southeast";}
+        else if(i == 12){dir = "south";}
+        else if(i == 13){dir = "south southwest";}
+        else if(i == 14){dir = "southwest";}
+        else if(i == 15){dir = "west southwest";}
+        else {dir = "west";}
+        return dir;
     }
 
     @EventHandler

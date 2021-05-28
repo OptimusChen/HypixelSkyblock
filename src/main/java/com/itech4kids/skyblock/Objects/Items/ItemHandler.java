@@ -107,6 +107,41 @@ public class ItemHandler {
     public static ItemStack bonemerang;
     public static ItemStack last_breath;
 
+    //Dungeon Swords
+    public static ItemStack super_cleaver;
+    public static ItemStack bonzo_staff;
+    public static ItemStack dreadlord_sword;
+    public static ItemStack epic_dreadlord_sword;
+    public static ItemStack zombie_soldier_cutlass;
+    public static ItemStack epic_zombie_soldier_cutlass;
+    public static ItemStack silent_death;
+    public static ItemStack epic_silent_death;
+    public static ItemStack conjuring;
+    public static ItemStack epic_conjuring;
+    public static ItemStack adaptive_blade;
+    public static ItemStack crypt_witherlord_sword;
+    public static ItemStack zombie_commander_whip;
+    public static ItemStack hyper_cleaver;
+    public static ItemStack spirit_sword;
+    public static ItemStack zombie_knight_sword;
+    public static ItemStack legendary_zombie_knight_sword;
+    public static ItemStack spirit_sceptre;
+    public static ItemStack legendary_spirit_sceptre;
+    public static ItemStack ice_spray_wand;
+    public static ItemStack epic_ice_spray_wand;
+    public static ItemStack livid_dagger;
+    public static ItemStack shadow_fury;
+    public static ItemStack flower_of_truth;
+    public static ItemStack fel_sword;
+    public static ItemStack wither_cloak_sword;
+    public static ItemStack necromancer_sword;
+    public static ItemStack giants_sword;
+    public static ItemStack necrons_blade;
+    public static ItemStack hyperion;
+    public static ItemStack astraea;
+    public static ItemStack scylla;
+    public static ItemStack valkyrie;
+
     // Armor
     public static HashMap<String, ItemStack> armorMap;
 
@@ -635,6 +670,111 @@ public class ItemHandler {
         midas_sword_50m = createInGameItem(Material.GOLD_SWORD, ChatColor.GOLD + "Midas Sword", ReforgeTypes.NO_REFORGE, 1, addLore(createEmptySpace(), "&6Item Ability: Greed", "&7The strength and damage bonus of", "&7This item is dependent on the", "&7price paid for it at the &5Dark", "&5Auction&7!", "&7The maximum bonus of this item", "&7is &c120 &7if the bid was", "&650,000,000 Coins &7or higher!", "", "&7Price paid: &650,000,000 Coins", "&7Strength Bonus: &c120", "&7Damage Bonus: &c120"), false, false, null, null, null, 0, null, "LEGENDARY SWORD", 270, 120, 0, 0, 0, 0, 0, 0, true);
         reaper_scythe = createInGameItem(Material.DIAMOND_HOE, ChatColor.GOLD + "Reaper Scythe", ReforgeTypes.NO_REFORGE, 1, addAbililtyLore(createEmptySpace(), "&6Item Ability: Raise Souls &e&lRIGHT CLICK", "&7Monsters you kill using this", "&7item will drop their soul. You", "&7can click on their souls on the", "&7ground using this item to abosrb", "&7them and then spawn to", "&7fight by your side", "", "&7Mana cost is based on the power", "&7of the monsters that you summon.", "&7Shift right-click to view and", "&7remove souls from this item. If", "&7your summoned monster dies the", "&7soul will be removed.", "&8Cooldown: &e1s", "", "&7Max Souls: &d3", "", "&c☠ Requires &5Zombie Slayer 7", "&8This item can be reforged!"), false, false, null, null, null, 0, null, "LEGENDARY SWORD", 333, 0, 0, 0, 0, 0, 10, 0, false);
 
+// Dungeon Swords
+        super_cleaver = createInGameDungeonItem(Material.GOLD_SWORD, ChatColor.BLUE + "Super Cleaver", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Cleave", addAbililtyLore(createEmptySpace(), "&7When hitting an entity, monsters", "&7in a &a3 &7block range will be hit for", "&7a portion of that damage too."), "RIGHT CLICK", 0, "", "RARE DUNGEON SWORD", 0, 85, 20, 0, 0, 0, 0, 0, 0, true);
+        bonzo_staff = createInGameDungeonItem(Material.BLAZE_ROD, ChatColor.BLUE + "Bonzo's Staff", ReforgeTypes.NO_REFORGE, 1, null, true, true, "Showtime", addAbililtyLore(createEmptySpace(), "&7Shoots ballons that create a", "&7large explosion on impact,", "&7dealing up to &c1,000 &7damage."), "RIGHT CLICK", 100, "", "RARE DUNGEON SWORD", 285, 160, 0, 0, 0, 0, 250, 0, 0, true);
+        dreadlord_sword = createInGameDungeonItem(Material.IRON_SWORD, ChatColor.BLUE + "Dreadlord Sword ", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Dreadlord", addAbililtyLore(createEmptySpace(), "&7Shoots a skull that does", "&aX &7damage."), "RIGHT CLICK", 40, "", "RARE DUNGEON SWORD", 69420, 52, 50, 0, 0, 0, 85, 0, 0, true);
+        epic_dreadlord_sword = createInGameDungeonItem(Material.IRON_SWORD, ChatColor.DARK_PURPLE + "Dreadlord Sword", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Dreadlord", addAbililtyLore(createEmptySpace(), "&7Shoots a skull that does", "&aX &7damage."), "RIGHT CLICK", 40, "", "EPIC DUNGEON SWORD", 69420, 120, 75, 0, 0, 0, 210, 0, 0, true);
+        zombie_soldier_cutlass = createInGameDungeonItem(Material.IRON_SWORD, ChatColor.BLUE + "Zombie Soldier Cutlass ", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Love Tap", addAbililtyLore(createEmptySpace(), "&7Heals you for &c+10❤ Health", "&7when you hit an entity!"), "", 0, "", "RARE DUNGEON SWORD", 69420, 60, 30, 0, 0, 100, 0, 0, 0, true);
+        epic_zombie_soldier_cutlass = createInGameDungeonItem(Material.IRON_SWORD, ChatColor.DARK_PURPLE + "Zombie Soldier Cutlass", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Love Tap", addAbililtyLore(createEmptySpace(), "&7Heals you for &c+10❤ Health", "&7when you hit an entity!"), "", 0, "", "EPIC DUNGEON SWORD", 69420, 120, 60, 0, 0, 100, 0, 0, 0, true);
+        silent_death = createInGameDungeonItem(Material.IRON_SWORD, ChatColor.BLUE + "Silent Death ", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Shadowstep", addAbililtyLore(createEmptySpace(), "&7Teleport behind the enemy you are looking at,", "&7gaining &c+25❁ Strength &7for &a10 &7seconds. Max", "&7range of 20 blocks. Cooldown resets on kills."), "RIGHT CLICK", 0, "60s", "RARE DUNGEON SWORD", 69420, 100, 44, 2, 13, 0, 0, 0, 0, false);
+        epic_silent_death = createInGameDungeonItem(Material.IRON_SWORD, ChatColor.DARK_PURPLE + "Silent Death", ReforgeTypes.NO_REFORGE, 1, null, false, true, "Shadowstep", addAbililtyLore(createEmptySpace(), "&7Teleport behind the enemy you are looking at,", "&7gaining &c+25❁ Strength &7for &a10 &7seconds. Max", "&7range of 20 blocks. Cooldown resets on kills."), "RIGHT CLICK", 0, "60s", "EPIC DUNGEON SWORD", 69420, 210, 78, 3, 24, 0, 0, 0, 0, false);
+        conjuring = createInGameDungeonItem(Material.STONE_SWORD, ChatColor.BLUE + "Conjuring ", ReforgeTypes.NO_REFORGE, 1, addLore(createEmptySpace(), "&7Reduces the cooldown of Guided", "&7Sheep by &65 &7seconds, and", "&7prevents Guided Sheep from", "&7spawning randomly while holding", "&7this item."), false, false, "",null, null, 0, "", "RARE DUNGEON SWORD", 69420, 84, 45, 0, 0, 0, 109, 0, 0, true);
+        epic_conjuring = createInGameDungeonItem(Material.STONE_SWORD, ChatColor.DARK_PURPLE + "Conjuring", ReforgeTypes.NO_REFORGE, 1, addLore(createEmptySpace(), "&7Reduces the cooldown of Guided", "&7Sheep by &65 &7seconds, and", "&7prevents Guided Sheep from", "&7spawning randomly while holding", "&7this item."), false, false, "",null, null, 0, "", "RARE DUNGEON SWORD", 69420, 158, 84, 0, 0, 0, 210, 0, 0, true);
+        adaptive_blade = createInGameDungeonItem(Material.STONE_SWORD, ChatColor.DARK_PURPLE + "Adaptive Blade", ReforgeTypes.NO_REFORGE, 1, addLore(createEmptySpace(), "&7As a weapon created by &cScarf&7,", "&7it automatically adapts to its user", "&7inside Dungeons.", "", "&bBerserk&7: +&c35❁ Strength &7+&f✦ Speed", "&bHealer&7: +&a20% &7HP regen & +&a5 &7HP/s aura", "&bMage&7: +&b200✎ Intelligence", "&bTank&7: +&a100❈ Defense &7+&f5❂ True Defense", "&bArcher&7: +&9100☠ Crit Damage", "", "&eRight-click to use your class ability!"), false, false, null, null, null, 0, "", "EPIC DUNGEON SWORD", 69420, 170, 0, 0, 0, 0, 0, 0, 0, false);
+    }
+
+    public static ItemStack createInGameDungeonItem(Material mat, String name, ReforgeTypes reforge, int amount, List<String> description, boolean enchantGlint, boolean hasAbility, String abilityName, List<String> abilityDesc, String abilityType, int abilityCost, String abilityCD, String rarity, int gearScore, int damage, int strength, int critChance, int critDMG, int atkSpeed, int intelligence, int speed, int defense, boolean reforgeAble){
+        ItemStack item = new ItemStack(mat, amount);
+        ItemMeta meta = item.getItemMeta();
+        List<String> lore = new ArrayList<>();
+        if(gearScore != 0 && gearScore != 69420){
+            lore.add(ChatColor.GRAY + "Gear Score: " + ChatColor.LIGHT_PURPLE + gearScore);
+        }
+        if(gearScore == 69420){
+            lore.add(ChatColor.GRAY + "Gear Score: " + ChatColor.LIGHT_PURPLE + "#");
+        }
+        if(damage != 0){
+            lore.add(ChatColor.GRAY + "Damage: " + ChatColor.RED + "+" + damage);
+        }
+        if(strength != 0){
+            lore.add(ChatColor.GRAY + "Strength: " + ChatColor.RED + "+" + strength);
+        }
+        if(critChance != 0){
+            lore.add(ChatColor.GRAY + "Crit Chance: " + ChatColor.RED + "+" + critChance + "%");
+        }
+        if(critDMG != 0){
+            lore.add(ChatColor.GRAY + "Crit Damage: " + ChatColor.RED + "+" + critDMG + "%");
+        }
+        if(atkSpeed != 0){
+            lore.add(ChatColor.GRAY + "Attack Speed: " + ChatColor.RED + "+" + atkSpeed + "%");
+        }
+        if(speed != 0 && intelligence != 0 && defense != 0){
+            lore.add("");
+            lore.add(ChatColor.GRAY + "Intelligence: " + ChatColor.GREEN + "+" + intelligence);
+            lore.add(ChatColor.GRAY + "Speed: " + ChatColor.GREEN + "+" + speed);
+            lore.add(ChatColor.GRAY + "Defense: " + ChatColor.GREEN + "+" + defense);
+        } else if(intelligence != 0){
+            lore.add("");
+            lore.add(ChatColor.GRAY + "Intelligence: " + ChatColor.GREEN + "+" + intelligence);
+        } else if(speed != 0){
+            lore.add("");
+            lore.add(ChatColor.GRAY + "Speed: " + ChatColor.GREEN + "+" + speed);
+        } else if(defense != 0){
+            lore.add("");
+            lore.add(ChatColor.GRAY + "Defense: " + ChatColor.GREEN + "+" + defense);
+        }
+        lore.add("");
+        if (description != null){
+            for (String s : description){
+                lore.add(s);
+            }
+        }
+        if(hasAbility){
+            lore.add(ChatColor.GOLD + "Item Ability: " + abilityName + " " + ChatColor.YELLOW + ChatColor.BOLD  + abilityType);
+            for(String temp : abilityDesc){
+                lore.add(temp);
+            }
+            if(abilityCost != 0){
+                lore.add(ChatColor.DARK_GRAY + "Mana Cost: " + ChatColor.AQUA + abilityCost);
+            }
+            if(abilityCD != ""){
+                lore.add(ChatColor.DARK_GRAY + "Cooldown: " + ChatColor.GREEN + abilityCD);
+            }
+            lore.add("");
+        }
+        if(reforgeAble == true){
+            lore.add(ChatColor.DARK_GRAY + "This item can be reforged!");
+        }
+        if(rarity.contains("LEGENDARY") || rarity.contains("legendary")){
+            lore.add("" + ChatColor.GOLD + ChatColor.BOLD + rarity.toUpperCase());
+        } else if(rarity.contains("EPIC") || rarity.contains("epic")){
+            lore.add("" + ChatColor.DARK_PURPLE + ChatColor.BOLD + rarity.toUpperCase());
+        } else if(rarity.contains("RARE") || rarity.contains("rare")){
+            lore.add("" + ChatColor.BLUE + ChatColor.BOLD + rarity.toUpperCase());
+        } else if(rarity.contains("UNCOMMON") || rarity.contains("uncommon")) {
+            lore.add("" + ChatColor.GREEN + ChatColor.BOLD + rarity.toUpperCase());
+        } else if(rarity.contains("COMMON") || rarity.contains("common")) {
+            lore.add("" + ChatColor.WHITE + ChatColor.BOLD + rarity.toUpperCase());
+        }
+
+        if(!(reforge == ReforgeTypes.NO_REFORGE)){
+            meta.setDisplayName(reforge + " " +name);
+        } else{
+            meta.setDisplayName(name);
+        }
+        meta.setLore(lore);
+        if(enchantGlint){
+            meta.addEnchant(Enchantment.LUCK, 1, false);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        meta.spigot().setUnbreakable(true);
+        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        item.setItemMeta(meta);
+        swordMap.put(ChatColor.stripColor(name.toLowerCase().replaceAll(" ", "_")), item);
+        return item;
     }
 
     public static ItemStack createBasicItem(Material mat, String name, List<String> lore, short data, boolean enchantmentGlint, int amount){

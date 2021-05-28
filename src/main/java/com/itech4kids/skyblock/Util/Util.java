@@ -1,8 +1,23 @@
 package com.itech4kids.skyblock.Util;
 
+import com.connorlinfoot.actionbarapi.ActionBarAPI;
+import com.itech4kids.skyblock.Enums.SkyblockStats;
+import com.itech4kids.skyblock.Events.SkyblockMagicDamageEvent;
+import com.itech4kids.skyblock.Main;
+import com.itech4kids.skyblock.Objects.SkyblockPlayer;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.List;
+import java.util.Random;
 
 public class Util {
 
@@ -65,6 +80,14 @@ public class Util {
         for(String str : lore){
             itemLore.add(str);
         }
+    }
+
+    public static ArmorStand throwItem(Player owner, ItemStack head, Location loc, Vector vec){
+        ArmorStand armorStand = loc.getWorld().spawn(loc, ArmorStand.class);
+        armorStand.setItemInHand(head);
+        armorStand.setVelocity(vec);
+        armorStand.setVisible(false);
+        return armorStand;
     }
 
 }

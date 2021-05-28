@@ -23,14 +23,14 @@ public class SkyblockMagicDamageEvent extends PlayerEvent implements Cancellable
     private static final HandlerList HANDLERS = new HandlerList();
     private boolean isCancelled;
 
-    public SkyblockMagicDamageEvent(Player damager, LivingEntity entity, double scaling, int nearby, String name, int abilityDamage) {
+    public SkyblockMagicDamageEvent(Player damager, LivingEntity entity, double scaling, int nearbyX, int nearbyY, int nearbyZ, String name, int abilityDamage) {
         super(damager);
 
         DecimalFormat formatter = new DecimalFormat("#,###");
         formatter.setGroupingUsed(true);
         SkyblockPlayer skyblockPlayer = Main.getMain().getPlayer(damager.getName());
 
-        for (Entity entity1 : player.getNearbyEntities(nearby, nearby, nearby)) {
+        for (Entity entity1 : player.getNearbyEntities(nearbyX, nearbyY, nearbyZ)) {
             if (entity1 instanceof LivingEntity) {
                 entity = (LivingEntity) entity1;
                 if (entity1 instanceof Player && !entity1.hasMetadata("NPC")){
@@ -48,7 +48,7 @@ public class SkyblockMagicDamageEvent extends PlayerEvent implements Cancellable
                 }
             }
         }
-        player.sendMessage(ChatColor.GRAY + "Your " + name + " hit " + ChatColor.RED + player.getNearbyEntities(nearby, nearby, nearby).size() + ChatColor.GRAY + " enemies for " + ChatColor.RED + formatter.format(player.getNearbyEntities(nearby, nearby, nearby).size() * Math.round((skyblockPlayer.getStat(SkyblockStats.ABILITY_DAMAGE) + abilityDamage) * (1 + (skyblockPlayer.getStat(SkyblockStats.MANA) / 100F) * scaling))) + ChatColor.GRAY + " damage.");
+        player.sendMessage(ChatColor.GRAY + "Your " + name + " hit " + ChatColor.RED + player.getNearbyEntities(nearbyX, nearbyY, nearbyZ).size() + ChatColor.GRAY + " enemies for " + ChatColor.RED + formatter.format(player.getNearbyEntities(nearbyX, nearbyY, nearbyZ).size() * Math.round((skyblockPlayer.getStat(SkyblockStats.ABILITY_DAMAGE) + abilityDamage) * (1 + (skyblockPlayer.getStat(SkyblockStats.MANA) / 100F) * scaling))) + ChatColor.GRAY + " damage.");
 
     }
 

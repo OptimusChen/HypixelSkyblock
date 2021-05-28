@@ -23,10 +23,7 @@ import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
@@ -487,6 +484,13 @@ public class Eventlistener implements Listener {
             }else{
                 player.performCommand("warp hub");
             }
+        }
+    }
+
+    @EventHandler
+    public void onFaliingBlock(EntityBlockFormEvent e){
+        if (e.getBlock().getType().equals(GOLD_BLOCK)){
+            e.getBlock().setType(AIR);
         }
     }
 

@@ -99,6 +99,9 @@ public class SkyblockPlayer {
         setCooldown("ember_rod", 0);
         setCooldown("iron_punch", 0);
         setCooldown("grappling_hook", 0);
+        setCooldown("midas_staff", 0);
+        setCooldown("leaping_sword", 0);
+        setCooldown("silk_edge_sword", 0);
     }
 
     private void loadDefaultStats(){
