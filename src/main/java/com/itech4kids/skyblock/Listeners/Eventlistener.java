@@ -26,6 +26,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
@@ -138,11 +139,13 @@ public class Eventlistener implements Listener {
                                 cancel(); // this cancels it when they leave
                             }else if (player.isOnline()){
                                 for (String string : LaunchPadConfig.getLaunchPadStrings()) {
-                                    if (LaunchPadConfig.getLaunchPadLocations(string).get("to").distance(player.getLocation()) < 4) {
-                                        if (skyblockPlayer.padName.toLowerCase().equalsIgnoreCase(string)) {
-                                            e.getPlayer().teleport(LaunchPadConfig.getLaunchPadLocations(string).get("teleport"));
-                                            e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.HORSE_ARMOR, 10, 2);
-                                            skyblockPlayer.padName = "";
+                                    if (player.getWorld().equals(LaunchPadConfig.getLaunchPadLocations(string).get("to").getWorld())) {
+                                        if (LaunchPadConfig.getLaunchPadLocations(string).get("to").distance(player.getLocation()) < 4) {
+                                            if (skyblockPlayer.padName.toLowerCase().equalsIgnoreCase(string)) {
+                                                e.getPlayer().teleport(LaunchPadConfig.getLaunchPadLocations(string).get("teleport"));
+                                                e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.HORSE_ARMOR, 10, 2);
+                                                skyblockPlayer.padName = "";
+                                            }
                                         }
                                     }
                                 }
@@ -495,11 +498,13 @@ public class Eventlistener implements Listener {
             final int x = to.getBlockX();
             final int z = to.getBlockZ();
             for (String string : LaunchPadConfig.getLaunchPadStrings()) {
-                if (e.getTo().distance(LaunchPadConfig.getLaunchPadLocations(string).get("from")) < 2) {
-                    if (!isJumping.containsKey(e.getPlayer())) {
-                        e.getPlayer().teleport(LaunchPadConfig.getLaunchPadLocations(string).get("infront"));
-                        this.launch(e.getPlayer(), string);
-                        Main.getMain().getPlayer(e.getPlayer().getName()).padName = string;
+                if (e.getTo().getWorld().equals(LaunchPadConfig.getLaunchPadLocations(string).get("from").getWorld())) {
+                    if (e.getTo().distance(LaunchPadConfig.getLaunchPadLocations(string).get("from")) < 2) {
+                        if (!isJumping.containsKey(e.getPlayer())) {
+                            e.getPlayer().teleport(LaunchPadConfig.getLaunchPadLocations(string).get("infront"));
+                            this.launch(e.getPlayer(), string);
+                            Main.getMain().getPlayer(e.getPlayer().getName()).padName = string;
+                        }
                     }
                 }
             }
@@ -587,6 +592,15 @@ public class Eventlistener implements Listener {
                     player.playSound(player.getLocation(), Sound.ORB_PICKUP, 10, 1);
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onChat(AsyncPlayerChatEvent e){
+        if (Main.getMain().getPlayer(e.getPlayer().getName()).search){
+            e.setCancelled(true);
+            e.getPlayer().performCommand("ib " + e.getMessage());
+            Main.getMain().getPlayer(e.getPlayer().getName()).search = false;
         }
     }
 }

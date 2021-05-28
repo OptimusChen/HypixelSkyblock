@@ -1,4 +1,4 @@
-package com.itech4kids.skyblock.Commands.ItemBrowser.Sword;
+package com.itech4kids.skyblock.Commands.ItemBrowser;
 
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.Items.ItemHandler;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class SwordCategoryCommand implements CommandExecutor {
+public class BowCategoryCommand implements CommandExecutor {
 
     private ItemHandler itemHandler;
 
@@ -31,8 +31,8 @@ public class SwordCategoryCommand implements CommandExecutor {
         }
         Player player = (Player) sender;
         SkyblockPlayer skyblockPlayer = Main.getMain().getPlayer(player.getName());
-        skyblockPlayer.setInventory("Swords", Bukkit.createInventory(null, 54, "Swords"));
-        Inventory menu = skyblockPlayer.getInventory("Swords");
+        skyblockPlayer.setInventory("Bows", Bukkit.createInventory(null, 54, "Bows"));
+        Inventory menu = skyblockPlayer.getInventory("Bows");
 
         ItemStack emptySpace = itemHandler.createEmptySpace();
 
@@ -60,13 +60,8 @@ public class SwordCategoryCommand implements CommandExecutor {
         // Add items to menu
         int i = 1;
 
-        skyblockPlayer.pendingSwords.clear();
-        for (Map.Entry<String, ItemStack> entry : ItemHandler.swordMap.entrySet()){
-            if (i > 28){
-                skyblockPlayer.pendingSwords.add(entry.getValue());
-            }
+        for (Map.Entry<String, ItemStack> entry : ItemHandler.bowMap.entrySet()){
             menu.addItem(entry.getValue());
-            ++i;
         }
 
         // Add navigation items to the menu
@@ -74,7 +69,7 @@ public class SwordCategoryCommand implements CommandExecutor {
         menu.setItem(49, close);
         menu.setItem(53, next_page);
 
-        player.openInventory(skyblockPlayer.getInventory("Swords"));
+        player.openInventory(skyblockPlayer.getInventory("Bows"));
         return false;
     }
 }

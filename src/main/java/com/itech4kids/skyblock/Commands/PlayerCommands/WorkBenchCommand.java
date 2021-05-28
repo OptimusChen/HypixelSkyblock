@@ -4,6 +4,8 @@ import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.Inventories.CraftInventory;
 import com.itech4kids.skyblock.Objects.Items.ItemHandler;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
+import net.minecraft.server.v1_8_R3.CraftingManager;
+import net.minecraft.server.v1_8_R3.IRecipe;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,6 +20,9 @@ public class WorkBenchCommand implements CommandExecutor {
         if (sender instanceof Player){
             Player player = (Player) sender;
             player.openInventory(new CraftInventory());
+            for (IRecipe recipe : CraftingManager.getInstance().getRecipes()){
+                
+            }
         }
         return false;
     }

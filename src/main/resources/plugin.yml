@@ -50,6 +50,7 @@ commands:
   bootscategory:
     description: WIP
   materialscategory:
+  bowscategory:
   visit:
     description: Visit other players islands
   launchpad:

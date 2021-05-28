@@ -1,435 +1,446 @@
 package com.itech4kids.skyblock.Listeners;
 
+import com.itech4kids.skyblock.Enums.SkyblockStats;
 import com.itech4kids.skyblock.Main;
-import com.itech4kids.skyblock.Objects.Inventories.CraftInventory;
+import com.itech4kids.skyblock.Objects.Items.ItemHandler;
+import net.minecraft.server.v1_8_R3.CraftingManager;
+import net.minecraft.server.v1_8_R3.IRecipe;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.function.Supplier;
 
 public class CraftingListeners implements Listener {
 
-    //Totally not copy and pasted from some rando plugin
-
-    private HashMap<Player, InventoryView> crafting;
-    private HashMap<Player, Entity> playerMap;
-    private Main main;
-    private ArrayList<Integer> slots;
-
-    public CraftingListeners() {
-        this.crafting = new HashMap<Player, InventoryView>();
-        this.playerMap = new HashMap<Player, Entity>();
-        main = Main.getMain();
-        slots = new ArrayList<>();
-
-        slots.add(10);
-        slots.add(11);
-        slots.add(12);
-
-        slots.add(19);
-        slots.add(20);
-        slots.add(21);
-
-        slots.add(28);
-        slots.add(29);
-        slots.add(30);
+    public CraftingListeners(){
     }
 
     @EventHandler
-    public void onInteract(final PlayerInteractEvent e) {
-        final Player p = e.getPlayer();
-        final Block b = e.getClickedBlock();
-        if (b == null || b.getType() != Material.WORKBENCH || e.getAction() != Action.RIGHT_CLICK_BLOCK) {
-            return;
-        }
-        e.setCancelled(true);
-        CraftInventory craftInventory = new CraftInventory();
-        p.openInventory(craftInventory);
-    }
+    public void onDrag(InventoryDragEvent e){
+        Player player = (Player) e.getWhoClicked();
+        Inventory menu = e.getInventory();
+        if (e.getView().getTitle().equalsIgnoreCase("Craft Item")){
+            List<Integer> craftingSlots = new ArrayList<>();
+            craftingSlots.add(10);
+            craftingSlots.add(11);
+            craftingSlots.add(12);
 
-    @EventHandler
-    public void onDrag(final InventoryDragEvent e) {
-        final Player p = (Player)e.getWhoClicked();
-        final Inventory inv = e.getInventory();
-        if (!inv.getName().equalsIgnoreCase("Craft Item")) {
-            return;
-        }
-        Bukkit.broadcastMessage("test");
-        this.prepareCraft(inv, inv, 0, p);
-    }
+            craftingSlots.add(19);
+            craftingSlots.add(20);
+            craftingSlots.add(21);
 
-    @EventHandler
-    public void onClick(final InventoryClickEvent e) {
-        final Player p = (Player)e.getWhoClicked();
-        final Inventory inv = e.getInventory();
-        final Inventory clicked = e.getClickedInventory();
-        final int slot = e.getSlot();
-        if (clicked == null || inv == null || clicked.equals(p.getInventory()) || !inv.getName().equalsIgnoreCase("Craft Item")) {
-            return;
-        }
-        if ((!slots.contains(slot) && slot != 23) || (e.getCurrentItem() != null && e.getCurrentItem().getType() == Material.BARRIER)) {
-            e.setCancelled(true);
-            return;
-        }
-        this.prepareCraft(inv, clicked, slot, p);
-    }
+            craftingSlots.add(28);
+            craftingSlots.add(29);
+            craftingSlots.add(30);
 
-    @EventHandler
-    public void onClose(final InventoryCloseEvent e) {
-        final Player p = (Player)e.getPlayer();
-        if (this.crafting.containsKey(p)) {
-            this.crafting.remove(p);
-        }
-        if (this.playerMap.containsKey(p)) {
-            this.playerMap.get(p).remove();
-            this.playerMap.remove(p);
-        }
-    }
+            ItemStack recipeRequired = new ItemStack(Material.BARRIER);
+            ItemMeta recipeReqMeta = recipeRequired.getItemMeta();
+            List<String> recipeReqLore = new ArrayList<>();
+            recipeReqLore.add(ChatColor.GRAY + "Add the items for a valid");
+            recipeReqLore.add(ChatColor.GRAY + "recipe in the crafting grid");
+            recipeReqLore.add(ChatColor.GRAY + "to the left!");
+            recipeReqMeta.setDisplayName(ChatColor.RED + "Recipe Required");
+            recipeReqMeta.setLore(recipeReqLore);
+            recipeRequired.setItemMeta(recipeReqMeta);
 
-    @EventHandler
-    public void onQuit(final PlayerQuitEvent e) {
-        final Player p = e.getPlayer();
-        if (this.crafting.containsKey(p)) {
-            this.crafting.remove(p);
-        }
-        if (this.playerMap.containsKey(p)) {
-            this.playerMap.get(p).remove();
-            this.playerMap.remove(p);
-        }
-    }
-
-    private void prepareCraft(final Inventory inv, final Inventory clicked, final int slot, final Player p) {
-        final InventoryView view = this.crafting.get(p);
-        if (view == null) {
-            return;
-        }
-        if (clicked.equals(inv)) {
-            final ItemStack result = inv.getItem(23);
-            if (slot == 23 && result != null && result.getType() != Material.AIR) {
-                new BukkitRunnable() {
-                    public void run() {
-                        for (final int i : slots) {
-                            final ItemStack item = inv.getItem(i);
-                            if (item != null) {
-                                if (item.getType() == Material.AIR) {
-                                    continue;
-                                }
-                                if (item.getAmount() <= 1) {
-                                    item.setType(Material.AIR);
-                                    inv.setItem(i, (ItemStack)null);
-                                }
-                                else {
-                                    item.setAmount(item.getAmount() - 1);
-                                }
-                            }
-                        }
-                    }
-                }.runTaskLater(main, 1L);
-            }
-        }
-        new BukkitRunnable() {
-            public void run() {
-                for (int i = 1; i <= slots.size(); ++i) {
-                    view.setItem(i, inv.getItem((int)slots.get(i - 1)));
-                }
-            }
-        }.runTaskLater(main, 2L);
-        new BukkitRunnable() {
-            public void run() {
-                if (view.getItem(0) == null || view.getItem(0).getType() == Material.AIR) {
-                    ItemStack[] contents;
-                    for (int length = (contents = inv.getContents()).length, j = 0; j < length; ++j) {
-                        final ItemStack i = contents[j];
-                        if (i != null) {
-                            if (i.getType() != Material.AIR) {
-                                if (i.getDurability() == 5) {
-                                    i.setDurability((short)14);
-                                }
-                            }
-                        }
-                    }
-                }
-                else {
-                    ItemStack[] contents2;
-                    for (int length2 = (contents2 = inv.getContents()).length, k = 0; k < length2; ++k) {
-                        final ItemStack i = contents2[k];
-                        if (i != null) {
-                            if (i.getType() != Material.AIR) {
-                                if (i.getDurability() == 14) {
-                                    i.setDurability((short)5);
-                                }
-                            }
-                        }
-                    }
-                }
-                ItemStack stack = view.getItem(0);
-                if (stack != null && stack.getType() != Material.AIR) {
-                    stack = view.getItem(0).clone();
-                    inv.setItem(23, stack.clone());
-                    return;
-                }
-                ItemStack recipeRequired = new ItemStack(Material.BARRIER);
-                ItemMeta recipeReqMeta = recipeRequired.getItemMeta();
-                List<String> recipeReqLore = new ArrayList<>();
-                recipeReqLore.add(ChatColor.GRAY + "Add the items for a valid");
-                recipeReqLore.add(ChatColor.GRAY + "recipe in the crafting grid");
-                recipeReqLore.add(ChatColor.GRAY + "to the left!");
-                recipeReqMeta.setDisplayName(ChatColor.RED + "?");
-                recipeReqMeta.setLore(recipeReqLore);
-                recipeRequired.setItemMeta(recipeReqMeta);
-                inv.setItem(23, recipeRequired);
-            }
-        }.runTaskLater(Main.getMain(), 3L);
-    }
-
-/*
-    @EventHandler
-    public void onClose(InventoryCloseEvent e) {
-        Inventory inv = e.getInventory();
-
-        slots.clear();
-        slots.add(10);
-        slots.add(11);
-        slots.add(12);
-
-        slots.add(19);
-        slots.add(20);
-        slots.add(21);
-
-        slots.add(28);
-        slots.add(29);
-        slots.add(30);
-
-        if (!inv.getName().equals("Craft Item")) return;
-
-        for (int i : slots) {
-            if (inv.getItem(i) == null) continue;
-
-            e.getPlayer().getInventory().addItem(inv.getItem(i));
-        }
-    }
-
-    @EventHandler
-    public void onVCraft(InventoryClickEvent e) {
-        if (e.getInventory() != e.getWhoClicked().getInventory()) return;
-
-        slots.clear();
-        slots.add(10);
-        slots.add(11);
-        slots.add(12);
-
-        slots.add(19);
-        slots.add(20);
-        slots.add(21);
-
-        slots.add(28);
-        slots.add(29);
-        slots.add(30);
-
-        Player p = (Player) e.getWhoClicked();
-    }
-
-    @EventHandler
-    public void onVDrag(InventoryDragEvent e) {
-        if (e.getInventory() != e.getWhoClicked().getInventory()) return;
-
-        slots.clear();
-        slots.add(10);
-        slots.add(11);
-        slots.add(12);
-
-        slots.add(19);
-        slots.add(20);
-        slots.add(21);
-
-        slots.add(28);
-        slots.add(29);
-        slots.add(30);
-
-        Player p = (Player) e.getWhoClicked();
-    }
-
-    @EventHandler
-    public void onDrag(InventoryDragEvent e) {
-
-        if (e.getInventory() == null) return;
-        if (!e.getInventory().getName().equals("Craft Item")) return;
-
-        Inventory inv = e.getInventory();
-
-        slots.clear();
-        slots.add(10);
-        slots.add(11);
-        slots.add(12);
-
-        slots.add(19);
-        slots.add(20);
-        slots.add(21);
-
-        slots.add(28);
-        slots.add(29);
-        slots.add(30);
-
-        Player p = (Player) e.getWhoClicked();
-        p.sendMessage("hi");
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (map.containsKey(p)) {
-                    map.remove(p);
-                }
-                Bukkit.getConsoleSender().sendMessage(main.recipe.getGrid(inv, slots));
-                map.put(p, main.recipe.getResult(inv, main.recipe.getGrid(inv, slots)));
-                p.sendMessage(map + "");
-            }
-        }.runTaskLater(main, 1);
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onCraft(InventoryClickEvent e) {
-        if (!e.getInventory().getName().equals("Craft Item")) return;
-        Inventory inv = e.getInventory();
-        Player p = (Player) e.getWhoClicked();
-
-        p.sendMessage("craft_test");
-        e.setCancelled(true);
-
-        slots.clear();
-        slots.add(10);
-        slots.add(11);
-        slots.add(12);
-
-        slots.add(19);
-        slots.add(20);
-        slots.add(21);
-
-        slots.add(28);
-        slots.add(29);
-        slots.add(30);
-        p.sendMessage("craft_test2");
-
-        if (e.getClickedInventory() == null) return;
-
-        if (inv.getItem(24) != null) {
-            if (!inv.getItem(24).equals(e.getCurrentItem()) && e.getCurrentItem().isSimilar(inv.getItem(24)) && e.isShiftClick()) {
-                e.setCancelled(true);
-                return;
-            }
-        }
-
-        p.sendMessage("craft_test3");
-
-        if (e.getClickedInventory().getName().equals("Craft Item")) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    p.sendMessage("craft_test4");
-                    boolean c = false;
-                    List<String> recipe = new ArrayList<String>();
-
-                    if ((e.getSlot() == 24 && inv.getItem(e.getSlot()).getType() != Material.BARRIER)) {
-                        e.setCancelled(true);
-                        if (e.getCursor().isSimilar(e.getCurrentItem())) {
-                            int amount = e.getCursor().getAmount();
-                            int curAmmount = e.getCurrentItem().getAmount();
-
-                            e.setCursor(e.getCurrentItem());
-                            e.getCursor().setAmount(amount + curAmmount);
-                        } else {
-                            if (e.getCursor() != null) {
-                                p.getInventory().addItem(e.getCursor());
-                            }
-                            e.setCursor(e.getCurrentItem());
-                        }
-
-                        if (map.get(p) != null) {
-                            c = true;
-                            recipe = Arrays.asList(map.get(p).replace("E", "").split(""));
-                            Bukkit.getConsoleSender().sendMessage(String.valueOf(recipe.size()) + "size");
-                        }
-                    }
-
-                    p.sendMessage("craft_test5");
-                    int in = 0;
-                    for (int i : slots) {
-                        p.sendMessage("craft_test6");
-                        if (c) {
-                            p.sendMessage("craft_test7");
-                            if (!recipe.get(in).equals("-") && !recipe.get(in).equals("0")) {
-                                p.sendMessage("craft_test8");
-                                if (inv.getItem(i) == null) continue;
-                                if (inv.getItem(i).getAmount() - 1 <= 0) {
-                                    inv.clear(i);
-                                    p.sendMessage("craft_test");
+            if (!e.getInventory().equals(player.getInventory())) {
+                if (craftingSlots.containsAll(e.getInventorySlots())) {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            List<String> list = new ArrayList<>();
+                            for (int i : craftingSlots) {
+                                String s = "";
+                                if (menu.getItem(i) != null) {
+                                    s = s + menu.getItem(i).getType().name() + ":" + menu.getItem(i).getDurability();
                                 } else {
-                                    Bukkit.getConsoleSender().sendMessage(" minus 1");
-                                    p.sendMessage("craft_test10");
-                                    inv.getItem(i).setAmount(inv.getItem(i).getAmount() - 1);
+                                    s = s + "AIR";
+                                }
+                                list.add(s);
+                            }
+                            for (Map.Entry<ShapedRecipe, String> entry : getShapedRecipeStrings().entrySet()) {
+                                if (entry.getValue().contains("AIR")) {
+                                    if (entry.getValue().toUpperCase().contains(list + "")) {
+                                        menu.setItem(23, ItemHandler.toSkyblockItem(entry.getKey().getResult()));
+                                        menu.getItem(53).setDurability((short) 5);
+                                        menu.getItem(52).setDurability((short) 5);
+                                        menu.getItem(51).setDurability((short) 5);
+                                        menu.getItem(50).setDurability((short) 5);
+                                        menu.getItem(48).setDurability((short) 5);
+                                        menu.getItem(47).setDurability((short) 5);
+                                        menu.getItem(46).setDurability((short) 5);
+                                        menu.getItem(45).setDurability((short) 5);
+                                        break;
+                                    } else {
+                                        menu.setItem(23, recipeRequired);
+                                        menu.getItem(53).setDurability((short) 14);
+                                        menu.getItem(52).setDurability((short) 14);
+                                        menu.getItem(51).setDurability((short) 14);
+                                        menu.getItem(50).setDurability((short) 14);
+                                        menu.getItem(48).setDurability((short) 14);
+                                        menu.getItem(47).setDurability((short) 14);
+                                        menu.getItem(46).setDurability((short) 14);
+                                        menu.getItem(45).setDurability((short) 14);
+                                    }
+
+                                } else {
+                                    List<String> list2 = new ArrayList<>();
+                                    for (int i : craftingSlots) {
+                                        String s = "";
+                                        if (menu.getItem(i) != null) {
+                                            s = s + menu.getItem(i).getType().name() + ":" + menu.getItem(i).getDurability();
+                                            list2.add(s);
+                                        } else {
+                                        }
+                                    }
+
+                                    if (entry.getValue().toUpperCase().contains((list2 + ""))) {
+                                        menu.setItem(23, ItemHandler.toSkyblockItem(entry.getKey().getResult()));
+                                        menu.getItem(53).setDurability((short) 5);
+                                        menu.getItem(52).setDurability((short) 5);
+                                        menu.getItem(51).setDurability((short) 5);
+                                        menu.getItem(50).setDurability((short) 5);
+                                        menu.getItem(48).setDurability((short) 5);
+                                        menu.getItem(47).setDurability((short) 5);
+                                        menu.getItem(46).setDurability((short) 5);
+                                        menu.getItem(45).setDurability((short) 5);
+                                        break;
+
+                                    } else {
+                                        menu.setItem(23, recipeRequired);
+                                    }
                                 }
                             }
-                            in++;
+
                         }
-                        if (e.getSlot() == i) {
-                            e.setCancelled(false);
-                            break;
+                    }.runTaskLater(Main.getMain(), 1);
+                }
+            }else{
+                e.setCancelled(false);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onClose(InventoryCloseEvent e){
+        if (e.getInventory().getTitle().equalsIgnoreCase("Craft Item")){
+            List<Integer> craftingSlots = new ArrayList<>();
+            craftingSlots.add(10);
+            craftingSlots.add(11);
+            craftingSlots.add(12);
+
+            craftingSlots.add(19);
+            craftingSlots.add(20);
+            craftingSlots.add(21);
+
+            craftingSlots.add(28);
+            craftingSlots.add(29);
+            craftingSlots.add(30);
+
+            for (int i : craftingSlots) {
+                ItemStack item = e.getInventory().getItem(i);
+                if (item != null){
+                    Main.getMain().getPlayer(e.getPlayer().getName()).addItem(item);
+                }
+            }
+
+        }
+    }
+
+    @EventHandler
+    public void onCraft(InventoryClickEvent e){
+        Player player = (Player) e.getWhoClicked();
+        Inventory menu = e.getClickedInventory();
+        if (e.getView().getTitle().equalsIgnoreCase("Craft Item")){
+            List<Integer> craftingSlots = new ArrayList<>();
+            craftingSlots.add(10);
+            craftingSlots.add(11);
+            craftingSlots.add(12);
+
+            craftingSlots.add(19);
+            craftingSlots.add(20);
+            craftingSlots.add(21);
+
+            craftingSlots.add(28);
+            craftingSlots.add(29);
+            craftingSlots.add(30);
+
+            ItemStack recipeRequired = new ItemStack(Material.BARRIER);
+            ItemMeta recipeReqMeta = recipeRequired.getItemMeta();
+            List<String> recipeReqLore = new ArrayList<>();
+            recipeReqLore.add(ChatColor.GRAY + "Add the items for a valid");
+            recipeReqLore.add(ChatColor.GRAY + "recipe in the crafting grid");
+            recipeReqLore.add(ChatColor.GRAY + "to the left!");
+            recipeReqMeta.setDisplayName(ChatColor.RED + "Recipe Required");
+            recipeReqMeta.setLore(recipeReqLore);
+            recipeRequired.setItemMeta(recipeReqMeta);
+
+            if (!e.getClickedInventory().equals(player.getInventory())) {
+                if (craftingSlots.contains(e.getSlot())) {
+
+                    craftItem(menu, craftingSlots, recipeRequired);
+                } else {
+                    if (e.getSlot() == 23){
+                        if (e.getCurrentItem() != null) {
+                            if (!e.getCurrentItem().getType().equals(Material.BARRIER)) {
+                                if (!e.getClick().isShiftClick()) {
+                                    e.setCancelled(true);
+                                    Main.getMain().getPlayer(player.getName()).addItem(e.getCurrentItem());
+                                    e.setCurrentItem(recipeRequired);
+                                    menu.getItem(53).setDurability((short) 14);
+                                    menu.getItem(52).setDurability((short) 14);
+                                    menu.getItem(51).setDurability((short) 14);
+                                    menu.getItem(50).setDurability((short) 14);
+                                    menu.getItem(48).setDurability((short) 14);
+                                    menu.getItem(47).setDurability((short) 14);
+                                    menu.getItem(46).setDurability((short) 14);
+                                    menu.getItem(45).setDurability((short) 14);
+
+                                    for (int i : craftingSlots) {
+                                        if (e.getClickedInventory().getItem(i) != null) {
+                                            ItemStack item = e.getClickedInventory().getItem(i);
+                                            if (item.getAmount() > 1) {
+                                                item.setAmount(item.getAmount() - 1);
+                                            } else {
+                                                e.getClickedInventory().setItem(i, null);
+                                            }
+                                        }
+                                    }
+
+                                    craftItem(menu, craftingSlots, recipeRequired);
+                                }else{
+                                    e.setCancelled(true);
+                                    for (int i = 0; i < 64; i++) {
+                                        Main.getMain().getPlayer(player.getName()).addItem(e.getCurrentItem());
+                                        e.setCurrentItem(recipeRequired);
+                                        menu.getItem(53).setDurability((short) 14);
+                                        menu.getItem(52).setDurability((short) 14);
+                                        menu.getItem(51).setDurability((short) 14);
+                                        menu.getItem(50).setDurability((short) 14);
+                                        menu.getItem(48).setDurability((short) 14);
+                                        menu.getItem(47).setDurability((short) 14);
+                                        menu.getItem(46).setDurability((short) 14);
+                                        menu.getItem(45).setDurability((short) 14);
+
+                                        for (int integer : craftingSlots) {
+                                            if (e.getClickedInventory().getItem(integer) != null) {
+                                                ItemStack item = e.getClickedInventory().getItem(integer);
+                                                if (item.getAmount() > 1) {
+                                                    item.setAmount(item.getAmount() - 1);
+                                                } else {
+                                                    e.getClickedInventory().setItem(integer, null);
+                                                }
+                                            }
+                                        }
+
+                                        List<String> list = new ArrayList<>();
+                                        for (int i2 : craftingSlots) {
+                                            String s = "";
+                                            if (menu.getItem(i2) != null) {
+                                                s = s + menu.getItem(i2).getType().name() + ":" + menu.getItem(i).getDurability();
+                                            } else {
+                                                s = s + "AIR";
+                                            }
+                                            list.add(s);
+                                        }
+
+                                        for (Map.Entry<ShapedRecipe, String> entry : getShapedRecipeStrings().entrySet()) {
+                                            if (entry.getValue().contains("AIR")) {
+                                                if (entry.getValue().toUpperCase().contains(list + "")) {
+                                                    menu.setItem(23, ItemHandler.toSkyblockItem(entry.getKey().getResult()));
+                                                    menu.getItem(53).setDurability((short) 5);
+                                                    menu.getItem(52).setDurability((short) 5);
+                                                    menu.getItem(51).setDurability((short) 5);
+                                                    menu.getItem(50).setDurability((short) 5);
+                                                    menu.getItem(48).setDurability((short) 5);
+                                                    menu.getItem(47).setDurability((short) 5);
+                                                    menu.getItem(46).setDurability((short) 5);
+                                                    menu.getItem(45).setDurability((short) 5);
+                                                    break;
+                                                } else {
+                                                    menu.setItem(23, recipeRequired);
+                                                    menu.getItem(53).setDurability((short) 14);
+                                                    menu.getItem(52).setDurability((short) 14);
+                                                    menu.getItem(51).setDurability((short) 14);
+                                                    menu.getItem(50).setDurability((short) 14);
+                                                    menu.getItem(48).setDurability((short) 14);
+                                                    menu.getItem(47).setDurability((short) 14);
+                                                    menu.getItem(46).setDurability((short) 14);
+                                                    menu.getItem(45).setDurability((short) 14);
+                                                }
+
+                                            } else {
+                                                List<String> list2 = new ArrayList<>();
+                                                for (int i2 : craftingSlots) {
+                                                    String s = "";
+                                                    if (menu.getItem(i) != null) {
+                                                        s = s + menu.getItem(i2).getType().name() + ":" + menu.getItem(i).getDurability();
+                                                        list2.add(s);
+                                                    } else {
+                                                    }
+                                                }
+
+                                                if (entry.getValue().toUpperCase().contains((list2 + ""))) {
+                                                    menu.setItem(23, ItemHandler.toSkyblockItem(entry.getKey().getResult()));
+                                                    menu.getItem(53).setDurability((short) 5);
+                                                    menu.getItem(52).setDurability((short) 5);
+                                                    menu.getItem(51).setDurability((short) 5);
+                                                    menu.getItem(50).setDurability((short) 5);
+                                                    menu.getItem(48).setDurability((short) 5);
+                                                    menu.getItem(47).setDurability((short) 5);
+                                                    menu.getItem(46).setDurability((short) 5);
+                                                    menu.getItem(45).setDurability((short) 5);
+                                                    break;
+
+                                                } else {
+                                                    menu.setItem(23, recipeRequired);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }else{
+                                e.setCancelled(true);
+                            }
                         }
+                    }else {
+                        e.setCancelled(true);
                     }
                 }
-            }.runTaskLater(main, 1);
-
-        } else {
-            e.setCancelled(false);
+            }else{
+                e.setCancelled(false);
+            }
         }
+    }
 
+    public void craftItem(Inventory menu, List<Integer> craftingSlots, ItemStack recipeRequired){
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (map.containsKey(p)) {
-                    map.remove(p);
+                List<String> list = new ArrayList<>();
+                for (int i : craftingSlots) {
+                    String s = "";
+                    if (menu.getItem(i) != null) {
+                        s = s + menu.getItem(i).getType().name() + ":" + menu.getItem(i).getDurability();
+                    } else {
+                        s = s + "AIR";
+                    }
+                    list.add(s);
                 }
-                p.sendMessage("a");
-                Bukkit.getConsoleSender().sendMessage(main.recipe.getGrid(inv, slots));
-                p.sendMessage("a2");
-                map.put(p, main.recipe.getResult(inv, main.recipe.getGrid(inv, slots)));
-                p.sendMessage(map + " map");
+                for (Map.Entry<ShapedRecipe, String> entry : getShapedRecipeStrings().entrySet()) {
+                    if (entry.getValue().contains("AIR")) {
+                        if (entry.getValue().toUpperCase().contains(list + "")) {
+                            menu.setItem(23, ItemHandler.toSkyblockItem(entry.getKey().getResult()));
+                            menu.getItem(53).setDurability((short) 5);
+                            menu.getItem(52).setDurability((short) 5);
+                            menu.getItem(51).setDurability((short) 5);
+                            menu.getItem(50).setDurability((short) 5);
+                            menu.getItem(48).setDurability((short) 5);
+                            menu.getItem(47).setDurability((short) 5);
+                            menu.getItem(46).setDurability((short) 5);
+                            menu.getItem(45).setDurability((short) 5);
+                            break;
+                        } else {
+                            menu.setItem(23, recipeRequired);
+                            menu.getItem(53).setDurability((short) 14);
+                            menu.getItem(52).setDurability((short) 14);
+                            menu.getItem(51).setDurability((short) 14);
+                            menu.getItem(50).setDurability((short) 14);
+                            menu.getItem(48).setDurability((short) 14);
+                            menu.getItem(47).setDurability((short) 14);
+                            menu.getItem(46).setDurability((short) 14);
+                            menu.getItem(45).setDurability((short) 14);
+                        }
+
+                    } else {
+                        List<String> list2 = new ArrayList<>();
+                        for (int i : craftingSlots) {
+                            String s = "";
+                            if (menu.getItem(i) != null) {
+                                s = s + menu.getItem(i).getType().name() + ":" + menu.getItem(i).getDurability();
+                                list2.add(s);
+                            } else {
+                            }
+                        }
+
+                        if (entry.getValue().toUpperCase().contains((list2 + ""))) {
+                            menu.setItem(23, ItemHandler.toSkyblockItem(entry.getKey().getResult()));
+                            menu.getItem(53).setDurability((short) 5);
+                            menu.getItem(52).setDurability((short) 5);
+                            menu.getItem(51).setDurability((short) 5);
+                            menu.getItem(50).setDurability((short) 5);
+                            menu.getItem(48).setDurability((short) 5);
+                            menu.getItem(47).setDurability((short) 5);
+                            menu.getItem(46).setDurability((short) 5);
+                            menu.getItem(45).setDurability((short) 5);
+                            break;
+
+                        } else {
+                            menu.setItem(23, recipeRequired);
+                        }
+                    }
+                }
             }
-        }.runTaskLater(main, 2);
+        }.runTaskLater(Main.getMain(), 1);
     }
 
-
-    @EventHandler
-    public void onCloseMap(InventoryCloseEvent e) {
-        if (map.keySet().contains(e.getPlayer())) {
-            map.remove(e.getPlayer());
+    public HashMap<ShapelessRecipe, List<String >> getShapelessRecipeStrings(){
+        HashMap<ShapelessRecipe, List<String>> map = new HashMap<>();
+        for (IRecipe iRecipe : CraftingManager.getInstance().getRecipes()){
+            Recipe recipe = iRecipe.toBukkitRecipe();
+            if (recipe instanceof ShapelessRecipe){
+                ShapelessRecipe shapelessRecipe = (ShapelessRecipe) recipe;
+                List<String> list = new ArrayList<>();
+                for (ItemStack item : shapelessRecipe.getIngredientList()){
+                    list.add(item.getType().name());
+                }
+                map.put(shapelessRecipe, list);
+            }
         }
+        return map;
     }
 
-    @EventHandler
-    public void onQuit(PlayerQuitEvent e) {
-        if (map.keySet().contains(e.getPlayer())) {
-            map.remove(e.getPlayer());
+    public HashMap<ShapedRecipe, String> getShapedRecipeStrings(){
+        HashMap<ShapedRecipe, String> map = new HashMap<>();
+        for (IRecipe iRecipe : CraftingManager.getInstance().getRecipes()){
+            Recipe recipe = iRecipe.toBukkitRecipe();
+            if (recipe instanceof ShapedRecipe){
+                List<String> list = new ArrayList<>();
+                ShapedRecipe shapedRecipe = (ShapedRecipe) recipe;
+                for (Map.Entry<Character, ItemStack> entry : shapedRecipe.getIngredientMap().entrySet()){
+                    for (String s : shapedRecipe.getShape()){
+                        String string = "";
+                        for (int i = 0; i < s.length(); i++) {
+                            if (String.valueOf(s.charAt(i)).equalsIgnoreCase(String.valueOf(entry.getKey()))){
+                                if (entry.getValue() != null) {
+                                    string = string + entry.getValue().getType().name() + ":" + entry.getValue().getDurability();
+
+                                    if (string.contains("32767")){
+                                        string = string.replaceAll("32767", "0");
+                                    }
+                                }else {
+                                    string = string + "AIR";
+                                }
+                                list.add(string);
+                                Bukkit.getLogger().info(list + "");
+                            }
+                        }
+                    }
+                }
+                map.put(shapedRecipe, list + "");
+            }
         }
+        return map;
     }
-*/
 }

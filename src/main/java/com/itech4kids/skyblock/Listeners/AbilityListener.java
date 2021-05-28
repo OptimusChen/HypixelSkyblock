@@ -80,11 +80,6 @@ public class AbilityListener implements Listener {
                     }
                 } else if (ChatColor.stripColor(player.getItemInHand().getItemMeta().getDisplayName()).contains("Aspect of the End")) {
                     if (skyblockPlayer.getStat(SkyblockStats.MANA) >= 50) {
-                        Location loc = player.getLocation();
-                        Vector dir = loc.getDirection();
-                        dir.normalize();
-                        dir.multiply(8);
-                        loc.add(dir);
                         Bukkit.getPluginManager().callEvent(new SkyblockAbilityUseEvent(player, "Instant Transmission", 50));
                         player.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 10, 1);
                         if (!skyblockPlayer.aoteSpeed) {
@@ -98,10 +93,25 @@ public class AbilityListener implements Listener {
                                 }
                             }.runTaskLater(Main.getMain(), 60);
                         }
-                        if (loc.getBlock().getType().equals(Material.AIR)) {
-                            player.teleport(loc);
-                        } else {
-                            player.sendMessage(ChatColor.RED + "There are blocks in the way!");
+
+                        for (int i = 0; i < 64; i++){
+                            Location loc = player.getLocation();
+                            Vector dir = loc.getDirection();
+                            dir.normalize();
+                            dir.multiply(0.125);
+                            loc.add(dir);
+                            loc.setY(loc.getY() + 0.01);
+                            if (loc.getBlock().getType().equals(Material.AIR)) {
+                                player.teleport(loc);
+                            } else {
+                                Vector vec = loc.getDirection();
+                                vec.normalize();
+                                vec.multiply(-0.75);
+                                loc.add(vec);
+                                player.teleport(loc);
+                                player.sendMessage(ChatColor.RED + "There are blocks in the way!");
+                                break;
+                            }
                         }
                     } else {
                         player.sendMessage(no_mana);
@@ -156,6 +166,8 @@ public class AbilityListener implements Listener {
                     } else {
                         player.sendMessage(no_mana);
                     }
+                }else if (ChatColor.stripColor(player.getItemInHand().getItemMeta().getDisplayName()).contains("Golem Sword")){
+
                 }
             }
         }

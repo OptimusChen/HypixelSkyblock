@@ -1,5 +1,6 @@
 package com.itech4kids.skyblock.Events;
 
+import com.itech4kids.skyblock.CustomMobs.SEntity;
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.SkyblockPlayer;
 import com.itech4kids.skyblock.Enums.SkyblockStats;
@@ -37,6 +38,10 @@ public class SkyblockMagicDamageEvent extends PlayerEvent implements Cancellable
                 }else {
                     if (!entity.hasMetadata("NPC")) {
                         Bukkit.getPluginManager().callEvent(new EntityDamageEvent(entity, EntityDamageEvent.DamageCause.ENTITY_EXPLOSION, (skyblockPlayer.getStat(SkyblockStats.ABILITY_DAMAGE) + abilityDamage) * (1 + (skyblockPlayer.getStat(SkyblockStats.MANA) / 100F) * scaling)));
+                        if (entity.hasMetadata("identifier")){
+                            SEntity sEntity = Main.getMain().handler.getEntity(entity);
+                            sEntity.subtractHealth((int) ((skyblockPlayer.getStat(SkyblockStats.ABILITY_DAMAGE) + abilityDamage) * (1 + (skyblockPlayer.getStat(SkyblockStats.MANA) / 100F) * scaling)));
+                        }
                     } else {
                         Bukkit.getPluginManager().callEvent(new NPCDamageEvent(CitizensAPI.getNPCRegistry().getNPC(entity), new EntityDamageEvent(entity, EntityDamageEvent.DamageCause.CUSTOM, (skyblockPlayer.getStat(SkyblockStats.ABILITY_DAMAGE) + abilityDamage) * (1 + (skyblockPlayer.getStat(SkyblockStats.MANA) / 100F) * scaling))));
                     }

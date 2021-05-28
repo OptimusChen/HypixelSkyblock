@@ -358,24 +358,46 @@ public class SkillGainListeners implements Listener {
     @EventHandler
     public void onCoinPickUp(PlayerPickupItemEvent e) throws IOException {
         Player player = e.getPlayer();
+        SkyblockPlayer skyblockPlayer = Main.getMain().getPlayer(player.getName());
         ItemMeta meta = e.getItem().getItemStack().getItemMeta();
+        int amount = Integer.parseInt(meta.getDisplayName().split("_")[2]);
 
         if (meta.getDisplayName().contains(ChatColor.GOLD + "coin_iron_")){
             Config.setPurseCoins(player, (int) (Config.getPurseCoins(player) + Integer.parseInt(meta.getDisplayName().split("_")[2])));
             player.playSound(player.getLocation(), Sound.ORB_PICKUP, 10, 2);
             e.setCancelled(true);
             e.getItem().remove();
+            skyblockPlayer.lastPickedUpCoins = amount;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    skyblockPlayer.lastPickedUpCoins = 0;
+                }
+            }.runTaskLater(main, 20*3);
         }else if (meta.getDisplayName().contains(ChatColor.GOLD + "coin_gold_")){
             Config.setPurseCoins(player, (int) (Config.getPurseCoins(player) + Integer.parseInt(meta.getDisplayName().split("_")[2])));
             player.playSound(player.getLocation(), Sound.ORB_PICKUP, 10, 2);
             e.setCancelled(true);
             e.getItem().remove();
+            skyblockPlayer.lastPickedUpCoins = amount;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    skyblockPlayer.lastPickedUpCoins = 0;
+                }
+            }.runTaskLater(main, 20*3);
         }else if (meta.getDisplayName().contains(ChatColor.GOLD + "coin_diamond_")){
             Config.setPurseCoins(player, (int) (Config.getPurseCoins(player) + Integer.parseInt(meta.getDisplayName().split("_")[2])));
             player.playSound(player.getLocation(), Sound.ORB_PICKUP, 10, 2);
             e.setCancelled(true);
             e.getItem().remove();
+            skyblockPlayer.lastPickedUpCoins = amount;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    skyblockPlayer.lastPickedUpCoins = 0;
+                }
+            }.runTaskLater(main, 20*3);
         }
-
     }
 }

@@ -2,6 +2,7 @@ package com.itech4kids.skyblock.Objects.Inventories;
 
 import com.itech4kids.skyblock.Main;
 import com.itech4kids.skyblock.Objects.Items.ItemHandler;
+import net.minecraft.server.v1_8_R3.CraftingManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
